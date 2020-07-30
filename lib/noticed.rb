@@ -24,4 +24,7 @@ module Noticed
     # Clear the recipient after sending to the group
     notification.recipient = nil
   end
+
+  mattr_accessor :parent_class
+  @@parent_class = "ApplicationJob"
 end

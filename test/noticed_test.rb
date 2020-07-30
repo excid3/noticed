@@ -13,12 +13,6 @@ class Noticed::Test < ActiveSupport::TestCase
     assert make_notification(foo: :bar).deliver(users(:one))
   end
 
-  test "calls delivery method" do
-    notification = make_notification(foo: :bar)
-    notification.deliver(nil)
-    assert_equal [notification], Noticed::DeliveryMethods::Test.delivered
-  end
-
   test "writes to database" do
     assert_difference "Notification.count" do
       CommentNotification.new.deliver(users(:one))
@@ -42,6 +36,6 @@ class Noticed::Test < ActiveSupport::TestCase
   private
 
   def make_notification(params)
-    Example.new(params)
+    Example.with(params)
   end
 end

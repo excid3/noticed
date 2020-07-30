@@ -16,7 +16,7 @@ module Noticed
 
       def format_for_twilio
         {
-          Body: data[:message],
+          Body: notification.params[:message],
           From: twilio_credentials[:number],
           To: recipient.phone_number
         }

@@ -12,7 +12,7 @@ module Noticed
       end
 
       def format_for_slack
-        data
+        notification.params
       end
 
       def slack_url

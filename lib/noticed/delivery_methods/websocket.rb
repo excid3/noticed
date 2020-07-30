@@ -6,7 +6,7 @@ module Noticed
       end
 
       def format_for_websocket
-        params
+        notification.params
       end
 
       def websocket_channel

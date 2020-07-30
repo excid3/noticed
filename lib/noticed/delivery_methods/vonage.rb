@@ -18,9 +18,9 @@ module Noticed
         {
           api_key: vonage_credentials[:api_key],
           api_secret: vonage_credentials[:api_secret],
-          from: data[:from],
-          text: data[:body],
-          to: data[:to],
+          from: notification.params[:from],
+          text: notification.params[:body],
+          to: notification.params[:to],
           type: "unicode"
         }
       end

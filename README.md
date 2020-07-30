@@ -43,8 +43,13 @@ end
 To send a notification to a user:
 
 ```ruby
-notification = CommentNotification.new(comment: @comment.to_gid)
-notification.notify(@comment.post.author)
+notification = CommentNotification.with(comment: @comment.to_gid)
+
+# Deliver notification in background job
+notification.deliver_later(@comment.post.author)
+
+# Deliver notification immediately
+notification.deliver(@comment.post.author)
 ```
 
 This will instantiate a new notification with the `comment` global ID stored in the metadata.
@@ -86,15 +91,17 @@ For example:
 
 ```ruby
 class CommentNotification < Noticed::Base
-  include Noticed::Database
-  include Noticed::Email
+  deliver_by :email, if: :email_notifications?
 
-  def deliver_with_email(recipient)
-    return if recipient.email_notifications?
-    super
+  def email_notifications?
+    recipient.email_notifications?
   end
 end
 ```
+
+### Custom Delivery Methods
+
+Coming soon!
 
 ## Contributing
 Contribution directions go here.

@@ -1,5 +1,5 @@
 module Noticed
-  class Base
+  class Base < Noticed.parent_class.constantize
     class_attribute :delivery_methods, instance_writer: false, default: []
 
     attr_accessor :params, :record
@@ -19,7 +19,7 @@ module Noticed
     end
 
     def self.with(data = {})
-      new(data)
+      new.with(data)
     end
 
     def self.klass_for_name(name)
@@ -31,23 +31,26 @@ module Noticed
       name.include?("::") ? name.constantize : const_get(name)
     end
 
-    def initialize(params = {})
+    def with(params)
       @params = params.with_indifferent_access
+      self
     end
 
     def deliver(recipient)
-      self.class.delivery_methods.each do |method|
-        name, klass, options = method[:name], method[:class], method[:options]
-
-        if deliver?(name)
-          klass.new(recipient, self, options).with(params).deliver
-        end
-      end
+      self.class.perform_now(recipient, params || {})
     end
 
-    def deliver?(method)
-      # Allow user preferences to disable types of notifications
-      true
+    def deliver_later(recipient)
+      self.class.perform_later(recipient, params || {})
+    end
+
+    def perform(recipient, params={})
+      @params = params
+
+      self.class.delivery_methods.each do |method|
+        name, klass, options = method[:name], method[:class], method[:options]
+        klass.new(recipient, self, options).deliver
+      end
     end
   end
 end

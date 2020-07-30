@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/excid3/noticed/workflows/Tests/badge.svg)](https://github.com/excid3/noticed/actions)
 
-Currently we support these notification delivery methods out of the box:
+Currently, we support these notification delivery methods out of the box:
 
 * Database
 * Email

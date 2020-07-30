@@ -44,11 +44,11 @@ module Noticed
       self.class.perform_later(recipient, params || {})
     end
 
-    def perform(recipient, params={})
+    def perform(recipient, params = {})
       @params = params
 
       self.class.delivery_methods.each do |method|
-        name, klass, options = method[:name], method[:class], method[:options]
+        klass, options = method[:class], method[:options]
         klass.new(recipient, self, options).deliver
       end
     end

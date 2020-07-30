@@ -1,5 +1,7 @@
 # Noticed - Notifications for your Ruby on Rails app.
 
+[![Build Status](https://github.com/pay-rails/pay/workflows/Tests/badge.svg)](https://github.com/pay-rails/pay/actions)
+
 Currently we support these notification delivery methods out of the box:
 
 * Database
@@ -45,13 +47,13 @@ notification = CommentNotification.new(comment: @comment.to_gid)
 notification.notify(@comment.post.author)
 ```
 
-This will instantiate a new notification with the `comment` global ID stored in the metadata. 
+This will instantiate a new notification with the `comment` global ID stored in the metadata.
 
 Each delivery method is able to transfrom this metadata that's best for the format. For example, the database may simply store the comment so it can be linked when rendering in the navbar. The websocket mechanism may transform this into a browser notification or insert it into the navbar.
 
 ## Delivery Methods
 
-The delivery methods are designed to be overriden so that you can customi1ze the notification for each medium. 
+The delivery methods are designed to be overriden so that you can customi1ze the notification for each medium.
 
 For example, emails will require a subject, body, and email address while an SMS requires a phone number and simple message. You can define the formats for each of these in your Notification and the delivery method will handle the processing of it.
 
@@ -86,15 +88,13 @@ For example:
 class CommentNotification < Noticed::Base
   include Noticed::Database
   include Noticed::Email
-  
+
   def deliver_with_email(recipient)
     return if recipient.email_notifications?
     super
   end
 end
 ```
-
-
 
 ## Contributing
 Contribution directions go here.

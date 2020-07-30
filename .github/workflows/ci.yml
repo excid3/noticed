@@ -57,5 +57,4 @@ jobs:
           PG_USER: postgres
           RAILS_ENV: test
         run: |
-          #bin/rails db:test:prepare
           bin/rails test

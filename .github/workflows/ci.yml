@@ -10,6 +10,19 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@master
 
@@ -25,6 +38,7 @@ jobs:
           key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gem-
+
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -32,12 +46,15 @@ jobs:
           gem update --system
           gem install bundler
           bundle install --path vendor/bundle --jobs 4 --retry 3
+
       - name: StandardRb check
         run: bundle exec standardrb
+
       - name: Run tests
         env:
+          DATABASE_URL: postgres://postgres:password@localhost:5432/test
+          PG_USER: postgres
           RAILS_ENV: test
-          STRIPE_PRIVATE_KEY: ${{ secrets.STRIPE_PRIVATE_KEY }}
         run: |
           #bin/rails db:test:prepare
           bin/rails test

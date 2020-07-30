@@ -39,5 +39,5 @@ jobs:
           RAILS_ENV: test
           STRIPE_PRIVATE_KEY: ${{ secrets.STRIPE_PRIVATE_KEY }}
         run: |
-          bin/rails db:test:prepare
+          #bin/rails db:test:prepare
           bin/rails test

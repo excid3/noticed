@@ -7,3 +7,5 @@ test/dummy/db/*.sqlite3-*
 test/dummy/log/*.log
 test/dummy/storage/
 test/dummy/tmp/
+.byebug_history
+.DS_Store

@@ -1,40 +1,47 @@
-require 'test_helper'
+require "test_helper"
 
-class BlankNotification < Noticed::Base
-end
-
-class ApplicationNotification < Noticed::Base
-  include Noticed::Database
-end
-
-class DbNotification < ApplicationNotification
-end
-
-class EmailNotification < ApplicationNotification
-  include Noticed::Email
+class Example < Noticed::Base
+  deliver_by :test, foo: :bar
 end
 
 class Noticed::Test < ActiveSupport::TestCase
-  test "notification has delivery methods" do
-    assert BlankNotification.delivery_methods.is_a? Array
-  end
-
-  test "can add delivery methods" do
-    assert_equal [:database], DbNotification.delivery_methods
-  end
-
-  test "delivery methods are inherited separately" do
-    assert_equal [], BlankNotification.delivery_methods
-    assert_equal [:database], DbNotification.delivery_methods
-    assert_equal [:database, :email], EmailNotification.delivery_methods
-  end
-
   test "stores data passed in" do
-    notification = DbNotification.new(foo: :bar)
-    assert_equal :bar, notification.data[:foo]
+    assert_equal :bar, make_notification(foo: :bar).params[:foo]
   end
 
-  test "implements database method" do
-    assert Noticed::Database.method_defined?(:deliver_with_database)
+  test "can deliver a notification" do
+    assert make_notification(foo: :bar).deliver(users(:one))
+  end
+
+  test "calls delivery method" do
+    notification = make_notification(foo: :bar)
+    notification.deliver(nil)
+    assert_equal [notification], Noticed::DeliveryMethods::Test.delivered
+  end
+
+  test "writes to database" do
+    assert_difference "Notification.count" do
+      CommentNotification.new.deliver(users(:one))
+    end
+  end
+
+  test "sends email" do
+    assert_enqueued_emails 1 do
+      CommentNotification.new.deliver(users(:one))
+    end
+  end
+
+  test "sends websocket message" do
+    user = users(:one)
+    channel = Noticed::NotificationChannel.broadcasting_for(user)
+    assert_broadcasts(channel, 1) do
+      CommentNotification.new.deliver(user)
+    end
+  end
+
+  private
+
+  def make_notification(params)
+    Example.new(params)
   end
 end

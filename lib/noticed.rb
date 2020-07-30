@@ -1,18 +1,27 @@
-require "noticed/railtie"
-require "noticed/base"
-require "noticed/database"
-require "noticed/email"
-require "noticed/slack"
-require "noticed/twilio"
-require "noticed/vonage"
-require "noticed/websocket"
+require "noticed/engine"
 
 module Noticed
-  autoload :Base, 'noticed/base'
-  autoload :Database, 'noticed/database'
-  autoload :Email, 'noticed/email'
-  autoload :Slack, 'noticed/slack'
-  autoload :Twilio, 'noticed/twilio'
-  autoload :Vonage, 'noticed/vonage'
-  autoload :Websocket, 'noticed/websocket'
+  autoload :Base, "noticed/base"
+
+  module DeliveryMethods
+    extend ActiveSupport::Autoload
+
+    autoload :Base, "noticed/delivery_methods/base"
+    autoload :Database, "noticed/delivery_methods/database"
+    autoload :Email, "noticed/delivery_methods/email"
+    autoload :Slack, "noticed/delivery_methods/slack"
+    autoload :Test, "noticed/delivery_methods/test"
+    autoload :Twilio, "noticed/delivery_methods/twilio"
+    autoload :Vonage, "noticed/delivery_methods/vonage"
+    autoload :Websocket, "noticed/delivery_methods/websocket"
+  end
+
+  def self.notify(recipients:, notification:)
+    recipients.each do |recipient|
+      notification.notify(recipient)
+    end
+
+    # Clear the recipient after sending to the group
+    notification.recipient = nil
+  end
 end

@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Ruby 2.7
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Cache gems
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gem-
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libsqlite3-dev
+          gem update --system
+          gem install bundler
+          bundle install --path vendor/bundle --jobs 4 --retry 3
+      - name: StandardRb check
+        run: bundle exec standard
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          STRIPE_PRIVATE_KEY: ${{ secrets.STRIPE_PRIVATE_KEY }}
+        run: |
+          bin/rails db:test:prepare
+          bin/rails test

@@ -8,7 +8,7 @@ module Noticed
       end
 
       def mailer
-        options[:mailer]
+        options[:mailer].constantize
       end
     end
   end

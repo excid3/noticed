@@ -7,7 +7,6 @@ module Noticed
     def self.deliver_by(name, options = {})
       delivery_methods.push(
         name: name,
-        class: klass_for_name(name),
         options: options
       )
     end
@@ -22,35 +21,35 @@ module Noticed
       new.with(data)
     end
 
-    def self.klass_for_name(name)
-      return name if name.is_a? Class
-
-      name = name.to_s if name.is_a? Symbol
-      name = "Noticed::DeliveryMethods::#{name.classify}"
-
-      name.include?("::") ? name.constantize : const_get(name)
-    end
-
     def with(params)
       @params = params.with_indifferent_access
       self
     end
 
     def deliver(recipient)
-      self.class.perform_now(recipient, params || {})
+      self.class.delivery_methods.each do |method|
+        self.class.perform_now(recipient, method, params || {})
+      end
     end
 
     def deliver_later(recipient)
-      self.class.perform_later(recipient, params || {})
+      self.class.delivery_methods.each do |method|
+        self.class.perform_later(recipient, method, params || {})
+      end
     end
 
-    def perform(recipient, params = {})
+    def perform(recipient, method, params = {})
       @params = params
 
-      self.class.delivery_methods.each do |method|
-        klass, options = method[:class], method[:options]
-        klass.new(recipient, self, options).deliver
-      end
+      options = method[:options]
+
+      klass = if options[:class]
+                options[:class].constantize
+              else
+                "Noticed::DeliveryMethods::#{method[:name].to_s.classify}".constantize
+              end
+
+      klass.new(recipient, self, options).deliver
     end
   end
 end

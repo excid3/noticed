@@ -13,6 +13,12 @@ class Noticed::Test < ActiveSupport::TestCase
     assert make_notification(foo: :bar).deliver(users(:one))
   end
 
+  test "can queue notification jobs" do
+    assert_enqueued_jobs CommentNotification.delivery_methods.length do
+      CommentNotification.new.deliver_later(users(:one))
+    end
+  end
+
   test "writes to database" do
     assert_difference "Notification.count" do
       CommentNotification.new.deliver(users(:one))

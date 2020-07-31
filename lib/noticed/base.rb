@@ -33,7 +33,14 @@ module Noticed
     end
 
     def deliver_later(recipient)
-      self.class.delivery_methods.each do |method|
+      methods = self.class.delivery_methods
+
+      #if (database = methods.
+      #  self.class.perform_later(recipient, method, params || {})
+      #end
+
+
+      methods.each do |method|
         self.class.perform_later(recipient, method, params || {})
       end
     end

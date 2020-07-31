@@ -35,8 +35,8 @@ You can define a Notification as a class that inherits from Noticed::Base. To ad
 
 ```ruby
 class CommentNotification < Noticed::Base
-  include Noticed::Database
-  include Noticed::Websocket
+  deliver_by :database
+  deliver_by :actioncable
 end
 ```
 
@@ -62,26 +62,43 @@ The delivery methods are designed to be overriden so that you can customi1ze the
 
 For example, emails will require a subject, body, and email address while an SMS requires a phone number and simple message. You can define the formats for each of these in your Notification and the delivery method will handle the processing of it.
 
-Simply `include` any of these modules in your notification to add it as a delivery method.
-
-#### `Noticed::Database`
+#### Database
 
 Writes notification to the database.
 
-#### `Noticed::Email`
+##### `deliver_by :database`
+
+**Note:** Database notifications are special in that they will run before the other delivery methods. We do this so you can reference the database record ID in other delivery methods.
+
+#### Email
+
 Sends an email notification.
 
-#### `Noticed::Slack`
+`deliver_by :email`
+
+#### Slack
+
 Sends a Slack notification via webhook.
 
-#### `Noticed::Twilio`
+`deliver_by :slack`
+
+#### Twilio SMS
+
 Sends an SMS notification via Twilio.
 
-#### `Noticed::Vonage`
+`deliver_by :twilio`
+
+#### Vonage SMS
+
 Sends an SMS notification vai Vonage / Nexmo.
 
-#### `Noticed::Websocket`
-Sends a notification to the browser via websockets (typically ActionCable channels).
+`deliver_by :vonage`
+
+#### ActionCable
+
+Sends a notification to the browser via websockets (ActionCable channel by default).
+
+`deliver_by :action_cable`
 
 ### User Preferences
 

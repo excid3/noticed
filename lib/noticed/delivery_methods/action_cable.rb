@@ -1,6 +1,6 @@
 module Noticed
   module DeliveryMethods
-    class Websocket < Base
+    class ActionCable < Base
       def deliver
         websocket_channel.broadcast_to recipient, format_for_websocket
       end

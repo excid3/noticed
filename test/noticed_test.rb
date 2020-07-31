@@ -9,6 +9,10 @@ class Noticed::Test < ActiveSupport::TestCase
     assert_equal :bar, make_notification(foo: :bar).params[:foo]
   end
 
+  test "stores objects in params" do
+    assert_equal users(:one), make_notification(user: users(:one)).params[:user]
+  end
+
   test "can deliver a notification" do
     assert make_notification(foo: :bar).deliver(users(:one))
   end
@@ -23,6 +27,8 @@ class Noticed::Test < ActiveSupport::TestCase
     assert_difference "Notification.count" do
       CommentNotification.new.deliver(users(:one))
     end
+
+    assert_equal 1, users(:one).notifications.count
   end
 
   test "sends email" do

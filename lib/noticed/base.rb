@@ -43,7 +43,9 @@ module Noticed
 
       options = method[:options]
 
-      klass = if options[:class]
+      klass = if method[:name].is_a? Class
+                method[:name]
+      elsif options[:class]
         options[:class].constantize
       else
         "Noticed::DeliveryMethods::#{method[:name].to_s.classify}".constantize

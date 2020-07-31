@@ -44,7 +44,7 @@ module Noticed
       options = method[:options]
 
       klass = if method[:name].is_a? Class
-                method[:name]
+        method[:name]
       elsif options[:class]
         options[:class].constantize
       else

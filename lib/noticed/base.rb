@@ -44,10 +44,10 @@ module Noticed
       options = method[:options]
 
       klass = if options[:class]
-                options[:class].constantize
-              else
-                "Noticed::DeliveryMethods::#{method[:name].to_s.classify}".constantize
-              end
+        options[:class].constantize
+      else
+        "Noticed::DeliveryMethods::#{method[:name].to_s.classify}".constantize
+      end
 
       klass.new(recipient, self, options).deliver
     end

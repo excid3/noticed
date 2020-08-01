@@ -27,6 +27,6 @@ class ActiveSupport::TestCase
   include ActionMailer::TestHelper
 
   teardown do
-    Noticed::DeliveryMethods::Test.delivered.clear
+    Noticed::DeliveryMethods::Test.clear!
   end
 end

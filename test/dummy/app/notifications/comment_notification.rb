@@ -5,8 +5,10 @@ class CommentNotification < Noticed::Base
   deliver_by :discord, class: "DiscordNotification"
 
   def attributes_for_database
-    params.merge({
-      account_id: 1
-    })
+    {
+      account_id: 1,
+      type: self.class.name,
+      params: params
+    }
   end
 end

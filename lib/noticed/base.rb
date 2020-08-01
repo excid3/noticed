@@ -27,26 +27,22 @@ module Noticed
     end
 
     def deliver(recipient)
-      self.class.delivery_methods.each do |method|
-        self.class.perform_now(recipient, method, params || {})
-      end
+      run_delivery(recipient)
     end
 
     def deliver_later(recipient)
-      methods = self.class.delivery_methods
-
-      #if (database = methods.
-      #  self.class.perform_later(recipient, method, params || {})
-      #end
-
-
-      methods.each do |method|
-        self.class.perform_later(recipient, method, params || {})
-      end
+      run_delivery(recipient, enqueue: true)
     end
 
-    def perform(recipient, method, params = {})
+    # ActiveJob interface
+    # * recipient - User who should receive the notification
+    # * method - A class for the delivery method (email, slack, sms, etc)
+    # * record - Database record for the notification (if used)
+    # * params - Details required to render the notification
+    def perform(recipient, method, record, params = {})
+      # Assign params and record when running jobs
       @params = params
+      @record = record
 
       options = method[:options]
 
@@ -59,6 +55,27 @@ module Noticed
       end
 
       klass.new(recipient, self, options).deliver
+    end
+
+    private
+
+    def run_delivery(recipient, enqueue: false)
+      methods = self.class.delivery_methods.dup
+
+      # Run database delivery inline first if it exists so other methods have access to the record
+      if (index = methods.find_index { |m| m[:name] == :database })
+        method = methods.delete_at(index)
+        perform(recipient, method, record, params || {})
+      end
+
+      # Run the remaining delivery methods as jobs
+      methods.each do |method|
+        if enqueue
+          self.class.perform_later(recipient, method, record, params || {})
+        else
+          self.class.perform_now(recipient, method, record, params || {})
+        end
+      end
     end
   end
 end

@@ -66,6 +66,42 @@ class Noticed::Test < ActiveSupport::TestCase
     end
   end
 
+  test "cancels delivery when if clause is falsey" do
+    class IfExample < Noticed::Base
+      deliver_by :test, if: :falsey
+
+      def falsey
+        false
+      end
+    end
+
+    IfExample.new.deliver(@user)
+    assert_empty Noticed::DeliveryMethods::Test.delivered
+  end
+
+  test "cancels delivery when unless clause is truthy" do
+    class UnlessExample < Noticed::Base
+      deliver_by :test, unless: :truthy
+
+      def truthy
+        true
+      end
+    end
+
+    UnlessExample.new.deliver(@user)
+    assert_empty Noticed::DeliveryMethods::Test.delivered
+  end
+
+  test "validates attributes for params" do
+    class AttributeExample < Noticed::Base
+      param :user_id
+    end
+
+    assert_raises Noticed::ValidationError do
+      AttributeExample.new.deliver(users(:one))
+    end
+  end
+
   private
 
   def make_notification(params)

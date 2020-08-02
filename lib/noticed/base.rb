@@ -1,36 +1,46 @@
 module Noticed
   class Base < Noticed.parent_class.constantize
     class_attribute :delivery_methods, instance_writer: false, default: []
+    class_attribute :param_names, instance_writer: false, default: []
 
     attr_accessor :params, :record
 
-    def self.deliver_by(name, options = {})
-      delivery_methods.push(
-        name: name,
-        options: options
-      )
-    end
+    class << self
+      def deliver_by(name, options = {})
+        delivery_methods.push(
+          name: name,
+          options: options
+        )
+      end
 
-    # Copy delivery methods from parent
-    def self.inherited(base) #:nodoc:
-      base.delivery_methods = delivery_methods.dup
-      super
-    end
+      # Copy delivery methods from parent
+      def inherited(base) #:nodoc:
+        base.delivery_methods = delivery_methods.dup
+        base.param_names = param_names.dup
+        super
+      end
 
-    def self.with(data = {})
-      new.with(data)
+      def with(params)
+        new.with(params)
+      end
+
+      def param(name)
+        param_names.push(name)
+      end
     end
 
     def with(params)
-      @params = params.with_indifferent_access
+      @params = params
       self
     end
 
     def deliver(recipient)
+      validate!
       run_delivery(recipient)
     end
 
     def deliver_later(recipient)
+      validate!
       run_delivery(recipient, enqueue: true)
     end
 
@@ -39,11 +49,10 @@ module Noticed
     # * method - A class for the delivery method (email, slack, sms, etc)
     # * record - Database record for the notification (if used)
     # * params - Details required to render the notification
-    def perform(recipient, method, record, params = {})
+    def perform(recipient, method, record, params)
       # Assign params and record when running jobs
       @params = params
       @record = record
-
       options = method[:options]
 
       klass = if method[:name].is_a? Class
@@ -55,6 +64,10 @@ module Noticed
       end
 
       klass.new(recipient, self, options).deliver
+    end
+
+    def params
+      @params || {}
     end
 
     private
@@ -70,10 +83,21 @@ module Noticed
 
       # Run the remaining delivery methods as jobs
       methods.each do |method|
+        next if (method_name = method.dig(:options, :if)) && !send(method_name)
+        next if (method_name = method.dig(:options, :unless)) && send(method_name)
+
         if enqueue
-          self.class.perform_later(recipient, method, record, params || {})
+          self.class.perform_later(recipient, method, record, params)
         else
-          self.class.perform_now(recipient, method, record, params || {})
+          self.class.perform_now(recipient, method, record, params)
+        end
+      end
+    end
+
+    def validate!
+      self.class.param_names.each do |param_name|
+        if params[param_name].nil?
+          raise ValidationError, "#{param_name} is missing."
         end
       end
     end

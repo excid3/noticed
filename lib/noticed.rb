@@ -27,4 +27,7 @@ module Noticed
 
   mattr_accessor :parent_class
   @@parent_class = "ApplicationJob"
+
+  class ValidationError < StandardError
+  end
 end

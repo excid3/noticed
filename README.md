@@ -74,7 +74,13 @@ Writes notification to the database.
 
 Sends an email notification.
 
-`deliver_by :email`
+`deliver_by :email, mailer: "UserMailer"`
+
+Requires the `mailer` option to be passed in.
+
+You can also pass in a `method: :invoice_paid` option to specify the method on the mailer to be called
+
+Emails will always be sent with `deliver_later`
 
 #### Slack
 

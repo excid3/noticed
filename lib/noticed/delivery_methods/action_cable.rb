@@ -6,11 +6,19 @@ module Noticed
       end
 
       def format_for_websocket
-        notification.params
+        if (method = options[:format])
+          notification.send(method)
+        else
+          notification.params
+        end
       end
 
       def websocket_channel
-        Noticed::NotificationChannel
+        if (method = options[:channel])
+          notification.send(method)
+        else
+          Noticed::NotificationChannel
+        end
       end
     end
   end

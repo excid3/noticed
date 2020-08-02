@@ -2,13 +2,15 @@ module Noticed
   module DeliveryMethods
     class Email < Base
       def deliver
-        name = notification.class.name.underscore
-        # TODO: include notificiation in arguments
-        mailer.with(notification.params).send(name.to_sym).deliver_later
+        mailer.with(notification.params).send(method.to_sym).deliver_later
       end
 
       def mailer
         options[:mailer].constantize
+      end
+
+      def method
+        options[:method] || notification.class.name.underscore
       end
     end
   end

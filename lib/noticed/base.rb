@@ -3,7 +3,7 @@ module Noticed
     class_attribute :delivery_methods, instance_writer: false, default: []
     class_attribute :param_names, instance_writer: false, default: []
 
-    attr_accessor :params, :record
+    attr_accessor :record
 
     class << self
       def deliver_by(name, options = {})

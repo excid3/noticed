@@ -1,5 +1,5 @@
 module Noticed
-  class Base < Noticed.parent_class.constantize
+  class Base
     class_attribute :delivery_methods, instance_writer: false, default: []
     class_attribute :param_names, instance_writer: false, default: []
 
@@ -21,7 +21,7 @@ module Noticed
       end
 
       def with(params)
-        new.with(params)
+        new(params)
       end
 
       def param(name)
@@ -29,41 +29,18 @@ module Noticed
       end
     end
 
-    def with(params)
+    def initialize(params = {})
       @params = params
-      self
     end
 
     def deliver(recipient)
       validate!
-      run_delivery(recipient)
+      run_delivery(recipient, enqueue: false)
     end
 
     def deliver_later(recipient)
       validate!
       run_delivery(recipient, enqueue: true)
-    end
-
-    # ActiveJob interface
-    # * recipient - User who should receive the notification
-    # * method - A class for the delivery method (email, slack, sms, etc)
-    # * record - Database record for the notification (if used)
-    # * params - Details required to render the notification
-    def perform(recipient, method, record, params)
-      # Assign params and record when running jobs
-      @params = params
-      @record = record
-      options = method[:options]
-
-      klass = if method[:name].is_a? Class
-        method[:name]
-      elsif options[:class]
-        options[:class].constantize
-      else
-        "Noticed::DeliveryMethods::#{method[:name].to_s.classify}".constantize
-      end
-
-      klass.new(recipient, self, options).deliver
     end
 
     def params
@@ -72,28 +49,50 @@ module Noticed
 
     private
 
-    def run_delivery(recipient, enqueue: false)
-      methods = self.class.delivery_methods.dup
+    # Runs all delivery methods for a notification
+    def run_delivery(recipient, enqueue: true)
+      delivery_methods = self.class.delivery_methods.dup
 
       # Run database delivery inline first if it exists so other methods have access to the record
-      if (index = methods.find_index { |m| m[:name] == :database })
-        method = methods.delete_at(index)
-        perform(recipient, method, record, params || {})
+      if (index = delivery_methods.find_index { |m| m[:name] == :database })
+        delivery_method = delivery_methods.delete_at(index)
+        @record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false)
       end
 
-      # Run the remaining delivery methods as jobs
-      methods.each do |method|
-        next if (method_name = method.dig(:options, :if)) && !send(method_name)
-        next if (method_name = method.dig(:options, :unless)) && send(method_name)
-
-        if enqueue
-          self.class.perform_later(recipient, method, record, params)
-        else
-          self.class.perform_now(recipient, method, record, params)
-        end
+      delivery_methods.each do |delivery_method|
+        run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue)
       end
     end
 
+    # Actually runs an individual delivery
+    def run_delivery_method(delivery_method, recipient:, enqueue:)
+      return if (delivery_method_name = delivery_method.dig(:options, :if)) && !send(delivery_method_name)
+      return if (delivery_method_name = delivery_method.dig(:options, :unless)) && send(delivery_method_name)
+
+      args = {
+        notification_class: self.class.name,
+        options: delivery_method[:options],
+        params: params,
+        recipient: recipient,
+        record: record
+      }
+
+      klass = get_class(delivery_method[:name], delivery_method[:options])
+      enqueue ? klass.perform_later(args) : klass.perform_now(args)
+    end
+
+    # Retrieves the correct class for a delivery method
+    def get_class(name, options)
+      if name.is_a? Class
+        name
+      elsif options[:class]
+        options[:class].constantize
+      else
+        "Noticed::DeliveryMethods::#{name.to_s.classify}".constantize
+      end
+    end
+
+    # Validates that all params are present
     def validate!
       self.class.param_names.each do |param_name|
         if params[param_name].nil?

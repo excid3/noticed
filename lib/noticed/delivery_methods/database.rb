@@ -1,8 +1,9 @@
 module Noticed
   module DeliveryMethods
     class Database < Base
+      # Must return the database record
       def deliver
-        notification.record = recipient.notifications.create(attributes)
+        recipient.notifications.create(attributes)
       end
 
       def attributes

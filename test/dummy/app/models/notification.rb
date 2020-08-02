@@ -1,6 +1,8 @@
 class Notification < ApplicationRecord
   self.inheritance_column = nil
 
+  serialize :params, Noticed::Coder
+
   belongs_to :recipient, polymorphic: true
 
   scope :sorted, -> { order(created_at: :desc) }
@@ -12,7 +14,7 @@ class Notification < ApplicationRecord
   # Rehydrate the database notification into the Notification object for rendering
   def to_instance
     @instance ||= begin
-                    instance = type.constantize.new(data)
+                    instance = type.constantize.new(params)
                     instance.record = self
                     instance
                   end

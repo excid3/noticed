@@ -44,7 +44,7 @@ class Noticed::Test < ActiveSupport::TestCase
     end
 
     assert_equal 1, @user.notifications.count
-    assert_equal "bar", @user.notifications.last.params["foo"]
+    assert_equal :bar, @user.notifications.last.params[:foo]
   end
 
   test "writes to custom params database" do
@@ -100,6 +100,13 @@ class Noticed::Test < ActiveSupport::TestCase
     assert_raises Noticed::ValidationError do
       AttributeExample.new.deliver(users(:one))
     end
+  end
+
+  test "serializes database attributes like ActiveJob does" do
+    assert_difference "Notification.count" do
+      Example.with(user: @user).deliver(@user)
+    end
+    assert_equal @user, Notification.last.params[:user]
   end
 
   private

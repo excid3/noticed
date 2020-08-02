@@ -36,7 +36,7 @@ You can define a Notification as a class that inherits from Noticed::Base. To ad
 ```ruby
 class CommentNotification < Noticed::Base
   deliver_by :database
-  deliver_by :actioncable
+  deliver_by :action_cable
 end
 ```
 
@@ -66,7 +66,7 @@ For example, emails will require a subject, body, and email address while an SMS
 
 Writes notification to the database.
 
-##### `deliver_by :database`
+`deliver_by :database`
 
 **Note:** Database notifications are special in that they will run before the other delivery methods. We do this so you can reference the database record ID in other delivery methods.
 
@@ -80,7 +80,7 @@ Requires the `mailer` option to be passed in.
 
 You can also pass in a `method: :invoice_paid` option to specify the method on the mailer to be called
 
-Emails will always be sent with `deliver_later`
+Emails will always be sent with `deliver_later
 
 #### Slack
 

@@ -10,7 +10,7 @@ Currently, we support these notification delivery methods out of the box:
 
 * Database
 * Email
-* Websocket (realtime)
+* Websocket (real time)
 * Twilio (SMS)
 * Vonage / Nexmo (SMS)
 
@@ -82,7 +82,7 @@ notification.deliver(@comment.post.author)
 
 This will instantiate a new notification with the `comment` stored in the notification's params.
 
-Each delivery method is able to transfrom this metadata that's best for the format. For example, the database may simply store the comment so it can be linked when rendering in the navbar. The websocket mechanism may transform this into a browser notification or insert it into the navbar.
+Each delivery method is able to transform this metadata that's best for the format. For example, the database may simply store the comment so it can be linked when rendering in the navbar. The websocket mechanism may transform this into a browser notification or insert it into the navbar.
 
 **Shared Options**
 
@@ -136,7 +136,7 @@ For example:
 
 ## 🚛 Delivery Methods
 
-The delivery methods are designed to be overriden so that you can customi1ze the notification for each medium.
+The delivery methods are designed to be overridden so that you can customi1ze the notification for each medium.
 
 For example, emails will require a subject, body, and email address while an SMS requires a phone number and simple message. You can define the formats for each of these in your Notification and the delivery method will handle the processing of it.
 

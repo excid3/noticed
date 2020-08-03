@@ -51,4 +51,30 @@ class Noticed::Test < ActiveSupport::TestCase
       AttributeExample.new.deliver(users(:one))
     end
   end
+
+  test "runs callbacks on notifications" do
+    class CallbackExample < Noticed::Base
+      class_attribute :callbacks, default: []
+
+      deliver_by :database
+
+      after_deliver do
+        self.class.callbacks << :everything
+      end
+
+      #TODO: Add delivery method callbacks on notifications
+      #after_database do
+      #  self.class.callbacks << :database
+      #end
+    end
+
+    CallbackExample.new.deliver(user)
+    assert_equal [:everything], CallbackExample.callbacks
+  end
+
+  test "runs callbacks on delivery methods" do
+    assert_difference "Noticed::DeliveryMethods::Test.callbacks.count" do
+      make_notification(foo: :bar).deliver(user)
+    end
+  end
 end

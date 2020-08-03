@@ -24,8 +24,14 @@ require "minitest/unit"
 require "mocha/minitest"
 
 class ExampleNotification < Noticed::Base
+  class_attribute :callback_responses, default: []
+
   deliver_by :test, foo: :bar
   deliver_by :database
+
+  #after_deliver do
+  #  self.class.callback_reponses << "delivered"
+  #end
 end
 
 class ActiveSupport::TestCase

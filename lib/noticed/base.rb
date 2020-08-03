@@ -1,5 +1,8 @@
 module Noticed
   class Base
+    extend ActiveModel::Callbacks
+    define_model_callbacks :deliver
+
     class_attribute :delivery_methods, instance_writer: false, default: []
     class_attribute :param_names, instance_writer: false, default: []
 
@@ -7,10 +10,8 @@ module Noticed
 
     class << self
       def deliver_by(name, options = {})
-        delivery_methods.push(
-          name: name,
-          options: options
-        )
+        delivery_methods.push(name: name, options: options)
+        define_model_callbacks(name)
       end
 
       # Copy delivery methods from parent
@@ -59,8 +60,10 @@ module Noticed
         @record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false)
       end
 
-      delivery_methods.each do |delivery_method|
-        run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue)
+      run_callbacks :deliver do
+        delivery_methods.each do |delivery_method|
+          run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue)
+        end
       end
     end
 

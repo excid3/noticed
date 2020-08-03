@@ -14,7 +14,7 @@ module Noticed
         else
           {
             type: notification.class.name,
-            params: params
+            params: notification.params
           }
         end
       end

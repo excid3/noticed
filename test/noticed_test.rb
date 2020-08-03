@@ -76,4 +76,11 @@ class Noticed::Test < ActiveSupport::TestCase
       make_notification(foo: :bar).deliver(user)
     end
   end
+
+  test "can send notifications to multiple recipients" do
+    assert User.count >= 2
+    assert_difference "Notification.count", User.count do
+      make_notification(foo: :bar).deliver(User.all)
+    end
+  end
 end

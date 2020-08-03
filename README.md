@@ -81,6 +81,9 @@ notification.deliver_later(@comment.post.author)
 
 # Deliver notification immediately
 notification.deliver(@comment.post.author)
+
+# Deliver notification to multiple recipients
+notification.deliver_later(User.all)
 ```
 
 This will instantiate a new notification with the `comment` stored in the notification's params.
@@ -152,8 +155,6 @@ class CommentNotification < Noticed::Base
   end
 end
 ```
-
-### 
 
 ## 🚛 Delivery Methods
 

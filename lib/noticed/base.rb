@@ -37,14 +37,24 @@ module Noticed
       @params = params
     end
 
-    def deliver(recipient)
+    def deliver(recipients)
       validate!
-      run_delivery(recipient, enqueue: false)
+
+      run_callbacks :deliver do
+        Array.wrap(recipients).each do |recipient|
+          run_delivery(recipient, enqueue: false)
+        end
+      end
     end
 
-    def deliver_later(recipient)
+    def deliver_later(recipients)
       validate!
-      run_delivery(recipient, enqueue: true)
+
+      run_callbacks :deliver do
+        Array.wrap(recipients).each do |recipient|
+          run_delivery(recipient, enqueue: true)
+        end
+      end
     end
 
     def params
@@ -55,18 +65,16 @@ module Noticed
 
     # Runs all delivery methods for a notification
     def run_delivery(recipient, enqueue: true)
-      run_callbacks :deliver do
-        delivery_methods = self.class.delivery_methods.dup
+      delivery_methods = self.class.delivery_methods.dup
 
-        # Run database delivery inline first if it exists so other methods have access to the record
-        if (index = delivery_methods.find_index { |m| m[:name] == :database })
-          delivery_method = delivery_methods.delete_at(index)
-          @record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false)
-        end
+      # Run database delivery inline first if it exists so other methods have access to the record
+      if (index = delivery_methods.find_index { |m| m[:name] == :database })
+        delivery_method = delivery_methods.delete_at(index)
+        @record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false)
+      end
 
-        delivery_methods.each do |delivery_method|
-          run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue)
-        end
+      delivery_methods.each do |delivery_method|
+        run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue)
       end
     end
 

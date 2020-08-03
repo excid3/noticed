@@ -10,7 +10,7 @@ Currently, we support these notification delivery methods out of the box:
 
 * Database
 * Email
-* ActionCable websockets
+* ActionCable channels
 * Twilio (SMS)
 * Vonage / Nexmo (SMS)
 

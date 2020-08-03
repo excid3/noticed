@@ -4,6 +4,7 @@ require "noticed/engine"
 module Noticed
   autoload :Base, "noticed/base"
   autoload :Coder, "noticed/coder"
+  autoload :Translation, "noticed/translation"
 
   module DeliveryMethods
     autoload :Base, "noticed/delivery_methods/base"

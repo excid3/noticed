@@ -31,3 +31,7 @@
 
 en:
   hello: "Hello world"
+  #notifications:
+  #  noticed/i18n_example:
+  #    message: "This is a notification"
+

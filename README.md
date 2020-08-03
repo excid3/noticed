@@ -43,6 +43,10 @@ class CommentNotification < Noticed::Base
     !!recipient.preferences[:email]
   end
   
+  def message
+    t(".message")
+  end
+  
   after_deliver do
     # Anything you want
   end
@@ -98,6 +102,14 @@ end
 When using `deliver_later` callbacks will be run around queuing the delivery method jobs (not inside the jobs as they actually execute).
 
 Defining custom delivery methods allows you to add callbacks that run inside the background job as each individual delivery is executed. See the Custom Delivery Methods section for more information.
+
+##### Translations
+
+We've added `translate` and  `t` helpers like Rails has to provide an easy way of scoping translations. If the key starts with a period, it will automatically scope the key under `notifications` and the underscored name of the notification class it is used in.
+
+For example:
+
+ `t(".message")` looks up `en.notifications.new_comment.message`
 
 ## Delivery Methods
 

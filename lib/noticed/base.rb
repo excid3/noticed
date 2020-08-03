@@ -1,5 +1,7 @@
 module Noticed
   class Base
+    include Translation
+
     extend ActiveModel::Callbacks
     define_model_callbacks :deliver
 

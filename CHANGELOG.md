@@ -1,6 +1,8 @@
 ### Unreleased
 
 * Translation helpers
+* Allow notification objects to call Rails url helpers directly
+* Add `noticed:notification` generator
 
 ### 1.1.0
 

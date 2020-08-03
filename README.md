@@ -31,7 +31,15 @@ $ gem install noticed
 
 ## Usage
 
-You can define a Notification as a class that inherits from Noticed::Base. To add delivery methods, simply `include` the module for the delivery methods you would like to use.
+To generate a notification object, simply run:
+
+`rails generate noticed:notification CommentNotification`
+
+#### Notification Objects
+
+Notifications inherit from `Noticed::Base`. This provides all their functionality and allows them to be delivered.
+
+To add delivery methods, simply `include` the module for the delivery methods you would like to use.
 
 ```ruby
 class CommentNotification < Noticed::Base
@@ -42,16 +50,24 @@ class CommentNotification < Noticed::Base
   def email_notifications?
     !!recipient.preferences[:email]
   end
-  
+
+  # I18n helpers
   def message
     t(".message")
   end
-  
+
+  # URL helpers are accessible in notifications
+  def url
+    post_path(params[:post])
+  end
+
   after_deliver do
     # Anything you want
   end
 end
 ```
+
+#### Sending Notifications
 
 To send a notification to a user:
 
@@ -65,7 +81,7 @@ notification.deliver_later(@comment.post.author)
 notification.deliver(@comment.post.author)
 ```
 
-This will instantiate a new notification with the `comment` global ID stored in the metadata.
+This will instantiate a new notification with the `comment` stored in the notification's params.
 
 Each delivery method is able to transfrom this metadata that's best for the format. For example, the database may simply store the comment so it can be linked when rendering in the navbar. The websocket mechanism may transform this into a browser notification or insert it into the navbar.
 
@@ -73,6 +89,14 @@ Each delivery method is able to transfrom this metadata that's best for the form
 
 * `if: :method_name`  - Calls `method_name`and cancels delivery method if `false` is returned
 * `unless: :method_name`  - Calls `method_name`and cancels delivery method if `true` is returned
+
+##### Helper Methods
+
+You can define helper methods inside your Notification object to make it easier to render.
+
+##### URL Helpers
+
+Rails url helpers are included in notification classes by default so you have full access to them just like you would in your controllers and views.
 
 **Callbacks**
 
@@ -82,11 +106,11 @@ Like ActiveRecord, notifications have several different types of callbacks.
 class CommentNotification < Noticed::Base
   deliver_by :database
   deliver_by :email
-  
+
   # Callbacks for the entire delivery
   before_deliver :whatever
   around_deliver :whatever
-  after_deliver :whatever 
+  after_deliver :whatever
 
   # Callbacks for each delivery method
   before_database :whatever

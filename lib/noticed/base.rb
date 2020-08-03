@@ -1,6 +1,7 @@
 module Noticed
   class Base
     include Translation
+    include Rails.application.routes.url_helpers
 
     extend ActiveModel::Callbacks
     define_model_callbacks :deliver

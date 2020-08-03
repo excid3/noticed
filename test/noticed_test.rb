@@ -62,10 +62,10 @@ class Noticed::Test < ActiveSupport::TestCase
         self.class.callbacks << :everything
       end
 
-      #TODO: Add delivery method callbacks on notifications
-      #after_database do
+      # TODO: Add delivery method callbacks on notifications
+      # after_database do
       #  self.class.callbacks << :database
-      #end
+      # end
     end
 
     CallbackExample.new.deliver(user)

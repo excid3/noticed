@@ -29,9 +29,9 @@ class ExampleNotification < Noticed::Base
   deliver_by :test, foo: :bar
   deliver_by :database
 
-  #after_deliver do
+  # after_deliver do
   #  self.class.callback_reponses << "delivered"
-  #end
+  # end
 end
 
 class ActiveSupport::TestCase

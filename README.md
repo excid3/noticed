@@ -42,6 +42,10 @@ class CommentNotification < Noticed::Base
   def email_notifications?
     !!recipient.preferences[:email]
   end
+  
+  after_deliver do
+    # Anything you want
+  end
 end
 ```
 
@@ -66,6 +70,35 @@ Each delivery method is able to transfrom this metadata that's best for the form
 * `if: :method_name`  - Calls `method_name`and cancels delivery method if `false` is returned
 * `unless: :method_name`  - Calls `method_name`and cancels delivery method if `true` is returned
 
+**Callbacks**
+
+Like ActiveRecord, notifications have several different types of callbacks.
+
+```ruby
+class CommentNotification < Noticed::Base
+  deliver_by :database
+  deliver_by :email
+  
+  # Callbacks for the entire delivery
+  before_deliver :whatever
+  around_deliver :whatever
+  after_deliver :whatever 
+
+  # Callbacks for each delivery method
+  before_database :whatever
+  around_database :whatever
+  after_database :whatever
+
+  before_email :whatever
+  around_email :whatever
+  after_email :whatever
+end
+```
+
+When using `deliver_later` callbacks will be run around queuing the delivery method jobs (not inside the jobs as they actually execute).
+
+Defining custom delivery methods allows you to add callbacks that run inside the background job as each individual delivery is executed. See the Custom Delivery Methods section for more information.
+
 ## Delivery Methods
 
 The delivery methods are designed to be overriden so that you can customi1ze the notification for each medium.
@@ -86,7 +119,7 @@ Sends an email notification. Emails will always be sent with `deliver_later`
 
 `deliver_by :email, mailer: "UserMailer"`
 
-**Options**
+##### Options
 
 * `mailer` - **Required**
 
@@ -102,7 +135,7 @@ Sends a notification to the browser via websockets (ActionCable channel by defau
 
 `deliver_by :action_cable`
 
-**Options**
+##### Options
 
 * `format: :format_for_action_cable` - *Optional*
 
@@ -120,7 +153,7 @@ Sends a Slack notification via webhook.
 
 `deliver_by :slack`
 
-**Options**
+##### Options
 
 * `format: :format_for_slack` - *Optional*
 
@@ -138,7 +171,7 @@ Sends an SMS notification via Twilio.
 
 `deliver_by :twilio`
 
-**Options**
+##### Options
 
 * `credentials: :get_twilio_credentials` - *Optional*
 
@@ -172,7 +205,7 @@ Sends an SMS notification vai Vonage / Nexmo.
 
 `deliver_by :vonage`
 
-**Options:**
+##### Options
 
 * `credentials: :get_credentials` - *Optional*
 
@@ -235,6 +268,18 @@ Delivery methods have access to the following methods and attributes:
 * `options` - Any configuration options on the `deliver_by` line.
 * `recipient` - The object who should receive the notification. This is typically a User, Account, or other ActiveRecord model.
 * `params` - The params passed into the notification. This is details about the event that happened. For example, a user commenting on a post would have params of `{ user: User.first }`
+
+#### Callbacks
+
+Callbacks for delivery methods wrap the *actual* delivery of the notification. You can use `before_deliver`, `around_deliver` and `after_deliver` in your custom delivery methods.
+
+```ruby
+class DiscordNotification < Noticed::DeliveryMethods::Base
+  after_deliver do
+    # Do whatever you want
+  end
+end
+```
 
 #### Limitations
 

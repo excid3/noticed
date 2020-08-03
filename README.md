@@ -10,7 +10,7 @@ Currently, we support these notification delivery methods out of the box:
 
 * Database
 * Email
-* Websocket (real time)
+* ActionCable websockets
 * Twilio (SMS)
 * Vonage / Nexmo (SMS)
 
@@ -136,7 +136,7 @@ For example:
 
 ## 🚛 Delivery Methods
 
-The delivery methods are designed to be overridden so that you can customi1ze the notification for each medium.
+The delivery methods are designed to be modular so you can customize the way each type gets delivered.
 
 For example, emails will require a subject, body, and email address while an SMS requires a phone number and simple message. You can define the formats for each of these in your Notification and the delivery method will handle the processing of it.
 

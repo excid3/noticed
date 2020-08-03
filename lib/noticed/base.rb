@@ -52,15 +52,15 @@ module Noticed
 
     # Runs all delivery methods for a notification
     def run_delivery(recipient, enqueue: true)
-      delivery_methods = self.class.delivery_methods.dup
-
-      # Run database delivery inline first if it exists so other methods have access to the record
-      if (index = delivery_methods.find_index { |m| m[:name] == :database })
-        delivery_method = delivery_methods.delete_at(index)
-        @record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false)
-      end
-
       run_callbacks :deliver do
+        delivery_methods = self.class.delivery_methods.dup
+
+        # Run database delivery inline first if it exists so other methods have access to the record
+        if (index = delivery_methods.find_index { |m| m[:name] == :database })
+          delivery_method = delivery_methods.delete_at(index)
+          @record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false)
+        end
+
         delivery_methods.each do |delivery_method|
           run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue)
         end
@@ -80,15 +80,15 @@ module Noticed
         record: record
       }
 
-      klass = get_class(delivery_method[:name], delivery_method[:options])
-      enqueue ? klass.perform_later(args) : klass.perform_now(args)
+      run_callbacks delivery_method[:name] do
+        klass = get_class(delivery_method[:name], delivery_method[:options])
+        enqueue ? klass.perform_later(args) : klass.perform_now(args)
+      end
     end
 
     # Retrieves the correct class for a delivery method
     def get_class(name, options)
-      if name.is_a? Class
-        name
-      elsif options[:class]
+      if options[:class]
         options[:class].constantize
       else
         "Noticed::DeliveryMethods::#{name.to_s.classify}".constantize

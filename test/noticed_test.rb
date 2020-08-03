@@ -62,14 +62,13 @@ class Noticed::Test < ActiveSupport::TestCase
         self.class.callbacks << :everything
       end
 
-      # TODO: Add delivery method callbacks on notifications
-      # after_database do
-      #  self.class.callbacks << :database
-      # end
+      after_database do
+        self.class.callbacks << :database
+      end
     end
 
     CallbackExample.new.deliver(user)
-    assert_equal [:everything], CallbackExample.callbacks
+    assert_equal [:database, :everything], CallbackExample.callbacks
   end
 
   test "runs callbacks on delivery methods" do

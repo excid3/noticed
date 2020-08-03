@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails/generators/named_base'
+require "rails/generators/named_base"
 
 module Noticed
   module Generators

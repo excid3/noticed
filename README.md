@@ -1,4 +1,8 @@
-# Noticed - Notifications for your Ruby on Rails app.
+<p align="center">
+  <h1>Noticed</h1>
+</p>
+
+### 🎉  Notifications for your Ruby on Rails app.
 
 [![Build Status](https://github.com/excid3/noticed/workflows/Tests/badge.svg)](https://github.com/excid3/noticed/actions)
 
@@ -12,7 +16,7 @@ Currently, we support these notification delivery methods out of the box:
 
 And you can easily add new notification types for any other delivery methods.
 
-## Installation
+## 🚀 Installation
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -24,12 +28,7 @@ And then execute:
 $ bundle
 ```
 
-Or install it yourself as:
-```bash
-$ gem install noticed
-```
-
-## Usage
+## 📝 Usage
 
 To generate a notification object, simply run:
 
@@ -135,7 +134,7 @@ For example:
 
  `t(".message")` looks up `en.notifications.new_comment.message`
 
-## Delivery Methods
+## 🚛 Delivery Methods
 
 The delivery methods are designed to be overriden so that you can customi1ze the notification for each medium.
 
@@ -148,6 +147,12 @@ Writes notification to the database.
 `deliver_by :database`
 
 **Note:** Database notifications are special in that they will run before the other delivery methods. We do this so you can reference the database record ID in other delivery methods.
+
+##### Options
+
+* `association` - *Optional*
+
+  The name of the database association to use. Defaults to `:notifications`
 
 ### Email
 
@@ -280,7 +285,7 @@ class CommentNotification < Noticed::Base
 end
 ```
 
-### Custom Delivery Methods
+### 🚚 Custom Delivery Methods
 
 You can define a custom delivery method easily by adding a `deliver_by` line with a unique name and class option. The class will be instantiated and should inherit from `Noticed::DeliveryMethods::Base`.
 
@@ -333,8 +338,9 @@ For Rails 6.0 and earlier, you must pass strings of the class names in the `deli
 
 We recommend the Rails 6.0 compatible options to prevent confusion.
 
-## Contributing
-Contribution directions go here.
+## 🙏 Contributing
 
-## License
+This project uses [Standard](https://github.com/testdouble/standard) for formatting Ruby code. Please make sure to run `standardrb` before submitting pull requests.
+
+## 📝 License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

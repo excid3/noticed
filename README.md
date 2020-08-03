@@ -37,9 +37,8 @@ You can define a Notification as a class that inherits from Noticed::Base. To ad
 class CommentNotification < Noticed::Base
   deliver_by :database
   deliver_by :action_cable
-  
-  delivery_by :email, if: :email_notifications?
-  
+  deliver_by :email, if: :email_notifications?
+
   def email_notifications?
     !!recipient.preferences[:email]
   end
@@ -111,7 +110,7 @@ Sends a notification to the browser via websockets (ActionCable channel by defau
 
 * `channel` - *Optional*
 
-  Override the ActionCable channel used to send notifications. 
+  Override the ActionCable channel used to send notifications.
 
   Defaults to `Noticed::NotificationChannel`
 
@@ -155,7 +154,7 @@ Sends an SMS notification via Twilio.
 
 * `format: :format_for_twilio` - *Optional*
 
-  Use a custom method to define the payload sent to Twilio. Method should return a Hash. 
+  Use a custom method to define the payload sent to Twilio. Method should return a Hash.
 
   Defaults to:
 

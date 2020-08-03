@@ -17,16 +17,19 @@ Currently, we support these notification delivery methods out of the box:
 And you can easily add new notification types for any other delivery methods.
 
 ## 🚀 Installation
-Add this line to your application's Gemfile:
+Run the following command to add Noticed to your Gemfile
 
 ```ruby
-gem 'noticed'
+bundle add "noticed"
 ```
 
-And then execute:
-```bash
-$ bundle
+To save notifications to your database, use the following command to generate a Notification model.
+
+```ruby
+rails generate noticed:model
 ```
+
+This will generate a Notification model and instructions for associating User models with the notifications table.
 
 ## 📝 Usage
 
@@ -133,6 +136,24 @@ We've added `translate` and  `t` helpers like Rails has to provide an easy way o
 For example:
 
  `t(".message")` looks up `en.notifications.new_comment.message`
+
+##### User Preferences
+
+You can use the `if:` and `unless: ` options on your delivery methods to check the user's preferences and skip processing if they have disabled that type of notification.
+
+For example:
+
+```ruby
+class CommentNotification < Noticed::Base
+  deliver_by :email, if: :email_notifications?
+
+  def email_notifications?
+    recipient.email_notifications?
+  end
+end
+```
+
+### 
 
 ## 🚛 Delivery Methods
 
@@ -268,22 +289,6 @@ Sends an SMS notification vai Vonage / Nexmo.
     type: "unicode"
   }
   ```
-
-### User Preferences
-
-Each delivery method implements a `deliver_with_#{name}` method that receives the recipient as the first argument. You can override this method to check the user's preferences and skip processing if they have disabled that type of notification.
-
-For example:
-
-```ruby
-class CommentNotification < Noticed::Base
-  deliver_by :email, if: :email_notifications?
-
-  def email_notifications?
-    recipient.email_notifications?
-  end
-end
-```
 
 ### 🚚 Custom Delivery Methods
 

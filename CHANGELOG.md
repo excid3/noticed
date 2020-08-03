@@ -4,6 +4,8 @@
 * Allow notification objects to call Rails url helpers directly
 * Add `noticed:notification` generator
 * Allow changing database association name with `deliver_by :database, association: :notifications`
+* Add `Noticed::Model` concern for database notifications
+* Add notification database model generator
 
 ### 1.1.0
 

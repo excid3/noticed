@@ -20,7 +20,13 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActiveSupport::TestCase.fixtures :all
 end
 
-require "minitest/mock"
+require "minitest/unit"
+require "mocha/minitest"
+
+class ExampleNotification < Noticed::Base
+  deliver_by :test, foo: :bar
+  deliver_by :database
+end
 
 class ActiveSupport::TestCase
   include ActionCable::TestHelper
@@ -28,5 +34,15 @@ class ActiveSupport::TestCase
 
   teardown do
     Noticed::DeliveryMethods::Test.clear!
+  end
+
+  private
+
+  def user
+    @user ||= users(:one)
+  end
+
+  def make_notification(params)
+    ExampleNotification.with(params)
   end
 end

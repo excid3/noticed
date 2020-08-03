@@ -21,4 +21,5 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "pg"
   spec.add_development_dependency "standard"
+  spec.add_development_dependency "mocha"
 end

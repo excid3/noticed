@@ -1,3 +1,4 @@
+require "http"
 require "noticed/engine"
 
 module Noticed

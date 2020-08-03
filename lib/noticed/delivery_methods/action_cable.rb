@@ -2,10 +2,12 @@ module Noticed
   module DeliveryMethods
     class ActionCable < Base
       def deliver
-        websocket_channel.broadcast_to recipient, format_for_websocket
+        channel.broadcast_to recipient, format
       end
 
-      def format_for_websocket
+      private
+
+      def format
         if (method = options[:format])
           notification.send(method)
         else
@@ -13,7 +15,7 @@ module Noticed
         end
       end
 
-      def websocket_channel
+      def channel
         if (method = options[:channel])
           notification.send(method)
         else

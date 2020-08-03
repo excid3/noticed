@@ -1,22 +1,26 @@
 module Noticed
   module DeliveryMethods
-    module Slack
-      extend ActiveSupport::Concern
-
-      included do
-        deliver_with :slack
+    class Slack < Base
+      def deliver
+        HTTP.post(url, json: format)
       end
 
-      def deliver_with_slack
-        HTTP.post(slack_url, json: format_for_slack)
+      private
+
+      def format
+        if (method = options[:format])
+          notification.send(method)
+        else
+          params
+        end
       end
 
-      def format_for_slack
-        notification.params
-      end
-
-      def slack_url
-        Rails.application.credentials.slack[:notification_url]
+      def url
+        if (method = options[:url])
+          notification.send(method)
+        else
+          Rails.application.credentials.slack[:notification_url]
+        end
       end
     end
   end

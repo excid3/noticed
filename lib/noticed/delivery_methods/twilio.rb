@@ -1,33 +1,50 @@
 module Noticed
   module DeliveryMethods
-    module Twilio
-      extend ActiveSupport::Concern
-
-      included do
-        deliver_with :twilio
+    class Twilio < Base
+      def deliver
+        HTTP.basic_auth(user: account_sid, pass: auth_token).post(url, json: format)
       end
 
-      def deliver_with_twilio
-        HTTP.basic_auth(
-          user: twilio_credentials[:account_sid],
-          pass: twilio_credentials[:auth_token]
-        ).post(url, json: format_for_twilio)
+      private
+
+      def format
+        if (method = options[:format])
+          notification.send(method)
+        else
+          {
+            From: phone_number,
+            To: recipient.phone_number,
+            Body: notification.params[:message]
+          }
+        end
       end
 
-      def format_for_twilio
-        {
-          Body: notification.params[:message],
-          From: twilio_credentials[:number],
-          To: recipient.phone_number
-        }
+      def url
+        if (method = options[:url])
+          notification.send(method)
+        else
+          "https://api.twilio.com/2010-04-01/Accounts/#{account_sid}/Messages.json"
+        end
       end
 
-      def twilio_url
-        "https://api.twilio.com/2010-04-01/Accounts/#{twilio_credentials(recipient)[:account_sid]}/Messages.json"
+      def account_sid
+        credentials.fetch(:account_sid)
       end
 
-      def twilio_credentials
-        Rails.application.credentials.twilio
+      def auth_token
+        credentials.fetch(:auth_token)
+      end
+
+      def phone_number
+        credentials.fetch(:phone_number)
+      end
+
+      def credentials
+        if (method = options[:credentials])
+          notification.send(method)
+        else
+          Rails.application.credentials.twilio
+        end
       end
     end
   end

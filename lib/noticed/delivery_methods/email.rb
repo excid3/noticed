@@ -5,8 +5,10 @@ module Noticed
         mailer.with(notification.params).send(method.to_sym).deliver_later
       end
 
+      private
+
       def mailer
-        options[:mailer].constantize
+        options.fetch(:mailer).constantize
       end
 
       def method

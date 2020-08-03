@@ -6,6 +6,8 @@ module Noticed
         recipient.notifications.create(attributes)
       end
 
+      private
+
       def attributes
         if (method = options[:format])
           notification.send(method)

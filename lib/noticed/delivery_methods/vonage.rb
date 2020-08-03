@@ -1,32 +1,33 @@
 module Noticed
   module DeliveryMethods
-    module Vonage
-      extend ActiveSupport::Concern
-
-      included do
-        deliver_with :vonage
+    class Vonage < Base
+      def deliver
+        HTTP.post("https://rest.nexmo.com/sms/json", json: format)
       end
 
-      def deliver_with_vonage
-        HTTP.post(
-          "https://rest.nexmo.com/sms/json",
-          json: format_for_vonage
-        )
+      private
+
+      def format
+        if (method = options[:format])
+          notification.send(method)
+        else
+          {
+            api_key: credentials[:api_key],
+            api_secret: credentials[:api_secret],
+            from: notification.params[:from],
+            text: notification.params[:body],
+            to: notification.params[:to],
+            type: "unicode"
+          }
+        end
       end
 
-      def format_for_vonage
-        {
-          api_key: vonage_credentials[:api_key],
-          api_secret: vonage_credentials[:api_secret],
-          from: notification.params[:from],
-          text: notification.params[:body],
-          to: notification.params[:to],
-          type: "unicode"
-        }
-      end
-
-      def vonage_credentials
-        Rails.application.credentials.vonage
+      def credentials
+        if (method = options[:credentials])
+          notification.send(method)
+        else
+          Rails.application.credentials.vonage
+        end
       end
     end
   end

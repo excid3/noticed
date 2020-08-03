@@ -41,7 +41,7 @@ module Noticed
       validate!
 
       run_callbacks :deliver do
-        Array.wrap(recipients).each do |recipient|
+        Array.wrap(recipients).uniq.each do |recipient|
           run_delivery(recipient, enqueue: false)
         end
       end
@@ -51,7 +51,7 @@ module Noticed
       validate!
 
       run_callbacks :deliver do
-        Array.wrap(recipients).each do |recipient|
+        Array.wrap(recipients).uniq.each do |recipient|
           run_delivery(recipient, enqueue: true)
         end
       end

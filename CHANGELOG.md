@@ -1,8 +1,12 @@
 ### Unreleased
 
+### 1.2.2
+
+* [FIX] Remove duplicates when delivering notification to multiple receipients
+
 ### 1.2.1
 
-* [NEW] Allow delivering notification to multiple users
+* [NEW] Allow delivering notification to multiple recipients
 
 ### 1.2.0
 

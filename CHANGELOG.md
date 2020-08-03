@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.2.1
+
+* [NEW] Allow delivering notification to multiple users
+
 ### 1.2.0
 
 * Translation helpers

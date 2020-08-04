@@ -2,7 +2,7 @@
 
 ### 1.2.4
 
-* Change email default params to include `notification` and `recipient`. This way you can access helper methods in the notification and still access params.
+* Include `record` in email params by default
 
 ### 1.2.3
 

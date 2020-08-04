@@ -19,10 +19,10 @@ module Noticed
         if (method = options[:format])
           notification.send(method)
         else
-          {
-            notification: notification,
-            recipient: recipient
-          }
+          notification.params.merge(
+            recipient: recipient,
+            record: record
+          )
         end
       end
     end

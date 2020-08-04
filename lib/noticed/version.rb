@@ -1,3 +1,3 @@
 module Noticed
-  VERSION = "1.2.4"
+  VERSION = "1.2.3"
 end

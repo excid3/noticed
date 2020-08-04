@@ -1,3 +1,4 @@
+require "active_job/arguments"
 require "http"
 require "noticed/engine"
 

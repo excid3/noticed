@@ -264,7 +264,7 @@ Sends an SMS notification via Twilio.
 
 ### Vonage SMS
 
-Sends an SMS notification vai Vonage / Nexmo.
+Sends an SMS notification via Vonage / Nexmo.
 
 `deliver_by :vonage`
 

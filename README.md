@@ -20,10 +20,10 @@ And you can easily add new notification types for any other delivery methods.
 ## 🎬 Screencast
 
 <div style="width:50%">
-  <a href="https://www.youtube.com/watch?v=KLWz39NAy3I"><img src="https://i.imgur.com/UvVKWwD.png" title="How to add Notifications to Rails with Noticed" /></a>
+  <a href="https://www.youtube.com/watch?v=Scffi4otlFc"><img src="https://i.imgur.com/UvVKWwD.png" title="How to add Notifications to Rails with Noticed" /></a>
 </div>
 
-[Watch Screencast](https://www.youtube.com/watch?v=KLWz39NAy3I)
+[Watch Screencast](https://www.youtube.com/watch?v=Scffi4otlFc)
 
 ## 🚀 Installation
 Run the following command to add Noticed to your Gemfile

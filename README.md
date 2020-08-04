@@ -17,7 +17,7 @@ Currently, we support these notification delivery methods out of the box:
 
 And you can easily add new notification types for any other delivery methods.
 
-## Screencast
+## 🎬 Screencast
 
 <div style="width:50%">
   <a href="https://www.youtube.com/watch?v=KLWz39NAy3I"><img src="https://i.imgur.com/UvVKWwD.png" title="How to add Notifications to Rails with Noticed" /></a>
@@ -361,6 +361,45 @@ For Rails 6.0 and earlier, you must pass strings of the class names in the `deli
 ```
 
 We recommend the Rails 6.0 compatible options to prevent confusion.
+
+### 📦 Database Model
+
+The Notification database model includes several helpful features to make working with database notifications easier.
+
+#### Class methods
+
+Sorting notifications by newest first:
+
+```ruby
+user.notifications.newest_first
+```
+
+Marking all notifications as read:
+
+```ruby
+user.notifications.mark_as_read!
+```
+
+#### Instance methods
+
+Convert back into a Noticed notification object:
+
+```ruby
+@notification.to_notification
+```
+
+Mark notification as read:
+
+```ruby
+@notification.mark_as_read!
+```
+
+Check if read / unread:
+
+```ruby
+@notification.read?
+@notification.unread?
+```
 
 ## 🙏 Contributing
 

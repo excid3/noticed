@@ -37,44 +37,13 @@ To generate a notification object, simply run:
 
 `rails generate noticed:notification CommentNotification`
 
-#### Notification Objects
-
-Notifications inherit from `Noticed::Base`. This provides all their functionality and allows them to be delivered.
-
-To add delivery methods, simply `include` the module for the delivery methods you would like to use.
-
-```ruby
-class CommentNotification < Noticed::Base
-  deliver_by :database
-  deliver_by :action_cable
-  deliver_by :email, if: :email_notifications?
-
-  def email_notifications?
-    !!recipient.preferences[:email]
-  end
-
-  # I18n helpers
-  def message
-    t(".message")
-  end
-
-  # URL helpers are accessible in notifications
-  def url
-    post_path(params[:post])
-  end
-
-  after_deliver do
-    # Anything you want
-  end
-end
-```
-
 #### Sending Notifications
 
 To send a notification to a user:
 
 ```ruby
-notification = CommentNotification.with(comment: @comment.to_gid)
+# Instantiate a new notification
+notification = CommentNotification.with(comment: @comment)
 
 # Deliver notification in background job
 notification.deliver_later(@comment.post.author)
@@ -89,6 +58,38 @@ notification.deliver_later(User.all)
 This will instantiate a new notification with the `comment` stored in the notification's params.
 
 Each delivery method is able to transform this metadata that's best for the format. For example, the database may simply store the comment so it can be linked when rendering in the navbar. The websocket mechanism may transform this into a browser notification or insert it into the navbar.
+
+#### Notification Objects
+
+Notifications inherit from `Noticed::Base`. This provides all their functionality and allows them to be delivered.
+
+To add delivery methods, simply `include` the module for the delivery methods you would like to use.
+
+```ruby
+class CommentNotification < Noticed::Base
+  deliver_by :database
+  deliver_by :action_cable
+  deliver_by :email, if: :email_notifications?
+
+  # I18n helpers
+  def message
+    t(".message")
+  end
+
+  # URL helpers are accessible in notifications
+  def url
+    post_path(params[:post])
+  end
+
+  def email_notifications?
+    !!recipient.preferences[:email]
+  end
+
+  after_deliver do
+    # Anything you want
+  end
+end
+```
 
 **Shared Options**
 

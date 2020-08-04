@@ -22,6 +22,6 @@ class <%= class_name %> < Noticed::Base
   # end
   #
   # def url
-  #   posts_path(params[:post])
+  #   post_path(params[:post])
   # end
 end

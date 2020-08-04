@@ -4,7 +4,7 @@
 
 ### 🎉  Notifications for your Ruby on Rails app.
 
-[![Build Status](https://github.com/excid3/noticed/workflows/Tests/badge.svg)](https://github.com/excid3/noticed/actions)
+[![Build Status](https://github.com/excid3/noticed/workflows/Tests/badge.svg)](https://github.com/excid3/noticed/actions) [![Gem Version](https://badge.fury.io/rb/noticed.svg)](https://badge.fury.io/rb/noticed)
 
 Currently, we support these notification delivery methods out of the box:
 

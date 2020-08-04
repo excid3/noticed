@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.2.4
+
+* Change email default params to include `notification` and `recipient`. This way you can access helper methods in the notification and still access params.
+
 ### 1.2.3
 
 * Adds `recipient` method on notification so they can access it during delivery. Useful when formatting to include recipient details

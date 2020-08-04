@@ -11,8 +11,9 @@ module Noticed
         @options = options
         @recipient = recipient
 
-        # Keep track of the database record for rendering
+        # Make notification aware of database record and recipient during delivery
         @notification.record = record
+        @notification.recipient = recipient
 
         run_callbacks :deliver do
           deliver

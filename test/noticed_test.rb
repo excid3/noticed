@@ -83,4 +83,14 @@ class Noticed::Test < ActiveSupport::TestCase
       make_notification(foo: :bar).deliver(User.all)
     end
   end
+
+  test "assigns record to notification when delivering" do
+    make_notification(foo: :bar).deliver(user)
+    assert_equal Notification.last, Noticed::DeliveryMethods::Test.delivered.last.record
+  end
+
+  test "assigns recipient to notification when delivering" do
+    make_notification(foo: :bar).deliver(user)
+    assert_equal user, Noticed::DeliveryMethods::Test.delivered.last.recipient
+  end
 end

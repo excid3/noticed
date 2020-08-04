@@ -2,7 +2,7 @@ module Noticed
   module DeliveryMethods
     class Email < Base
       def deliver
-        mailer.with(notification.params).send(method.to_sym).deliver_later
+        mailer.with(format).send(method.to_sym).deliver_later
       end
 
       private
@@ -13,6 +13,14 @@ module Noticed
 
       def method
         options[:method] || notification.class.name.underscore
+      end
+
+      def format
+        if (method = options[:format])
+          notification.send(method)
+        else
+          notification.params.merge(recipient: recipient)
+        end
       end
     end
   end

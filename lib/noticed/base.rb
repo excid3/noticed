@@ -9,7 +9,8 @@ module Noticed
     class_attribute :delivery_methods, instance_writer: false, default: []
     class_attribute :param_names, instance_writer: false, default: []
 
-    attr_accessor :record
+    # Gives notifications access to the record and recipient when formatting for delivery
+    attr_accessor :record, :recipient
 
     class << self
       def deliver_by(name, options = {})

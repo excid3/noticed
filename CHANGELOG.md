@@ -1,5 +1,10 @@
 ### Unreleased
 
+### 1.2.3
+
+* Adds `recipient` method on notification so they can access it during delivery. Useful when formatting to include recipient details
+* Merge `recipient` into params by default when delivering email notifications
+
 ### 1.2.2
 
 * [FIX] Remove duplicates when delivering notification to multiple receipients

@@ -134,7 +134,7 @@ Defining custom delivery methods allows you to add callbacks that run inside the
 
 ##### Translations
 
-We've added `translate` and  `t` helpers like Rails has to provide an easy way of scoping translations. If the key starts with a period, it will automatically scope the key under `notifications` and the underscored name of the notification class it is used in.
+We've added `translate` and `t` helpers like Rails has to provide an easy way of scoping translations. If the key starts with a period, it will automatically scope the key under `notifications` and the underscored name of the notification class it is used in.
 
 For example:
 
@@ -176,6 +176,10 @@ Writes notification to the database.
 
   The name of the database association to use. Defaults to `:notifications`
 
+* `format: :format_for_database` - *Optional*
+
+  Use a custom method to define the attributes saved to the database
+
 ### Email
 
 Sends an email notification. Emails will always be sent with `deliver_later`
@@ -191,6 +195,10 @@ Sends an email notification. Emails will always be sent with `deliver_later`
 * `method: :invoice_paid` - *Optional*
 
   Used to customize the method on the mailer that is called
+
+* `format: :format_for_email` - *Optional*
+
+  Use a custom method to define the params sent to the mailer. `recipient` will be merged into the params.
 
 ### ActionCable
 

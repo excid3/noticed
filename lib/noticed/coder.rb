@@ -1,11 +1,13 @@
 module Noticed
   class Coder
     def self.load(data)
-      ActiveJob::Arguments.send(:deserialize_argument, data)
+      return if data.nil?
+      ActiveJob::Arguments.send(:deserialize_argument, JSON.parse(data))
     end
 
     def self.dump(data)
-      ActiveJob::Arguments.send(:serialize_argument, data)
+      return if data.nil?
+      ActiveJob::Arguments.send(:serialize_argument, data).to_json
     end
   end
 end

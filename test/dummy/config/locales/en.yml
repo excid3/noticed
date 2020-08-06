@@ -34,4 +34,7 @@ en:
   notifications:
     noticed/i18n_example:
       message: "This is a notification"
+  noticed:
+    scoped_i18n_example:
+      message: "This is a custom scoped trnaslation"
 

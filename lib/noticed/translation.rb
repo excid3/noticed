@@ -13,7 +13,7 @@ module Translation
 
   def scope_translation_key(key)
     if key.to_s.start_with?(".")
-      "notifications.#{self.class.name.underscore}#{key}"
+      "#{i18n_scope}.#{self.class.name.underscore}#{key}"
     else
       key
     end

@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.2.5
+
+* [FIX] Improve serializer to handle text, json, and jsonb columns
+
 ### 1.2.4
 
 * Include `record` in email params by default

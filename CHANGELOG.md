@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.2.6
+
+* [FIX] Fix Slack default params #13 - @itsderek23
+
 ### 1.2.5
 
 * [FIX] Improve serializer to handle text, json, and jsonb columns

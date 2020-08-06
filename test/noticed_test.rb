@@ -52,6 +52,14 @@ class Noticed::Test < ActiveSupport::TestCase
     end
   end
 
+  test "allows to pass multiple params" do
+    class MultipleParamsExample < Noticed::Base
+      params :foo, :bar
+    end
+
+    assert_equal [:foo, :bar], MultipleParamsExample.with(foo: true, bar: false).param_names
+  end
+
   test "runs callbacks on notifications" do
     class CallbackExample < Noticed::Base
       class_attribute :callbacks, default: []

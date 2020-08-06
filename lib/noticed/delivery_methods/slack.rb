@@ -11,7 +11,7 @@ module Noticed
         if (method = options[:format])
           notification.send(method)
         else
-          params
+          notification.params
         end
       end
 

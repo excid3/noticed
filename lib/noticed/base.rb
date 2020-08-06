@@ -29,9 +29,10 @@ module Noticed
         new(params)
       end
 
-      def param(name)
-        param_names.push(name)
+      def params(*names)
+        param_names.concat Array.wrap(names)
       end
+      alias param params
     end
 
     def initialize(params = {})

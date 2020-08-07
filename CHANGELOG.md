@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.2.8
+
+* [FIX] Use form data when sending to Twilio
+
 ### 1.2.7
 
 * [NEW] Add i18n_scope - @rbague

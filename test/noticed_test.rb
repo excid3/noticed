@@ -11,8 +11,7 @@ class Noticed::Test < ActiveSupport::TestCase
     assert make_notification(foo: :bar).deliver(user)
   end
 
-  test "enqueues notification jobs" do
-    # Database delivery is not enqueued anymore
+  test "enqueues notification jobs (skipping database)" do
     assert_enqueued_jobs CommentNotification.delivery_methods.length - 1 do
       CommentNotification.new.deliver_later(user)
     end
@@ -40,6 +39,32 @@ class Noticed::Test < ActiveSupport::TestCase
 
     UnlessExample.new.deliver(user)
     assert_empty Noticed::DeliveryMethods::Test.delivered
+  end
+
+  test "has access to recipient in if clause" do
+    class IfRecipientExample < Noticed::Base
+      deliver_by :test, if: :falsey
+      def falsey
+        raise ArgumentError unless recipient
+      end
+    end
+
+    assert_nothing_raised do
+      IfRecipientExample.new.deliver(user)
+    end
+  end
+
+  test "has access to recipient in unless clause" do
+    class UnlessRecipientExample < Noticed::Base
+      deliver_by :test, unless: :truthy
+      def truthy
+        raise ArgumentError unless recipient
+      end
+    end
+
+    assert_nothing_raised do
+      UnlessRecipientExample.new.deliver(user)
+    end
   end
 
   test "validates attributes for params" do

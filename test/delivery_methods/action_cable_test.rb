@@ -21,20 +21,20 @@ class ActionCableTest < ActiveSupport::TestCase
 
   test "accepts channel as string" do
     delivery_method = Noticed::DeliveryMethods::ActionCable.new
-    delivery_method.instance_variable_set(:@options, { channel: "FakeChannel" })
+    delivery_method.instance_variable_set(:@options, {channel: "FakeChannel"})
     assert_equal FakeChannel, delivery_method.send(:channel)
   end
 
   test "accepts channel as object" do
     delivery_method = Noticed::DeliveryMethods::ActionCable.new
-    delivery_method.instance_variable_set(:@options, { channel: FakeChannel })
+    delivery_method.instance_variable_set(:@options, {channel: FakeChannel})
     assert_equal FakeChannel, delivery_method.send(:channel)
   end
 
   test "accepts channel as symbol" do
     delivery_method = Noticed::DeliveryMethods::ActionCable.new
     delivery_method.instance_variable_set(:@notification, FakeChannelNotification.new)
-    delivery_method.instance_variable_set(:@options, { channel: :get_channel })
+    delivery_method.instance_variable_set(:@options, {channel: :get_channel})
     assert_equal FakeChannel, delivery_method.send(:channel)
   end
 end

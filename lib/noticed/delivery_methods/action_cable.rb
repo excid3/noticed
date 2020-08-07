@@ -17,16 +17,16 @@ module Noticed
 
       def channel
         @channel ||= begin
-          value = options[:channel]
-          case value
-          when String
-            value.constantize
-          when Symbol
-            notification.send(value)
-          when Class
-            value
-          else
-            Noticed::NotificationChannel
+           value = options[:channel]
+           case value
+           when String
+             value.constantize
+           when Symbol
+             notification.send(value)
+           when Class
+             value
+           else
+             Noticed::NotificationChannel
            end
          end
       end

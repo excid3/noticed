@@ -1,5 +1,12 @@
 ### Unreleased
 
+### 1.2.7
+
+* [NEW] Add i18n_scope - @rbague
+* [NEW] Add `params` for specifying multiple required params - @rbague
+* [NEW] Allow passing in object or string for action_cable channel option - @excid3
+* [FIX] Skip JSON parse if deserializing was already done - @excid3
+
 ### 1.2.6
 
 * [FIX] Fix Slack default params #13 - @itsderek23

@@ -69,6 +69,9 @@ module Noticed
     def run_delivery(recipient, enqueue: true)
       delivery_methods = self.class.delivery_methods.dup
 
+      # Set recipient to instance var so it is available to Notification class
+      @recipient = recipient
+
       # Run database delivery inline first if it exists so other methods have access to the record
       if (index = delivery_methods.find_index { |m| m[:name] == :database })
         delivery_method = delivery_methods.delete_at(index)

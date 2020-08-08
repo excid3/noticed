@@ -12,7 +12,7 @@ module Noticed
       desc "Generates a notification with the given NAME."
 
       def generate_notification
-        template "notification.rb", "app/notifications/#{singular_name}.rb"
+        template "notification.rb", "app/notifications/#{file_path}.rb"
       end
     end
   end

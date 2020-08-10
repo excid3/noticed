@@ -256,7 +256,7 @@ Sends an SMS notification via Twilio.
 
 * `credentials: :get_twilio_credentials` - *Optional*
 
-  Use a custom method to retrieve the credentials for Twilio. Method should return a Hash with `:account_sid`, `:auth_token` and `:phone_	number` keys.
+  Use a custom method to retrieve the credentials for Twilio. Method should return a Hash with `:account_sid`, `:auth_token` and `:phone_number` keys.
 
   Defaults to `Rails.application.credentials.twilio[:account_sid]` and `Rails.application.credentials.twilio[:auth_token]`
 

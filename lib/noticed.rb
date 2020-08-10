@@ -3,20 +3,24 @@ require "http"
 require "noticed/engine"
 
 module Noticed
-  autoload :Base, "noticed/base"
-  autoload :Coder, "noticed/coder"
-  autoload :Model, "noticed/model"
-  autoload :Translation, "noticed/translation"
+  extend ActiveSupport::Autoload
+
+  autoload :Base
+  autoload :Coder
+  autoload :Model
+  autoload :Translation
 
   module DeliveryMethods
-    autoload :Base, "noticed/delivery_methods/base"
-    autoload :ActionCable, "noticed/delivery_methods/action_cable"
-    autoload :Database, "noticed/delivery_methods/database"
-    autoload :Email, "noticed/delivery_methods/email"
-    autoload :Slack, "noticed/delivery_methods/slack"
-    autoload :Test, "noticed/delivery_methods/test"
-    autoload :Twilio, "noticed/delivery_methods/twilio"
-    autoload :Vonage, "noticed/delivery_methods/vonage"
+    extend ActiveSupport::Autoload
+
+    autoload :Base
+    autoload :ActionCable
+    autoload :Database
+    autoload :Email
+    autoload :Slack
+    autoload :Test
+    autoload :Twilio
+    autoload :Vonage
   end
 
   def self.notify(recipients:, notification:)

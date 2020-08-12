@@ -33,4 +33,12 @@ module Noticed
 
   class ValidationError < StandardError
   end
+
+  class ResponseUnsuccessful < StandardError
+    attr_reader :response
+
+    def initialize(response)
+      @response = response
+    end
+  end
 end

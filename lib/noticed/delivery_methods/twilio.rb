@@ -2,7 +2,7 @@ module Noticed
   module DeliveryMethods
     class Twilio < Base
       def deliver
-        HTTP.basic_auth(user: account_sid, pass: auth_token).post(url, form: format)
+        post(url, basic_auth: {user: account_sid, pass: auth_token}, form: format)
       end
 
       private

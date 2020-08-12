@@ -2,7 +2,7 @@ module Noticed
   module DeliveryMethods
     class Slack < Base
       def deliver
-        HTTP.post(url, json: format)
+        post(url, json: format)
       end
 
       private

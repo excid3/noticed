@@ -22,9 +22,9 @@ class VonageTest < ActiveSupport::TestCase
   end
 
   test "raises an error when http request fails" do
-    e = assert_raises ::Noticed::ResponseUnsuccessful do
+    e = assert_raises(::Noticed::ResponseUnsuccessful) {
       VonageExample.new.deliver(user)
-    end
+    }
     assert_equal HTTP::Response, e.response.class
   end
 end

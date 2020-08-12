@@ -2,13 +2,13 @@ require "test_helper"
 
 class TwilioTest < ActiveSupport::TestCase
   class TwilioExample < Noticed::Base
-    deliver_by :twilio, credentials: :twilio_creds, debug: true#, ignore_failure: true
+    deliver_by :twilio, credentials: :twilio_creds, debug: true # , ignore_failure: true
 
     def twilio_creds
       {
         account_sid: "a",
         auth_token: "b",
-        phone_number: "c",
+        phone_number: "c"
       }
     end
   end
@@ -19,9 +19,9 @@ class TwilioTest < ActiveSupport::TestCase
   end
 
   test "raises an error when http request fails" do
-    e = assert_raises ::Noticed::ResponseUnsuccessful do
+    e = assert_raises(::Noticed::ResponseUnsuccessful) {
       TwilioExample.new.deliver(user)
-    end
+    }
     assert_equal HTTP::Response, e.response.class
   end
 end

@@ -32,14 +32,14 @@ module Noticed
       # Usage:
       #   post("http://example.com", basic_auth: {user:, pass:}, json: {}, form: {})
       #
-      def post(url, args={})
+      def post(url, args = {})
         basic_auth = args.delete(:basic_auth)
 
         request = if basic_auth
-                    HTTP.basic_auth(user: basic_auth[:user], pass: basic_auth[:pass])
-                  else
-                    HTTP
-                  end
+          HTTP.basic_auth(user: basic_auth[:user], pass: basic_auth[:pass])
+        else
+          HTTP
+        end
 
         response = request.post(url, args)
 

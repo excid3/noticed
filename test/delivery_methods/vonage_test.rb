@@ -17,7 +17,7 @@ class VonageTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Vonage" do
-    Noticed::DeliveryMethods::Vonage.any_instance.expects(:post)
+    Noticed::DeliveryMethods::Vonage.any_instance.expects(:deliver)
     VonageExample.new.deliver(user)
   end
 

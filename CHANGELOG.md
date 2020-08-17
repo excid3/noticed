@@ -4,6 +4,7 @@
 
 * [NEW] Add Noticed::TextCoder for databases without json support
 * [NEW] Update generator to make params column json for MySQL, jsonb for Postgres, and text for everything else
+* [FIX] Keyword args warning for delivery methods is now fixed
 
 ### 1.2.9
 

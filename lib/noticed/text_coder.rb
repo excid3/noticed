@@ -1,5 +1,5 @@
 module Noticed
-  class Coder
+  class TextCoder
     def self.load(data)
       return if data.nil?
 

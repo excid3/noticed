@@ -6,15 +6,15 @@ module Noticed
 
       attr_reader :notification, :options, :recipient, :record
 
-      def perform(notification_class:, options:, params:, recipient:, record:)
-        @notification = notification_class.constantize.new(params)
-        @options = options
-        @recipient = recipient
-        @record = record
+      def perform(args)
+        @notification = args[:notification_class].constantize.new(args[:params])
+        @options = args[:options]
+        @recipient = args[:recipient]
+        @record = args[:record]
 
         # Make notification aware of database record and recipient during delivery
-        @notification.record = record
-        @notification.recipient = recipient
+        @notification.record = args[:record]
+        @notification.recipient = args[:recipient]
 
         run_callbacks :deliver do
           deliver

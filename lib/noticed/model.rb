@@ -10,6 +10,8 @@ module Noticed
       belongs_to :recipient, polymorphic: true
 
       scope :newest_first, -> { order(created_at: :desc) }
+      scope :unread, -> { where(read_at: nil) }
+      scope :read, -> { where.not(read_at: nil) }
     end
 
     module ClassMethods

@@ -15,7 +15,7 @@ module Noticed
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
 
       def generate_notification
-        generate :model, name, "recipient:references{polymorphic}", "type", "params:text", "read_at:datetime", *attributes
+        generate :model, name, "recipient:references{polymorphic}", "type", params_column, "read_at:datetime", *attributes
       end
 
       def add_noticed_model
@@ -30,6 +30,17 @@ module Noticed
 
       def model_path
         @model_path ||= File.join("app", "models", "#{file_path}.rb")
+      end
+
+      def params_column
+        case ActiveRecord::Base.connection.instance_values["config"][:adapter]
+        when "mysql"
+          "params:json"
+        when "postgresql"
+          "params:jsonb"
+        else
+          "params:text"
+        end
       end
     end
   end

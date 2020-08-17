@@ -1,5 +1,10 @@
 ### Unreleased
 
+### 1.2.10
+
+* [NEW] Add Noticed::TextCoder for databases without json support
+* [NEW] Update generator to make params column json for MySQL, jsonb for Postgres, and text for everything else
+
 ### 1.2.9
 
 * [FIX] Recipient is available in `if` & `else` options

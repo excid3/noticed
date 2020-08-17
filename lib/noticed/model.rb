@@ -5,7 +5,7 @@ module Noticed
     included do
       self.inheritance_column = nil
 
-      serialize :params, Noticed::Coder
+      serialize :params, noticed_coder
 
       belongs_to :recipient, polymorphic: true
 
@@ -15,6 +15,15 @@ module Noticed
     module ClassMethods
       def mark_as_read!
         update_all(read_at: Time.current, updated_at: Time.current)
+      end
+
+      def noticed_coder
+        case attribute_types["params"].type
+        when :json, :jsonb
+          Noticed::Coder
+        else
+          Noticed::TextCoder
+        end
       end
     end
 

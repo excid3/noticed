@@ -401,6 +401,60 @@ Check if read / unread:
 @notification.unread?
 ```
 
+#### Associating Notifications
+
+Adding notification associations to your models makes querying and deleting notifications easy and is a pretty critical feature of most applications.
+
+For example, in most cases, you'll want to delete notifications for records that are destroyed.
+
+##### JSON Columns
+
+If you're using MySQL or Postgresql, the `params` column on the notifications table is in `json` or `jsonb` format and can be queried against directly.
+
+For example,  we can query the notifications and delete them on destroy like so:
+
+```ruby
+class Post < ApplicationRecord
+  def notifications
+    # Exact match
+    @notifications ||= Notification.where(params: { post: self })
+
+    # Or Postgres syntax to query the post key in the JSON column
+    # @notifications ||= Notification.where("params->'post' = ?", Noticed::Coder.dump(self).to_json)
+  end
+
+  before_destroy :destroy_notifications
+
+  def destroy_notifications
+    notifications.destroy_all
+  end
+end
+```
+
+##### Polymorphic Assocation
+
+If your notification is only associated with one model or you're using a `text` column for your params column , then a polymorphic association is what you'll want to use.
+
+1. Add a polymorphic association to the Notification model. `rails g migration AddNotifiableToNotifications notifiable:belongs_to{polymorphic}`
+
+2. Add `has_many :notifications, as: :notifiable, dependent: :destroy` to each model
+
+3. Customize database `format: ` option to write the `notifiable` attribute(s) when saving the notification
+
+   ```ruby
+   class ExampleNotification < Noticed::Base
+     deliver_by :database, format: :format_for_database
+
+     def format_for_database
+       {
+         notifiable: params.delete(:post),
+         type: self.class.name,
+         params: params
+       }
+     end
+   end
+   ```
+
 ## 🙏 Contributing
 
 This project uses [Standard](https://github.com/testdouble/standard) for formatting Ruby code. Please make sure to run `standardrb` before submitting pull requests.

@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.2.11
+
+* [FIX] Use ActiveRecord configuration to detect adapter without establishing a database connection
+
 ### 1.2.10
 
 * [NEW] Add Noticed::TextCoder for databases without json support

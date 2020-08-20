@@ -33,7 +33,7 @@ module Noticed
       end
 
       def params_column
-        case ActiveRecord::Base.connection.instance_values["config"][:adapter]
+        case ActiveRecord::Base.configurations.configs_for(spec_name: "primary").config["adapter"]
         when "mysql"
           "params:json"
         when "postgresql"

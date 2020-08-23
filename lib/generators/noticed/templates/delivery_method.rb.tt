@@ -1,0 +1,5 @@
+class DeliveryMethods::<%= class_name %> < Noticed::DeliveryMethods::Base
+  def deliver
+    # Logic for sending the notification
+  end
+end

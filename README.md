@@ -311,19 +311,25 @@ Sends an SMS notification via Vonage / Nexmo.
 
 ### 🚚 Custom Delivery Methods
 
-You can define a custom delivery method easily by adding a `deliver_by` line with a unique name and class option. The class will be instantiated and should inherit from `Noticed::DeliveryMethods::Base`.
+To generate a custom delivery method, simply run
+
+`rails generate noticed:delivery_method Discord`
+
+This will generate a new `DeliveryMethods::Discord` class inside the `app/notifications/delivery_methods` folder, which can be used to deliver notifications to Discord.
 
 ```ruby
-class MyNotification < Noticed::Base
-  deliver_by :discord, class: "DiscordNotification"
-end
-```
-
-```ruby
-class DiscordNotification < Noticed::DeliveryMethods::Base
+class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
   def deliver
     # Logic for sending a Discord notification
   end
+end
+```
+
+You can use the custom delivery method thus created by adding a `deliver_by` line with a unique name and `class` option in your notification class.
+
+```ruby
+class MyNotification < Noticed::Base
+  deliver_by :discord, class: "DeliveryMethods::Discord"
 end
 ```
 
@@ -339,7 +345,7 @@ Delivery methods have access to the following methods and attributes:
 Callbacks for delivery methods wrap the *actual* delivery of the notification. You can use `before_deliver`, `around_deliver` and `after_deliver` in your custom delivery methods.
 
 ```ruby
-class DiscordNotification < Noticed::DeliveryMethods::Base
+class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
   after_deliver do
     # Do whatever you want
   end
@@ -351,13 +357,13 @@ end
 Rails 6.1+ can serialize Class and Module objects as arguments to ActiveJob. The following syntax should work for Rails 6.1+:
 
 ```ruby
-  deliver_by DiscordNotification
+  deliver_by DeliveryMethods::Discord
 ```
 
 For Rails 6.0 and earlier, you must pass strings of the class names in the `deliver_by` options.
 
 ```ruby
-  deliver_by :discord, class: "DiscordNotification"
+  deliver_by :discord, class: "DeliveryMethods::Discord"
 ```
 
 We recommend the Rails 6.0 compatible options to prevent confusion.

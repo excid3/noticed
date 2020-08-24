@@ -97,17 +97,16 @@ module Noticed
       }
 
       run_callbacks delivery_method[:name] do
-        klass = get_class(delivery_method[:name], delivery_method[:options])
+        klass = get_class_for(delivery_method[:name], delivery_method[:options])
         enqueue ? klass.perform_later(args) : klass.perform_now(args)
       end
     end
 
-    # Retrieves the correct class for a delivery method
-    def get_class(name, options)
+    def get_class_for(delivery_method, options)
       if options[:class]
         options[:class].constantize
       else
-        "Noticed::DeliveryMethods::#{name.to_s.classify}".constantize
+        "Noticed::DeliveryMethods::#{delivery_method.to_s.classify}".constantize
       end
     end
 

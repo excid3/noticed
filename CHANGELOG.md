@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 1.2.12
+
 * [NEW] Add `noticed:delivery_method` generator to create custom delivery methods.
 
 ### 1.2.11

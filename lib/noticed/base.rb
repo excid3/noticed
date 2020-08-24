@@ -97,13 +97,12 @@ module Noticed
       }
 
       run_callbacks delivery_method[:name] do
-        klass = get_class(delivery_method[:name], delivery_method[:options])
-        enqueue ? klass.perform_later(args) : klass.perform_now(args)
+        method = delivery_method_for(delivery_method[:name], delivery_method[:options])
+        enqueue ? method.perform_later(args) : method.perform_now(args)
       end
     end
 
-    # Retrieves the correct class for a delivery method
-    def get_class(name, options)
+    def delivery_method_for(name, options)
       if options[:class]
         options[:class].constantize
       else

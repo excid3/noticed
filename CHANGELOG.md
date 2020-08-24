@@ -1,5 +1,7 @@
 ### Unreleased
 
+* [NEW] Add `noticed:delivery_method` generator to create custom delivery methods.
+
 ### 1.2.11
 
 * [FIX] Use ActiveRecord configuration to detect adapter without establishing a database connection

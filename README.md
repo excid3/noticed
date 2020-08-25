@@ -342,9 +342,9 @@ Delivery methods have access to the following methods and attributes:
 
 #### Validating options passed to Custom Delivery methods
 
-You can validate the options passed to the custom delivery method and raise validation errors as per your requirement. 
+You can validate the options passed to the custom delivery method and raise validation errors. This is helpful for debugging to make sure valid and required options were passed in.
 
-To do this, simply override the `self.validate!` method from the `Noticed::DeliveryMethods::Base` class in your Custom Delivery method.
+To do this, simply override the `self.validate!(options)` method from the `Noticed::DeliveryMethods::Base` class in your Custom Delivery method.
 
 ```ruby
 class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
@@ -354,7 +354,7 @@ class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
 
   def self.validate!(options)
     unless options.key?(:sent_by)
-      raise Noticed::ValidationError, 'the `sent_by` attribute is missing'
+      raise Noticed::ValidationError, 'the `sent_by` option is missing'
     end
   end
 end
@@ -364,15 +364,15 @@ class CommentNotification < Noticed::Base
 end
 ```
 
-Now, when trying to deliver Comment notifications, it will fail because a required argument is missing and raises an error.
+Now it will raise an error because a required argument is missing.
 
-To avoid the error, the argument has to be passed correctly, so like,
+To fix the error, the argument has to be passed correctly. For example:
 
 ```ruby
 class CommentNotification < Noticed::Base
   deliver_by :discord, class: 'DeliveryMethods::Discord', sent_by: User.admin.first
 end
-``
+```
 
 #### Callbacks
 

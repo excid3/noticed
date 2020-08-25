@@ -1,5 +1,6 @@
 ### Unreleased
 
+* [NEW] Validate that delivery by emails (`deliver_by :email`) always have a mailer specified.
 * [NEW] Allow validating options in custom delivery methods
 
 ### 1.2.12

@@ -10,4 +10,14 @@ class EmailTest < ActiveSupport::TestCase
       CommentNotification.new.deliver(user)
     end
   end
+
+  test "validates `mailer` is specified for email delivery method" do
+    class EmailDeliveryWithoutMailer < Noticed::Base
+      deliver_by :email
+    end
+
+    assert_raises Noticed::ValidationError do
+      EmailDeliveryWithoutMailer.new.deliver(user)
+    end
+  end
 end

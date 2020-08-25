@@ -78,7 +78,7 @@ To add delivery methods, simply `include` the module for the delivery methods yo
 class CommentNotification < Noticed::Base
   deliver_by :database
   deliver_by :action_cable
-  deliver_by :email, if: :email_notifications?
+  deliver_by :email, mailer: 'CommentMailer', if: :email_notifications?
 
   # I18n helpers
   def message
@@ -120,7 +120,7 @@ Like ActiveRecord, notifications have several different types of callbacks.
 ```ruby
 class CommentNotification < Noticed::Base
   deliver_by :database
-  deliver_by :email
+  deliver_by :email, mailer: 'CommentMailer'
 
   # Callbacks for the entire delivery
   before_deliver :whatever
@@ -158,7 +158,7 @@ For example:
 
 ```ruby
 class CommentNotification < Noticed::Base
-  deliver_by :email, if: :email_notifications?
+  deliver_by :email, mailer: 'CommentMailer', if: :email_notifications?
 
   def email_notifications?
     recipient.email_notifications?

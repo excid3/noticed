@@ -22,6 +22,15 @@ module Noticed
         inject_into_class model_path, class_name, "  include Noticed::Model\n"
       end
 
+      def add_not_nullable
+        migration_path = Dir.glob(Rails.root.join("db/migrate/*")).max_by {|f| File.mtime(f)}
+
+        # Force is required because null: false already exists in the file and Thor isn't smart enough to tell the difference
+        insert_into_file migration_path, after: "t.string :type", force: true do
+          ', null: false'
+        end
+      end
+
       def done
         readme "README" if behavior == :invoke
       end

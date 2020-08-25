@@ -18,11 +18,14 @@ module Noticed
         define_model_callbacks(name)
       end
 
-      # Copy delivery methods from parent
       def inherited(base) #:nodoc:
-        base.delivery_methods = delivery_methods.dup
-        base.param_names = param_names.dup
+        copy_delivery_methods_from_parent(base)
         super
+      end
+
+      def copy_delivery_methods_from_parent(parent)
+        parent.delivery_methods = delivery_methods.dup
+        parent.param_names = param_names.dup
       end
 
       def with(params)

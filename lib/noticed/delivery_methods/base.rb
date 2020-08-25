@@ -25,6 +25,11 @@ module Noticed
         raise NotImplementedError, "Delivery methods must implement a deliver method"
       end
 
+      def self.validate!(options)
+        # Override this method in your custom DeliveryMethod class to validate the options
+        # and raise error, if invalid.
+      end
+
       private
 
       # Helper method for making POST requests from delivery methods

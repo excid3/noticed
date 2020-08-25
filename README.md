@@ -340,6 +340,40 @@ Delivery methods have access to the following methods and attributes:
 * `recipient` - The object who should receive the notification. This is typically a User, Account, or other ActiveRecord model.
 * `params` - The params passed into the notification. This is details about the event that happened. For example, a user commenting on a post would have params of `{ user: User.first }`
 
+#### Validating options passed to Custom Delivery methods
+
+You can validate the options passed to the custom delivery method and raise validation errors as per your requirement. 
+
+To do this, simply override the `self.validate!` method from the `Noticed::DeliveryMethods::Base` class in your Custom Delivery method.
+
+```ruby
+class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
+  def deliver
+    # Logic for sending a Discord notification
+  end
+
+  def self.validate!(options)
+    unless options.key?(:sent_by)
+      raise Noticed::ValidationError, 'the `sent_by` attribute is missing'
+    end
+  end
+end
+
+class CommentNotification < Noticed::Base
+  deliver_by :discord, class: 'DeliveryMethods::Discord'
+end
+```
+
+Now, when trying to deliver Comment notifications, it will fail because a required argument is missing and raises an error.
+
+To avoid the error, the argument has to be passed correctly, so like,
+
+```ruby
+class CommentNotification < Noticed::Base
+  deliver_by :discord, class: 'DeliveryMethods::Discord', sent_by: User.admin.first
+end
+``
+
 #### Callbacks
 
 Callbacks for delivery methods wrap the *actual* delivery of the notification. You can use `before_deliver`, `around_deliver` and `after_deliver` in your custom delivery methods.

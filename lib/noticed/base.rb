@@ -23,9 +23,9 @@ module Noticed
         super
       end
 
-      def copy_delivery_methods_from_parent(parent)
-        parent.delivery_methods = delivery_methods.dup
-        parent.param_names = param_names.dup
+      def copy_delivery_methods_from_parent(base)
+        base.delivery_methods = delivery_methods.dup
+        base.param_names = param_names.dup
       end
 
       def with(params)

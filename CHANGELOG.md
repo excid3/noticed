@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 1.2.13
+
 * [NEW] Validate that delivery by emails (`deliver_by :email`) always have a mailer specified.
 * [NEW] Allow validating options in custom delivery methods
 * [FIX] Add `null: false` to `type` column in Notification migration

@@ -126,4 +126,33 @@ class Noticed::Test < ActiveSupport::TestCase
     make_notification(foo: :bar).deliver(user)
     assert_equal user, Noticed::DeliveryMethods::Test.delivered.last.recipient
   end
+
+  test "validates options of delivery methods" do
+    class CustomDeliveryMethod < Noticed::DeliveryMethods::Base
+      def deliver
+      end
+
+      def self.validate!(options)
+        unless options.key?(:a_required_option)
+          raise Noticed::ValidationError, "the `a_required_option` attribute is missing"
+        end
+      end
+    end
+
+    class NotificationWithValidOptions < Noticed::Base
+      deliver_by :custom, class: "Noticed::Test::CustomDeliveryMethod", a_required_option: true
+    end
+
+    class NotificationWithoutValidOptions < Noticed::Base
+      deliver_by :custom, class: "Noticed::Test::CustomDeliveryMethod"
+    end
+
+    assert_raises Noticed::ValidationError do
+      NotificationWithoutValidOptions.new.deliver(user)
+    end
+
+    assert_nothing_raised do
+      NotificationWithValidOptions.new.deliver(user)
+    end
+  end
 end

@@ -110,12 +110,24 @@ module Noticed
       end
     end
 
-    # Validates that all params are present
     def validate!
+      validate_params_present!
+      validate_options_of_delivery_methods!
+    end
+
+    # Validates that all params are present
+    def validate_params_present!
       self.class.param_names.each do |param_name|
         if params[param_name].nil?
           raise ValidationError, "#{param_name} is missing."
         end
+      end
+    end
+
+    def validate_options_of_delivery_methods!
+      delivery_methods.each do |delivery_method|
+        method = delivery_method_for(delivery_method[:name], delivery_method[:options])
+        method.validate!(delivery_method[:options])
       end
     end
   end

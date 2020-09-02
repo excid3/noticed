@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    noticed (1.2.14)
+    noticed (1.2.15)
       http (>= 4.0.0)
       rails (>= 6.0.0)
 
@@ -111,7 +111,7 @@ GEM
     parser (2.7.1.4)
       ast (~> 2.4.1)
     pg (1.2.3)
-    public_suffix (4.0.5)
+    public_suffix (4.0.6)
     rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)

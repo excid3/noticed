@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.2.15
+
+* [FIX] Autoload ActionCable channel so Noticed can be used without ActionCable
+
 ### 1.2.14
 
 * [FIX] Add `params` so delivery methods can access them without going through `notification`

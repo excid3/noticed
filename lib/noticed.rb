@@ -8,6 +8,7 @@ module Noticed
   autoload :Model, "noticed/model"
   autoload :TextCoder, "noticed/text_coder"
   autoload :Translation, "noticed/translation"
+  autoload :NotificationChannel, "noticed/notification_channel"
 
   module DeliveryMethods
     autoload :Base, "noticed/delivery_methods/base"

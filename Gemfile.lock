@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    noticed (1.2.13)
+    noticed (1.2.14)
       http (>= 4.0.0)
       rails (>= 6.0.0)
 
@@ -91,7 +91,7 @@ GEM
       ffi-compiler (>= 1.0, < 2.0)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
-    loofah (2.6.0)
+    loofah (2.7.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -102,7 +102,7 @@ GEM
     mimemagic (0.3.5)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.14.1)
+    minitest (5.14.2)
     mocha (1.11.2)
     nio4r (2.5.2)
     nokogiri (1.10.10)

@@ -4,11 +4,12 @@ module Noticed
       extend ActiveModel::Callbacks
       define_model_callbacks :deliver
 
-      attr_reader :notification, :options, :recipient, :record
+      attr_reader :notification, :options, :params, :recipient, :record
 
       def perform(args)
         @notification = args[:notification_class].constantize.new(args[:params])
         @options = args[:options]
+        @params = args[:params]
         @recipient = args[:recipient]
         @record = args[:record]
 

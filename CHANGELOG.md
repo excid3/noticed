@@ -1,14 +1,18 @@
 ### Unreleased
 
+### 1.2.14
+
+* [FIX] Add `params` so delivery methods can access them without going through `notification`
+
 ### 1.2.13
 
-* [NEW] Validate that delivery by emails (`deliver_by :email`) always have a mailer specified.
+* [NEW] Validate that delivery by emails (`deliver_by :email`) always have a mailer specified
 * [NEW] Allow validating options in custom delivery methods
 * [FIX] Add `null: false` to `type` column in Notification migration
 
 ### 1.2.12
 
-* [NEW] Add `noticed:delivery_method` generator to create custom delivery methods.
+* [NEW] Add `noticed:delivery_method` generator to create custom delivery methods
 
 ### 1.2.11
 

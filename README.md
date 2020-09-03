@@ -394,7 +394,7 @@ Rails 6.1+ can serialize Class and Module objects as arguments to ActiveJob. The
   deliver_by DeliveryMethods::Discord
 ```
 
-For Rails 6.0 and earlier, you must pass strings of the class names in the `deliver_by` options.
+For Rails 6.0, you must pass strings of the class names in the `deliver_by` options.
 
 ```ruby
   deliver_by :discord, class: "DeliveryMethods::Discord"

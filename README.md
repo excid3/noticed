@@ -342,19 +342,22 @@ Delivery methods have access to the following methods and attributes:
 
 #### Validating options passed to Custom Delivery methods
 
-You can validate the options passed to the custom delivery method and raise validation errors. This is helpful for debugging to make sure valid and required options were passed in.
-
-To do this, simply override the `self.validate!(options)` method from the `Noticed::DeliveryMethods::Base` class in your Custom Delivery method.
+The presence of the delivery method options is automatically validated if using the `option(s)` method. To add any other custom validations, override the `self.validate!(delivery_method_options)` method from the `Noticed::DeliveryMethods::Base` class.
 
 ```ruby
 class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
+  option :username # Requires the username option to be set
+
   def deliver
     # Logic for sending a Discord notification
   end
 
-  def self.validate!(options)
-    unless options.key?(:sent_by)
-      raise Noticed::ValidationError, 'the `sent_by` option is missing'
+  def self.validate!(delivery_method_options)
+    super # Don't forget to call super, otherwise option presence won't be validated
+
+    # Custom validations
+    unless delivery_method_options[:username].is_a? String
+      raise Noticed::ValidationError, 'the `username` option must be a string'
     end
   end
 end

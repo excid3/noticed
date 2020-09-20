@@ -22,7 +22,7 @@ module Noticed
 
         def validate!(delivery_method_options)
           option_names.each do |option_name|
-            if delivery_method_options[option_name].nil?
+            unless delivery_method_options.key? option_name
               raise ValidationError, "option `#{option_name}` must be set for #{name}"
             end
           end

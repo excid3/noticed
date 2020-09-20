@@ -342,11 +342,13 @@ Delivery methods have access to the following methods and attributes:
 
 #### Validating options passed to Custom Delivery methods
 
-The presence of the delivery method options is automatically validated if using the `option(s)` method. To add any other custom validations, override the `self.validate!(delivery_method_options)` method from the `Noticed::DeliveryMethods::Base` class.
+The presence of the delivery method options is automatically validated if using the `option(s)` method.
+
+If you want to validate that the passed options contain valid values, or to add any custom validations, override the `self.validate!(delivery_method_options)` method from the `Noticed::DeliveryMethods::Base` class.
 
 ```ruby
 class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
-  option :username # Requires the username option to be set
+  option :username # Requires the username option to be passed
 
   def deliver
     # Logic for sending a Discord notification
@@ -356,8 +358,8 @@ class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
     super # Don't forget to call super, otherwise option presence won't be validated
 
     # Custom validations
-    unless delivery_method_options[:username].is_a? String
-      raise Noticed::ValidationError, 'the `username` option must be a string'
+    if delivery_method_options[:username].blank?
+      raise Noticed::ValidationError, 'the `username` option must be present'
     end
   end
 end
@@ -373,7 +375,7 @@ To fix the error, the argument has to be passed correctly. For example:
 
 ```ruby
 class CommentNotification < Noticed::Base
-  deliver_by :discord, class: 'DeliveryMethods::Discord', sent_by: User.admin.first
+  deliver_by :discord, class: 'DeliveryMethods::Discord', username: User.admin.username
 end
 ```
 

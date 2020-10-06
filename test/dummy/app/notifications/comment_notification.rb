@@ -11,4 +11,8 @@ class CommentNotification < Noticed::Base
       params: params
     }
   end
+
+  def url
+    root_url
+  end
 end

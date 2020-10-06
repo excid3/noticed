@@ -86,6 +86,7 @@ class CommentNotification < Noticed::Base
   end
 
   # URL helpers are accessible in notifications
+  # Don't forget to set your default_url_options so Rails knows how to generate urls
   def url
     post_path(params[:post])
   end
@@ -112,6 +113,12 @@ You can define helper methods inside your Notification object to make it easier 
 ##### URL Helpers
 
 Rails url helpers are included in notification classes by default so you have full access to them just like you would in your controllers and views.
+
+Don't forget, you'll need to configure `default_url_options` in order for Rails to know what host and port to use when generating URLs.
+
+```ruby
+Rails.application.routes.default_url_options[:host] = 'localhost:3000'
+```
 
 **Callbacks**
 

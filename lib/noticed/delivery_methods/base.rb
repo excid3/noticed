@@ -4,7 +4,30 @@ module Noticed
       extend ActiveModel::Callbacks
       define_model_callbacks :deliver
 
+      class_attribute :option_names, instance_writer: false, default: []
+
       attr_reader :notification, :options, :params, :recipient, :record
+
+      class << self
+        # Copy option names from parent
+        def inherited(base) #:nodoc:
+          base.option_names = option_names.dup
+          super
+        end
+
+        def options(*names)
+          option_names.concat Array.wrap(names)
+        end
+        alias option options
+
+        def validate!(delivery_method_options)
+          option_names.each do |option_name|
+            unless delivery_method_options.key? option_name
+              raise ValidationError, "option `#{option_name}` must be set for #{name}"
+            end
+          end
+        end
+      end
 
       def perform(args)
         @notification = args[:notification_class].constantize.new(args[:params])
@@ -24,11 +47,6 @@ module Noticed
 
       def deliver
         raise NotImplementedError, "Delivery methods must implement a deliver method"
-      end
-
-      def self.validate!(options)
-        # Override this method in your custom DeliveryMethod class to validate the options
-        # and raise error, if invalid.
       end
 
       private

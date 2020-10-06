@@ -1,5 +1,7 @@
 ### Unreleased
 
+* [NEW] Add `option` and `options` for validating Delivery Method options - @rbague
+
 ### 1.2.15
 
 * [FIX] Autoload ActionCable channel so Noticed can be used without ActionCable

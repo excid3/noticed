@@ -15,7 +15,7 @@ module Noticed
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
 
       def generate_notification
-        generate :model, name, "recipient:references{polymorphic}", "type", params_column, "read_at:datetime", *attributes
+        generate :model, name, "recipient:references{polymorphic}", "type", params_column, "read_at:datetime:index", *attributes
       end
 
       def add_noticed_model

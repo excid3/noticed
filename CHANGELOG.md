@@ -1,5 +1,6 @@
 ### Unreleased
 
+* [NEW] Update generator to add index for `read_at` column - @mikelkew
 * [NEW] Add `option` and `options` for validating Delivery Method options - @rbague
 
 ### 1.2.15

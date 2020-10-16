@@ -18,7 +18,7 @@ module Noticed
         def options(*names)
           option_names.concat Array.wrap(names)
         end
-        alias option options
+        alias_method :option, :options
 
         def validate!(delivery_method_options)
           option_names.each do |option_name|

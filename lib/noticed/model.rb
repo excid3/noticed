@@ -32,10 +32,10 @@ module Noticed
     # Rehydrate the database notification into the Notification object for rendering
     def to_notification
       @_notification ||= begin
-                      instance = type.constantize.with(params)
-                      instance.record = self
-                      instance
-                    end
+        instance = type.constantize.with(params)
+        instance.record = self
+        instance
+      end
     end
 
     def mark_as_read!

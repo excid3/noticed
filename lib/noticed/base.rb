@@ -32,7 +32,7 @@ module Noticed
       def params(*names)
         param_names.concat Array.wrap(names)
       end
-      alias param params
+      alias_method :param, :params
     end
 
     def initialize(params = {})

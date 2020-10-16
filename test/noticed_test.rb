@@ -1,17 +1,75 @@
 require "test_helper"
 
-class Noticed::Test < ActiveSupport::TestCase
-  class CustomDeliveryMethod < Noticed::DeliveryMethods::Base
-    def deliver
-    end
-
-    def self.validate!(options)
-      unless options.key?(:a_required_option)
-        raise Noticed::ValidationError, "the `a_required_option` attribute is missing"
-      end
-    end
+class CustomDeliveryMethod < Noticed::DeliveryMethods::Base
+  def deliver
   end
 
+  def self.validate!(options)
+    unless options.key?(:a_required_option)
+      raise Noticed::ValidationError, "the `a_required_option` attribute is missing"
+    end
+  end
+end
+
+class IfExample < Noticed::Base
+  deliver_by :test, if: :falsey
+  def falsey
+    false
+  end
+end
+
+class UnlessExample < Noticed::Base
+  deliver_by :test, unless: :truthy
+  def truthy
+    true
+  end
+end
+
+class IfRecipientExample < Noticed::Base
+  deliver_by :test, if: :falsey
+  def falsey
+    raise ArgumentError unless recipient
+  end
+end
+
+class UnlessRecipientExample < Noticed::Base
+  deliver_by :test, unless: :truthy
+  def truthy
+    raise ArgumentError unless recipient
+  end
+end
+
+class AttributeExample < Noticed::Base
+  param :user_id
+end
+
+class MultipleParamsExample < Noticed::Base
+  params :foo, :bar
+end
+
+class CallbackExample < Noticed::Base
+  class_attribute :callbacks, default: []
+
+  deliver_by :database
+
+  after_deliver do
+    self.class.callbacks << :everything
+  end
+
+  after_database do
+    self.class.callbacks << :database
+  end
+end
+
+class NotificationWithValidOptions < Noticed::Base
+  deliver_by :custom, class: "Noticed::Test::CustomDeliveryMethod", a_required_option: true
+end
+
+class NotificationWithoutValidOptions < Noticed::Base
+  deliver_by :custom, class: "Noticed::Test::CustomDeliveryMethod"
+end
+
+class Noticed::Test < ActiveSupport::TestCase
   test "stores data in params" do
     notification = make_notification(foo: :bar, user: user)
     assert_equal :bar, notification.params[:foo]
@@ -29,88 +87,38 @@ class Noticed::Test < ActiveSupport::TestCase
   end
 
   test "cancels delivery when if clause is falsey" do
-    class IfExample < Noticed::Base
-      deliver_by :test, if: :falsey
-      def falsey
-        false
-      end
-    end
-
     IfExample.new.deliver(user)
     assert_empty Noticed::DeliveryMethods::Test.delivered
   end
 
   test "cancels delivery when unless clause is truthy" do
-    class UnlessExample < Noticed::Base
-      deliver_by :test, unless: :truthy
-      def truthy
-        true
-      end
-    end
-
     UnlessExample.new.deliver(user)
     assert_empty Noticed::DeliveryMethods::Test.delivered
   end
 
   test "has access to recipient in if clause" do
-    class IfRecipientExample < Noticed::Base
-      deliver_by :test, if: :falsey
-      def falsey
-        raise ArgumentError unless recipient
-      end
-    end
-
     assert_nothing_raised do
       IfRecipientExample.new.deliver(user)
     end
   end
 
   test "has access to recipient in unless clause" do
-    class UnlessRecipientExample < Noticed::Base
-      deliver_by :test, unless: :truthy
-      def truthy
-        raise ArgumentError unless recipient
-      end
-    end
-
     assert_nothing_raised do
       UnlessRecipientExample.new.deliver(user)
     end
   end
 
   test "validates attributes for params" do
-    class AttributeExample < Noticed::Base
-      param :user_id
-    end
-
     assert_raises Noticed::ValidationError do
       AttributeExample.new.deliver(users(:one))
     end
   end
 
   test "allows to pass multiple params" do
-    class MultipleParamsExample < Noticed::Base
-      params :foo, :bar
-    end
-
     assert_equal [:foo, :bar], MultipleParamsExample.with(foo: true, bar: false).param_names
   end
 
   test "runs callbacks on notifications" do
-    class CallbackExample < Noticed::Base
-      class_attribute :callbacks, default: []
-
-      deliver_by :database
-
-      after_deliver do
-        self.class.callbacks << :everything
-      end
-
-      after_database do
-        self.class.callbacks << :database
-      end
-    end
-
     CallbackExample.new.deliver(user)
     assert_equal [:database, :everything], CallbackExample.callbacks
   end
@@ -139,20 +147,12 @@ class Noticed::Test < ActiveSupport::TestCase
   end
 
   test "validates options of delivery methods when options are valid" do
-    class NotificationWithValidOptions < Noticed::Base
-      deliver_by :custom, class: "Noticed::Test::CustomDeliveryMethod", a_required_option: true
-    end
-
     assert_nothing_raised do
       NotificationWithValidOptions.new.deliver(user)
     end
   end
 
   test "validates options of delivery methods when options are invalid" do
-    class NotificationWithoutValidOptions < Noticed::Base
-      deliver_by :custom, class: "Noticed::Test::CustomDeliveryMethod"
-    end
-
     assert_raises Noticed::ValidationError do
       NotificationWithoutValidOptions.new.deliver(user)
     end

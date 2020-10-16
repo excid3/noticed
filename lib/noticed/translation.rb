@@ -10,7 +10,7 @@ module Noticed
     def translate(key, **options)
       I18n.translate(scope_translation_key(key), **options)
     end
-    alias t translate
+    alias_method :t, :translate
 
     def scope_translation_key(key)
       if key.to_s.start_with?(".")

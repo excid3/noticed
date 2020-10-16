@@ -20,6 +20,10 @@ class DeliveryMethodWithOptionsExample < Noticed::Base
   deliver_by :example, class: "DeliveryMethodWithOptions"
 end
 
+class DeliveryMethodWithNilOptionsExample < Noticed::Base
+  deliver_by :example, class: "DeliveryMethodWithOptions", foo: nil
+end
+
 class Noticed::DeliveryMethods::BaseTest < ActiveSupport::TestCase
   test "can use custom delivery method with params" do
     CustomDeliveryMethodExample.new.deliver(user)
@@ -33,10 +37,6 @@ class Noticed::DeliveryMethods::BaseTest < ActiveSupport::TestCase
   end
 
   test "nil options are valid" do
-    class DeliveryMethodWithNilOptionsExample < Noticed::Base
-      deliver_by :example, class: "DeliveryMethodWithOptions", foo: nil
-    end
-
     assert_difference "Noticed::DeliveryMethods::Test.delivered.count" do
       DeliveryMethodWithNilOptionsExample.new.deliver(user)
     end

@@ -21,7 +21,7 @@ class DeliveryMethodWithOptionsExample < Noticed::Base
 end
 
 class Noticed::DeliveryMethods::BaseTest < ActiveSupport::TestCase
-  test "Can use custom delivery method with params" do
+  test "can use custom delivery method with params" do
     CustomDeliveryMethodExample.new.deliver(user)
     assert_equal 1, CustomDeliveryMethod.deliveries.count
   end

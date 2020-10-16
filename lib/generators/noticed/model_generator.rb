@@ -43,7 +43,7 @@ module Noticed
 
       def params_column
         case ActiveRecord::Base.configurations.configs_for(spec_name: "primary").config["adapter"]
-        when "mysql"
+        when "mysql2"
           "params:json"
         when "postgresql"
           "params:jsonb"

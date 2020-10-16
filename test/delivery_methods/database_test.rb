@@ -17,7 +17,7 @@ class DatabaseTest < ActiveSupport::TestCase
     assert_equal 1, user.notifications.first.account_id
   end
 
-  test "writes to the database before other delivery moethods" do
+  test "writes to the database before other delivery methods" do
     CommentNotification.with(foo: :bar).deliver_later(user)
     perform_enqueued_jobs
     assert_not_nil Notification.last

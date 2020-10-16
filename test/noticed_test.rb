@@ -1,16 +1,5 @@
 require "test_helper"
 
-class CustomDeliveryMethod < Noticed::DeliveryMethods::Base
-  def deliver
-  end
-
-  def self.validate!(options)
-    unless options.key?(:a_required_option)
-      raise Noticed::ValidationError, "the `a_required_option` attribute is missing"
-    end
-  end
-end
-
 class IfExample < Noticed::Base
   deliver_by :test, if: :falsey
   def falsey
@@ -61,12 +50,23 @@ class CallbackExample < Noticed::Base
   end
 end
 
+class RequiredOption < Noticed::DeliveryMethods::Base
+  def deliver
+  end
+
+  def self.validate!(options)
+    unless options.key?(:a_required_option)
+      raise Noticed::ValidationError, "the `a_required_option` attribute is missing"
+    end
+  end
+end
+
 class NotificationWithValidOptions < Noticed::Base
-  deliver_by :custom, class: "Noticed::Test::CustomDeliveryMethod", a_required_option: true
+  deliver_by :custom, class: "RequiredOption", a_required_option: true
 end
 
 class NotificationWithoutValidOptions < Noticed::Base
-  deliver_by :custom, class: "Noticed::Test::CustomDeliveryMethod"
+  deliver_by :custom, class: "RequiredOption"
 end
 
 class Noticed::Test < ActiveSupport::TestCase

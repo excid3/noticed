@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 1.2.16
+
 * [FIX] Ensure `json` is used by MySQL for `params` column in generator - @mikelkew
 * [NEW] Update generator to add index for `read_at` column - @mikelkew
 * [NEW] Add `option` and `options` for validating Delivery Method options - @rbague

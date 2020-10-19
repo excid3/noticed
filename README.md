@@ -440,10 +440,11 @@ Convert back into a Noticed notification object:
 @notification.to_notification
 ```
 
-Mark notification as read:
+Mark notification as read / unread:
 
 ```ruby
 @notification.mark_as_read!
+@notification.mark_as_unread!
 ```
 
 Check if read / unread:

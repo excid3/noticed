@@ -42,6 +42,10 @@ module Noticed
       update(read_at: Time.current)
     end
 
+    def mark_as_unread!
+      update(read_at: nil)
+    end
+
     def unread?
       !read?
     end

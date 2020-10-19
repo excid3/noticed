@@ -1,5 +1,7 @@
 ### Unreleased
 
+* [NEW] Add `mark_as_unread!` instance method for `Notification` model
+
 ### 1.2.16
 
 * [FIX] Ensure `json` is used by MySQL for `params` column in generator - @mikelkew

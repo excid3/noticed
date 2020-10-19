@@ -1,5 +1,6 @@
 ### Unreleased
 
+* [NEW] Add `mark_as_unread!` instance method for `Notification` model
 * [NEW] Add `option` and `options` for validating Delivery Method options - @rbague
 
 ### 1.2.15

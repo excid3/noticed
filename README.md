@@ -277,7 +277,7 @@ Sends a Teams notification via webhook.
       name: "Button Text",
       targets: [{
         os: "default",
-        uri: https://example.com/foo/action
+        uri: "https://example.com/foo/action"
       }]
     }]
 

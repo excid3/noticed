@@ -15,7 +15,7 @@ module Noticed
             title: notification.params[:title],
             text: notification.params[:text],
             sections: notification.params[:sections],
-            potentialAction: notification.params[:notificationAction]
+            potentialAction: notification.params[:notification_action]
           }
         end
       end

@@ -16,6 +16,7 @@ module Noticed
     autoload :Database, "noticed/delivery_methods/database"
     autoload :Email, "noticed/delivery_methods/email"
     autoload :Slack, "noticed/delivery_methods/slack"
+    autoload :Team, "noticed/delivery_methods/team"
     autoload :Test, "noticed/delivery_methods/test"
     autoload :Twilio, "noticed/delivery_methods/twilio"
     autoload :Vonage, "noticed/delivery_methods/vonage"

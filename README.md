@@ -521,7 +521,7 @@ class Post < ApplicationRecord
 end
 ```
 
-##### Polymorphic Assocation
+##### Polymorphic Association
 
 If your notification is only associated with one model or you're using a `text` column for your params column , then a polymorphic association is what you'll want to use.
 

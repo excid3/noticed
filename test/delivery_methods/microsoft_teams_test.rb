@@ -1,7 +1,7 @@
 require "test_helper"
 
-class MicrosoftTeamTest < ActiveSupport::TestCase
-  class MicrosoftTeamExample < Noticed::Base
+class MicrosoftTeamsTest < ActiveSupport::TestCase
+  class MicrosoftTeamsExample < Noticed::Base
     deliver_by :microsoft_teams, debug: true, url: :teams_url, format: :to_teams
 
     def teams_url
@@ -32,12 +32,12 @@ class MicrosoftTeamTest < ActiveSupport::TestCase
 
   test "sends a POST to Teams" do
     Noticed::DeliveryMethods::MicrosoftTeam.any_instance.expects(:post)
-    MicrosoftTeamExample.new.deliver(user)
+    MicrosoftTeamsExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
     e = assert_raises(::Noticed::ResponseUnsuccessful) {
-      MicrosoftTeamExample.new.deliver(user)
+      MicrosoftTeamsExample.new.deliver(user)
     }
 
     assert_equal HTTP::Response, e.response.class

@@ -1,6 +1,6 @@
 module Noticed
   module DeliveryMethods
-    class MicrosoftTeam < Base
+    class MicrosoftTeams < Base
       def deliver
         post(url, json: format)
       end

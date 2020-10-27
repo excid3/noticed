@@ -1,8 +1,8 @@
 require "test_helper"
 
-class TeamTest < ActiveSupport::TestCase
-  class TeamExample < Noticed::Base
-    deliver_by :teams, debug: true, url: :teams_url, format: :to_teams
+class MicrosoftTeamTest < ActiveSupport::TestCase
+  class MicrosoftTeamExample < Noticed::Base
+    deliver_by :microsoft_teams, debug: true, url: :teams_url, format: :to_teams
 
     def teams_url
       "https://outlook.office.com/webhooks/00000-00000/IncomingWebhook/00000-00000"
@@ -31,13 +31,13 @@ class TeamTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Teams" do
-    Noticed::DeliveryMethods::Team.any_instance.expects(:post)
-    TeamExample.new.deliver(user)
+    Noticed::DeliveryMethods::MicrosoftTeam.any_instance.expects(:post)
+    MicrosoftTeamExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
     e = assert_raises(::Noticed::ResponseUnsuccessful) {
-      TeamExample.new.deliver(user)
+      MicrosoftTeamExample.new.deliver(user)
     }
 
     assert_equal HTTP::Response, e.response.class

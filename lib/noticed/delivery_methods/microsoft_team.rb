@@ -1,6 +1,6 @@
 module Noticed
   module DeliveryMethods
-    class Team < Base
+    class MicrosoftTeam < Base
       def deliver
         post(url, json: format)
       end
@@ -24,7 +24,7 @@ module Noticed
         if (method = options[:url])
           notification.send(method)
         else
-          Rails.application.credentials.teams[:notification_url]
+          Rails.application.credentials.microsoft_teams[:notification_url]
         end
       end
     end

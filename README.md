@@ -258,7 +258,7 @@ Sends a Slack notification via webhook.
 
 Sends a Teams notification via webhook.
 
-`deliver_by :teams`
+`deliver_by :microsoft_teams`
 
 #### Options
 
@@ -288,7 +288,7 @@ Sends a Teams notification via webhook.
 
   Use a custom method to retrieve the MS Teams Webhook URL. Method should return a string.
 
-  Defaults to `Rails.application.credentials.teams[:notification_url]`
+  Defaults to `Rails.application.credentials.microsoft_teams[:notification_url]`
 
 ### Twilio SMS
 

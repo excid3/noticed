@@ -31,7 +31,7 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Teams" do
-    Noticed::DeliveryMethods::MicrosoftTeam.any_instance.expects(:post)
+    Noticed::DeliveryMethods::MicrosoftTeams.any_instance.expects(:post)
     MicrosoftTeamsExample.new.deliver(user)
   end
 

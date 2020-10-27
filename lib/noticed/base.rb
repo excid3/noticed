@@ -106,7 +106,7 @@ module Noticed
       if options[:class]
         options[:class].constantize
       else
-        "Noticed::DeliveryMethods::#{name.to_s.classify}".constantize
+        "Noticed::DeliveryMethods::#{name.to_s.camelize}".constantize
       end
     end
 

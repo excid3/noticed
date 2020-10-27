@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    noticed (1.2.16)
+    noticed (1.2.17)
       http (>= 4.0.0)
       rails (>= 6.0.0)
 
@@ -145,16 +145,16 @@ GEM
     rake (13.0.1)
     regexp_parser (1.8.2)
     rexml (3.2.4)
-    rubocop (0.92.0)
+    rubocop (1.0.0)
       parallel (~> 1.10)
       parser (>= 2.7.1.5)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.7)
+      regexp_parser (>= 1.8)
       rexml
-      rubocop-ast (>= 0.5.0)
+      rubocop-ast (>= 0.6.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (0.8.0)
+    rubocop-ast (1.0.1)
       parser (>= 2.7.1.5)
     rubocop-performance (1.8.1)
       rubocop (>= 0.87.0)
@@ -167,8 +167,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    standard (0.7)
-      rubocop (= 0.92)
+    standard (0.8.1)
+      rubocop (= 1.0.0)
       rubocop-performance (= 1.8.1)
     thor (1.0.1)
     thread_safe (0.3.6)

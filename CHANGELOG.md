@@ -1,6 +1,9 @@
 ### Unreleased
 
-* [NEW] Add `mark_as_unread!` instance method for `Notification` model
+### 1.2.17
+
+* [NEW] Microsoft Teams delivery method - @jordanbrock
+* [NEW] Add `mark_as_unread!` instance method for `Notification` model - @pdunleav
 
 ### 1.2.16
 

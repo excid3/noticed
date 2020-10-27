@@ -12,6 +12,7 @@ Currently, we support these notification delivery methods out of the box:
 * Email
 * ActionCable channels
 * Slack
+* Microsoft Teams
 * Twilio (SMS)
 * Vonage / Nexmo (SMS)
 
@@ -252,6 +253,42 @@ Sends a Slack notification via webhook.
   Use a custom method to retrieve the Slack Webhook URL. Method should return a String.
 
   Defaults to `Rails.application.credentials.slack[:notification_url]`
+
+### Microsoft Teams
+
+Sends a Teams notification via webhook.
+
+`deliver_by :microsoft_teams`
+
+#### Options
+
+* `format: :format_for_teams` - *Optional*
+
+  Use a custom method to define the payload sent to slack. Method should return a Hash.
+  Documentation for posting via Webhooks available at: https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook
+
+  ```ruby
+  {
+    title: "This is the title for the card",
+    text: "This is the body text for the card",
+    sections: [{activityTitle: "Section Title", activityText: "Section Text"}],
+    "potentialAction": [{
+      "@type": "OpenUri",
+      name: "Button Text",
+      targets: [{
+        os: "default",
+        uri: "https://example.com/foo/action"
+      }]
+    }]
+
+  }
+  ```
+
+* `url: :url_for_teams_channel`: - *Optional*
+
+  Use a custom method to retrieve the MS Teams Webhook URL. Method should return a string.
+
+  Defaults to `Rails.application.credentials.microsoft_teams[:notification_url]`
 
 ### Twilio SMS
 

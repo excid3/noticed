@@ -37,4 +37,15 @@ class ActionCableTest < ActiveSupport::TestCase
     delivery_method.instance_variable_set(:@options, {channel: :get_channel})
     assert_equal FakeChannel, delivery_method.send(:channel)
   end
+
+  test "deliver returns nothing" do
+    args = {
+      notification_class: "Noticed::Base",
+      recipient: user,
+      options: {}
+    }
+    nothing = Noticed::DeliveryMethods::ActionCable.new.perform(args)
+
+    assert_nil nothing
+  end
 end

@@ -7,6 +7,8 @@ module Noticed
         if !options[:ignore_failure] && status != "0"
           raise ResponseUnsuccessful.new(response)
         end
+
+        response
       end
 
       private

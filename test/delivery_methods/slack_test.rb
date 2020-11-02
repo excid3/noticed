@@ -20,4 +20,18 @@ class SlackTest < ActiveSupport::TestCase
     }
     assert_equal HTTP::Response, e.response.class
   end
+
+  test "deliver returns an http response" do
+    Noticed::Base.any_instance.stubs(:slack_url).returns("https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX")
+    args = {
+      notification_class: "Noticed::Base",
+      recipient: user,
+      options: {url: :slack_url}
+    }
+    e = assert_raises(Noticed::ResponseUnsuccessful) {
+      Noticed::DeliveryMethods::Slack.new.perform(args)
+    }
+
+    assert_kind_of HTTP::Response, e.response
+  end
 end

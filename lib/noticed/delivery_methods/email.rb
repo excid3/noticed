@@ -4,7 +4,7 @@ module Noticed
       option :mailer
 
       def deliver
-        mailer.with(format).send(method.to_sym).deliver_later
+        mailer.with(format).send(method.to_sym).deliver_now
       end
 
       private

@@ -42,4 +42,18 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
 
     assert_equal HTTP::Response, e.response.class
   end
+
+  test "deliver returns an http response" do
+    Noticed::Base.any_instance.stubs(:teams_url).returns("https://outlook.office.com/webhooks/00000-00000/IncomingWebhook/00000-00000")
+    args = {
+      notification_class: "Noticed::Base",
+      recipient: user,
+      options: {url: :teams_url}
+    }
+    e = assert_raises(Noticed::ResponseUnsuccessful) {
+      Noticed::DeliveryMethods::MicrosoftTeams.new.perform(args)
+    }
+
+    assert_kind_of HTTP::Response, e.response
+  end
 end

@@ -30,4 +30,15 @@ class DatabaseTest < ActiveSupport::TestCase
     end
     assert_equal @user, Notification.last.params[:user]
   end
+
+  test "deliver returns the created record" do
+    args = {
+      notification_class: "Noticed::Base",
+      recipient: user,
+      options: {}
+    }
+    record = Noticed::DeliveryMethods::Database.new.perform(args)
+
+    assert_kind_of ActiveRecord::Base, record
+  end
 end

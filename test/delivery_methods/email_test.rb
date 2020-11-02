@@ -10,7 +10,7 @@ class EmailTest < ActiveSupport::TestCase
   end
 
   test "sends email" do
-    assert_enqueued_emails 1 do
+    assert_emails 1 do
       CommentNotification.new.deliver(user)
     end
   end
@@ -21,7 +21,7 @@ class EmailTest < ActiveSupport::TestCase
     end
   end
 
-  test "deliver returns the scheduled mailer job" do
+  test "deliver returns the email object" do
     args = {
       notification_class: "Noticed::Base",
       recipient: user,
@@ -30,8 +30,8 @@ class EmailTest < ActiveSupport::TestCase
         method: "comment_notification"
       }
     }
-    mailer_job = Noticed::DeliveryMethods::Email.new.perform(args)
+    email = Noticed::DeliveryMethods::Email.new.perform(args)
 
-    assert_kind_of ActionMailer::Base.delivery_job, mailer_job
+    assert_kind_of Mail::Message, email
   end
 end

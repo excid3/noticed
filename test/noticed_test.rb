@@ -69,6 +69,18 @@ class NotificationWithoutValidOptions < Noticed::Base
   deliver_by :custom, class: "RequiredOption"
 end
 
+class WithDelayedDelivery < Noticed::Base
+  deliver_by :test, delay: 5.minutes
+end
+
+class WithDelayedDeliveryAndOptions < Noticed::Base
+  deliver_by :test, delay: 5.minutes, if: :falsey
+
+  def falsey
+    false
+  end
+end
+
 class Noticed::Test < ActiveSupport::TestCase
   test "stores data in params" do
     notification = make_notification(foo: :bar, user: user)
@@ -155,6 +167,19 @@ class Noticed::Test < ActiveSupport::TestCase
   test "validates options of delivery methods when options are invalid" do
     assert_raises Noticed::ValidationError do
       NotificationWithoutValidOptions.new.deliver(user)
+    end
+  end
+
+  test "asserts the specified job is delayed" do
+    assert_enqueued_with(job: Noticed::DelayNotificationJob) do
+      WithDelayedDelivery.new.deliver(user)
+    end
+  end
+
+  test "delays job and preserves its options" do
+    WithDelayedDeliveryAndOptions.new.deliver(user)
+    assert_enqueued_jobs 0 do
+      perform_enqueued_jobs
     end
   end
 end

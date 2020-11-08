@@ -9,7 +9,6 @@ module Noticed
   autoload :TextCoder, "noticed/text_coder"
   autoload :Translation, "noticed/translation"
   autoload :NotificationChannel, "noticed/notification_channel"
-  autoload :DelayNotificationJob, "noticed/delay_notification_job"
 
   module DeliveryMethods
     autoload :Base, "noticed/delivery_methods/base"

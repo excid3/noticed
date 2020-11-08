@@ -69,16 +69,8 @@ class NotificationWithoutValidOptions < Noticed::Base
   deliver_by :custom, class: "RequiredOption"
 end
 
-class WithDelayedDelivery < Noticed::Base
+class With5MinutesDelay < Noticed::Base
   deliver_by :test, delay: 5.minutes
-end
-
-class WithDelayedDeliveryAndOptions < Noticed::Base
-  deliver_by :test, delay: 5.minutes, if: :falsey
-
-  def falsey
-    false
-  end
 end
 
 class Noticed::Test < ActiveSupport::TestCase
@@ -170,16 +162,9 @@ class Noticed::Test < ActiveSupport::TestCase
     end
   end
 
-  test "asserts the specified job is delayed" do
-    assert_enqueued_with(job: Noticed::DelayNotificationJob) do
-      WithDelayedDelivery.new.deliver(user)
-    end
-  end
-
-  test "delays job and preserves its options" do
-    WithDelayedDeliveryAndOptions.new.deliver(user)
-    assert_enqueued_jobs 0 do
-      perform_enqueued_jobs
+  test "asserts delivery is delayed" do
+    assert_enqueued_with(at: Time.current + 5.minutes) do
+      With5MinutesDelay.new.deliver(user)
     end
   end
 end

@@ -85,36 +85,24 @@ module Noticed
 
     # Actually runs an individual delivery
     def run_delivery_method(delivery_method, recipient:, enqueue:)
-      delivery_options = delivery_method.fetch(:options, {})
-      if (delay = delivery_options[:delay])
-        delivery = delivery_method.dup
-        delivery[:options].delete(:delay)
-
-        DelayNotificationJob.set(wait: delay).perform_later(
-          notification_class: self.class.name,
-          params: params,
-          delivery_method: delivery,
-          enqueue: enqueue,
-          recipient: recipient,
-          record: record
-        )
-        return
-      end
-
-      return if (delivery_method_name = delivery_options[:if]) && !send(delivery_method_name)
-      return if (delivery_method_name = delivery_options[:unless]) && send(delivery_method_name)
-
       args = {
         notification_class: self.class.name,
-        options: delivery_options,
+        options: delivery_method[:options],
         params: params,
         recipient: recipient,
         record: record
       }
 
       run_callbacks delivery_method[:name] do
-        method = delivery_method_for(delivery_method[:name], delivery_options)
-        enqueue ? method.perform_later(args) : method.perform_now(args)
+        method = delivery_method_for(delivery_method[:name], delivery_method[:options])
+
+        if (delay = delivery_method.dig(:options, :delay))
+          method.set(wait: delay).perform_later(args)
+        elsif enqueue
+          method.perform_later(args)
+        else
+          method.perform_now(args)
+        end
       end
     end
 

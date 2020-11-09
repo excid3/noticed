@@ -43,14 +43,13 @@ class ActiveSupport::TestCase
     WebMock.disable_net_connect!(allow: lambda do |uri|
       [
         "outlook.office.com",
-        "hooks.slack.com",
         "api.twilio.com",
         "rest.nexmo.com"
       ].include? uri.host
     end)
 
     # stub_request(:post, /outlook.office.com/).to_return(File.new(file_fixture("microsoft_teams.txt")))
-    # stub_request(:post, /hooks.slack.com/).to_return(File.new(file_fixture("slack.txt")))
+    stub_request(:post, /hooks.slack.com/).to_return(File.new(file_fixture("slack.txt")))
     # stub_request(:post, /api.twilio.com/).to_return(File.new(file_fixture("twilio.txt")))
     # stub_request(:post, /rest.nexmo.com/).to_return(File.new(file_fixture("vonage.txt")))
   end

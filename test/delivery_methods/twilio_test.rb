@@ -1,6 +1,10 @@
 require "test_helper"
 
 class TwilioTest < ActiveSupport::TestCase
+  setup do
+    stub_request(:post, /api.twilio.com/).to_return(File.new(file_fixture("twilio.txt")))
+  end
+
   class TwilioExample < Noticed::Base
     deliver_by :twilio, credentials: :twilio_creds, debug: true # , ignore_failure: true
 

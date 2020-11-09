@@ -1,6 +1,10 @@
 require "test_helper"
 
 class MicrosoftTeamsTest < ActiveSupport::TestCase
+  setup do
+    stub_request(:post, /outlook.office.com/).to_return(File.new(file_fixture("microsoft_teams.txt")))
+  end
+
   class MicrosoftTeamsExample < Noticed::Base
     deliver_by :microsoft_teams, debug: true, url: :teams_url, format: :to_teams
 

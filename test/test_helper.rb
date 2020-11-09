@@ -39,13 +39,6 @@ class ActiveSupport::TestCase
   include ActionCable::TestHelper
   include ActionMailer::TestHelper
 
-  setup do
-    stub_request(:post, /outlook.office.com/).to_return(File.new(file_fixture("microsoft_teams.txt")))
-    stub_request(:post, /hooks.slack.com/).to_return(File.new(file_fixture("slack.txt")))
-    stub_request(:post, /api.twilio.com/).to_return(File.new(file_fixture("twilio.txt")))
-    stub_request(:post, /rest.nexmo.com/).to_return(File.new(file_fixture("vonage.txt")))
-  end
-
   teardown do
     Noticed::DeliveryMethods::Test.clear!
   end

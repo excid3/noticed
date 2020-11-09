@@ -1,6 +1,10 @@
 require "test_helper"
 
 class VonageTest < ActiveSupport::TestCase
+  setup do
+    stub_request(:post, /rest.nexmo.com/).to_return(File.new(file_fixture("vonage.txt")))
+  end
+
   class VonageExample < Noticed::Base
     deliver_by :vonage, format: :to_vonage, debug: true
 

@@ -1,6 +1,10 @@
 require "test_helper"
 
 class SlackTest < ActiveSupport::TestCase
+  setup do
+    stub_request(:post, /hooks.slack.com/).to_return(File.new(file_fixture("slack.txt")))
+  end
+
   class SlackExample < Noticed::Base
     deliver_by :slack, debug: true, url: :slack_url
 

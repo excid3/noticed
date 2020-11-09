@@ -1,0 +1,22 @@
+HTTP/1.1 200
+server: nginx
+date: Mon, 09 Nov 2020 18:24:47 GMT
+content-type: application/json
+cache-control: max-age=1
+x-frame-options: deny
+x-xss-protection: 1; mode=block;
+strict-transport-security: max-age=31536000; includeSubdomains
+content-disposition: attachment; filename="api.txt"
+x-nexmo-trace-id: cNvzs9rIF6DymshFf63xsi85UiiOQRYl
+
+{
+    "message-count": "1",
+    "messages": [{
+        "to": "e",
+        "message-id": "FFQ4KtfvqqpSpye8",
+        "status": "0",
+        "remaining-balance": "1.86220000",
+        "message-price": "0.06890000",
+        "network": "21407"
+    }]
+}

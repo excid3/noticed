@@ -22,6 +22,7 @@ end
 
 require "minitest/unit"
 require "mocha/minitest"
+require "webmock/minitest"
 
 class ExampleNotification < Noticed::Base
   class_attribute :callback_responses, default: []
@@ -50,5 +51,12 @@ class ActiveSupport::TestCase
 
   def make_notification(params)
     ExampleNotification.with(params)
+  end
+
+  def without_webmock
+    WebMock.disable!
+    yield if block_given?
+  ensure
+    WebMock.enable!
   end
 end

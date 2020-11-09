@@ -96,6 +96,7 @@ module Noticed
       run_callbacks delivery_method[:name] do
         method = delivery_method_for(delivery_method[:name], delivery_method[:options])
 
+        # Always perfrom later if a delay is present
         if (delay = delivery_method.dig(:options, :delay))
           method.set(wait: delay).perform_later(args)
         elsif enqueue

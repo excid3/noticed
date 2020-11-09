@@ -163,7 +163,7 @@ class Noticed::Test < ActiveSupport::TestCase
   end
 
   test "asserts delivery is delayed" do
-    assert_enqueued_with(at: Time.current + 5.minutes) do
+    assert_enqueued_with(at: 5.minutes.from_now) do
       With5MinutesDelay.new.deliver(user)
     end
   end

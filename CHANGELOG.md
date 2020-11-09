@@ -1,5 +1,7 @@
 ### Unreleased
 
+* [NEW] Add `delay` option to delay the delivery of a specific delivery method - @rbague
+
 ### 1.2.17
 
 * [NEW] Microsoft Teams delivery method - @jordanbrock

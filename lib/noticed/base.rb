@@ -85,9 +85,6 @@ module Noticed
 
     # Actually runs an individual delivery
     def run_delivery_method(delivery_method, recipient:, enqueue:)
-      return if (delivery_method_name = delivery_method.dig(:options, :if)) && !send(delivery_method_name)
-      return if (delivery_method_name = delivery_method.dig(:options, :unless)) && send(delivery_method_name)
-
       args = {
         notification_class: self.class.name,
         options: delivery_method[:options],
@@ -98,7 +95,15 @@ module Noticed
 
       run_callbacks delivery_method[:name] do
         method = delivery_method_for(delivery_method[:name], delivery_method[:options])
-        enqueue ? method.perform_later(args) : method.perform_now(args)
+
+        # Always perfrom later if a delay is present
+        if (delay = delivery_method.dig(:options, :delay))
+          method.set(wait: delay).perform_later(args)
+        elsif enqueue
+          method.perform_later(args)
+        else
+          method.perform_now(args)
+        end
       end
     end
 

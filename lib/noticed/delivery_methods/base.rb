@@ -40,6 +40,9 @@ module Noticed
         @notification.record = args[:record]
         @notification.recipient = args[:recipient]
 
+        return if (condition = @options[:if]) && !@notification.send(condition)
+        return if (condition = @options[:unless]) && @notification.send(condition)
+
         run_callbacks :deliver do
           deliver
         end

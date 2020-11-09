@@ -69,6 +69,10 @@ class NotificationWithoutValidOptions < Noticed::Base
   deliver_by :custom, class: "RequiredOption"
 end
 
+class With5MinutesDelay < Noticed::Base
+  deliver_by :test, delay: 5.minutes
+end
+
 class Noticed::Test < ActiveSupport::TestCase
   test "stores data in params" do
     notification = make_notification(foo: :bar, user: user)
@@ -155,6 +159,12 @@ class Noticed::Test < ActiveSupport::TestCase
   test "validates options of delivery methods when options are invalid" do
     assert_raises Noticed::ValidationError do
       NotificationWithoutValidOptions.new.deliver(user)
+    end
+  end
+
+  test "asserts delivery is delayed" do
+    assert_enqueued_with(at: 5.minutes.from_now) do
+      With5MinutesDelay.new.deliver(user)
     end
   end
 end

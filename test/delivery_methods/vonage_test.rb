@@ -17,35 +17,26 @@ class VonageTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Vonage" do
-    Noticed::DeliveryMethods::Vonage.any_instance.expects(:deliver)
     VonageExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
-    e = assert_raises(::Noticed::ResponseUnsuccessful) {
-      VonageExample.new.deliver(user)
-    }
-    assert_equal HTTP::Response, e.response.class
+    without_webmock do
+      e = assert_raises(::Noticed::ResponseUnsuccessful) {
+        VonageExample.new.deliver(user)
+      }
+      assert_equal HTTP::Response, e.response.class
+    end
   end
 
   test "deliver returns an http response" do
-    Noticed::Base.any_instance.stubs(:vonage_format).returns({
-      api_key: "a",
-      api_secret: "b",
-      from: "c",
-      text: "d",
-      to: "e",
-      type: "unicode"
-    })
     args = {
-      notification_class: "Noticed::Base",
+      notification_class: "::VonageTest::VonageExample",
       recipient: user,
-      options: {format: :vonage_format}
+      options: {format: :to_vonage}
     }
-    e = assert_raises(Noticed::ResponseUnsuccessful) {
-      Noticed::DeliveryMethods::Vonage.new.perform(args)
-    }
+    response = Noticed::DeliveryMethods::Vonage.new.perform(args)
 
-    assert_kind_of HTTP::Response, e.response
+    assert_kind_of HTTP::Response, response
   end
 end

@@ -31,11 +31,13 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Teams" do
-    Noticed::DeliveryMethods::MicrosoftTeams.any_instance.expects(:post)
+    stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/)
     MicrosoftTeamsExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
+    stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/, type: :failure)
+
     e = assert_raises(::Noticed::ResponseUnsuccessful) {
       MicrosoftTeamsExample.new.deliver(user)
     }
@@ -44,16 +46,15 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
   end
 
   test "deliver returns an http response" do
-    Noticed::Base.any_instance.stubs(:teams_url).returns("https://outlook.office.com/webhooks/00000-00000/IncomingWebhook/00000-00000")
-    args = {
-      notification_class: "Noticed::Base",
-      recipient: user,
-      options: {url: :teams_url}
-    }
-    e = assert_raises(Noticed::ResponseUnsuccessful) {
-      Noticed::DeliveryMethods::MicrosoftTeams.new.perform(args)
-    }
+    stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/)
 
-    assert_kind_of HTTP::Response, e.response
+    args = {
+      notification_class: "::MicrosoftTeamsTest::MicrosoftTeamsExample",
+      recipient: user,
+      options: {url: :teams_url, format: :to_teams}
+    }
+    response = Noticed::DeliveryMethods::MicrosoftTeams.new.perform(args)
+
+    assert_kind_of HTTP::Response, response
   end
 end

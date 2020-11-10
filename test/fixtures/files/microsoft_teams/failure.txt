@@ -1,0 +1,19 @@
+HTTP/1.1 403
+cache-control: no-cache
+pragma: no-cache
+content-length: 1
+content-type: text/plain; charset=utf-8
+expires: -1
+request-id: ea4f4a2e-4077-4e46-908b-c4dcf1c5cf78
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-calculatedbetarget: AM9PR07MB7138.eurprd07.prod.outlook.com
+x-backendhttpstatus: 200
+x-aspnet-version: 4.0.30319
+x-cafeserver: AM8P191CA0028.EURP191.PROD.OUTLOOK.COM
+x-beserver: AM9PR07MB7138
+x-proxy-routingcorrectness: 1
+x-proxy-backendserverstatus: 200
+x-powered-by: ASP.NET
+x-feserver: AM8P191CA0028
+x-msedge-ref: Ref A: 75193BF48B8E459C89D7DE54777A06AA Ref B: MAD30EDGE0716 Ref C: 2020-11-09T19:00:35Z
+date: Mon, 09 Nov 2020 19:00:35 GMT

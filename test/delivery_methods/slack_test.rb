@@ -10,11 +10,12 @@ class SlackTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Slack" do
-    Noticed::DeliveryMethods::Slack.any_instance.expects(:post)
+    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
     SlackExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
+    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/, type: :failure)
     e = assert_raises(::Noticed::ResponseUnsuccessful) {
       SlackExample.new.deliver(user)
     }
@@ -22,16 +23,15 @@ class SlackTest < ActiveSupport::TestCase
   end
 
   test "deliver returns an http response" do
-    Noticed::Base.any_instance.stubs(:slack_url).returns("https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX")
+    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
+
     args = {
-      notification_class: "Noticed::Base",
+      notification_class: "::SlackTest::SlackExample",
       recipient: user,
       options: {url: :slack_url}
     }
-    e = assert_raises(Noticed::ResponseUnsuccessful) {
-      Noticed::DeliveryMethods::Slack.new.perform(args)
-    }
+    response = Noticed::DeliveryMethods::Slack.new.perform(args)
 
-    assert_kind_of HTTP::Response, e.response
+    assert_kind_of HTTP::Response, response
   end
 end

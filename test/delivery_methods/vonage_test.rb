@@ -17,11 +17,12 @@ class VonageTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Vonage" do
-    Noticed::DeliveryMethods::Vonage.any_instance.expects(:deliver)
+    stub_delivery_method_request(delivery_method: :vonage, matcher: /rest.nexmo.com/)
     VonageExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
+    stub_delivery_method_request(delivery_method: :vonage, matcher: /rest.nexmo.com/, type: :failure)
     e = assert_raises(::Noticed::ResponseUnsuccessful) {
       VonageExample.new.deliver(user)
     }
@@ -29,23 +30,15 @@ class VonageTest < ActiveSupport::TestCase
   end
 
   test "deliver returns an http response" do
-    Noticed::Base.any_instance.stubs(:vonage_format).returns({
-      api_key: "a",
-      api_secret: "b",
-      from: "c",
-      text: "d",
-      to: "e",
-      type: "unicode"
-    })
-    args = {
-      notification_class: "Noticed::Base",
-      recipient: user,
-      options: {format: :vonage_format}
-    }
-    e = assert_raises(Noticed::ResponseUnsuccessful) {
-      Noticed::DeliveryMethods::Vonage.new.perform(args)
-    }
+    stub_delivery_method_request(delivery_method: :vonage, matcher: /rest.nexmo.com/)
 
-    assert_kind_of HTTP::Response, e.response
+    args = {
+      notification_class: "::VonageTest::VonageExample",
+      recipient: user,
+      options: {format: :to_vonage}
+    }
+    response = Noticed::DeliveryMethods::Vonage.new.perform(args)
+
+    assert_kind_of HTTP::Response, response
   end
 end

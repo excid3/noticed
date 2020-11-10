@@ -21,7 +21,7 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
 end
 
 require "minitest/unit"
-require "mocha/minitest"
+require "webmock/minitest"
 
 class ExampleNotification < Noticed::Base
   class_attribute :callback_responses, default: []
@@ -50,5 +50,9 @@ class ActiveSupport::TestCase
 
   def make_notification(params)
     ExampleNotification.with(params)
+  end
+
+  def stub_delivery_method_request(method: :post, matcher:, delivery_method:, type: :success)
+    stub_request(method, matcher).to_return(File.new(file_fixture("#{delivery_method}/#{type}.txt")))
   end
 end

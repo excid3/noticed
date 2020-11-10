@@ -52,7 +52,7 @@ class ActiveSupport::TestCase
     ExampleNotification.with(params)
   end
 
-  def stub_delivery_method_request(matcher:, delivery_method:, method: :post, type: :success)
+  def stub_delivery_method_request(delivery_method:, matcher:, method: :post, type: :success)
     stub_request(method, matcher).to_return(File.new(file_fixture("#{delivery_method}/#{type}.txt")))
   end
 end

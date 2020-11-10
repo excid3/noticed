@@ -1,10 +1,6 @@
 require "test_helper"
 
 class SlackTest < ActiveSupport::TestCase
-  setup do
-    stub_request(:post, /hooks.slack.com/).to_return(File.new(file_fixture("slack.txt")))
-  end
-
   class SlackExample < Noticed::Base
     deliver_by :slack, debug: true, url: :slack_url
 
@@ -14,19 +10,21 @@ class SlackTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Slack" do
+    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
     SlackExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
-    without_webmock do
-      e = assert_raises(::Noticed::ResponseUnsuccessful) {
-        SlackExample.new.deliver(user)
-      }
-      assert_equal HTTP::Response, e.response.class
-    end
+    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/, type: :failure)
+    e = assert_raises(::Noticed::ResponseUnsuccessful) {
+      SlackExample.new.deliver(user)
+    }
+    assert_equal HTTP::Response, e.response.class
   end
 
   test "deliver returns an http response" do
+    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
+
     args = {
       notification_class: "::SlackTest::SlackExample",
       recipient: user,

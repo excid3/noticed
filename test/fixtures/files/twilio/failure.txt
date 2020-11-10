@@ -1,0 +1,18 @@
+HTTP/1.1 403
+Date: Mon, 09 Nov 2020 17:49:49 GMT
+Content-Type: application/json
+Content-Length: 821
+Connection: keep-alive
+Twilio-Concurrent-Requests: 1
+Twilio-Request-Id: rcfgo3MAij1kMIb50j8mQBQ9kIp0vcsp
+Twilio-Request-Duration: 0.113
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Headers: Accept, Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since
+Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS
+Access-Control-Expose-Headers: ETag
+Access-Control-Allow-Credentials: true
+X-Powered-By: AT-5000
+X-Shenanigans: none
+X-Home-Region: us1
+X-API-Domain: api.twilio.com
+Strict-Transport-Security: max-age=31536000

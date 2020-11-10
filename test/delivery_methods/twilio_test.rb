@@ -1,10 +1,6 @@
 require "test_helper"
 
 class TwilioTest < ActiveSupport::TestCase
-  setup do
-    stub_request(:post, /api.twilio.com/).to_return(File.new(file_fixture("twilio.txt")))
-  end
-
   class TwilioExample < Noticed::Base
     deliver_by :twilio, credentials: :twilio_creds, debug: true # , ignore_failure: true
 
@@ -18,19 +14,21 @@ class TwilioTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Twilio" do
+    stub_delivery_method_request(delivery_method: :twilio, matcher: /api.twilio.com/)
     TwilioExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
-    without_webmock do
-      e = assert_raises(::Noticed::ResponseUnsuccessful) {
-        TwilioExample.new.deliver(user)
-      }
-      assert_equal HTTP::Response, e.response.class
-    end
+    stub_delivery_method_request(delivery_method: :twilio, matcher: /api.twilio.com/, type: :failure)
+    e = assert_raises(::Noticed::ResponseUnsuccessful) {
+      TwilioExample.new.deliver(user)
+    }
+    assert_equal HTTP::Response, e.response.class
   end
 
   test "deliver returns an http response" do
+    stub_delivery_method_request(delivery_method: :twilio, matcher: /api.twilio.com/)
+
     args = {
       notification_class: "::TwilioTest::TwilioExample",
       recipient: user,

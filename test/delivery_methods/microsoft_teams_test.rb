@@ -1,10 +1,6 @@
 require "test_helper"
 
 class MicrosoftTeamsTest < ActiveSupport::TestCase
-  setup do
-    stub_request(:post, /outlook.office.com/).to_return(File.new(file_fixture("microsoft_teams.txt")))
-  end
-
   class MicrosoftTeamsExample < Noticed::Base
     deliver_by :microsoft_teams, debug: true, url: :teams_url, format: :to_teams
 
@@ -35,20 +31,23 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Teams" do
+    stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/)
     MicrosoftTeamsExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
-    without_webmock do
-      e = assert_raises(::Noticed::ResponseUnsuccessful) {
-        MicrosoftTeamsExample.new.deliver(user)
-      }
+    stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/, type: :failure)
 
-      assert_equal HTTP::Response, e.response.class
-    end
+    e = assert_raises(::Noticed::ResponseUnsuccessful) {
+      MicrosoftTeamsExample.new.deliver(user)
+    }
+
+    assert_equal HTTP::Response, e.response.class
   end
 
   test "deliver returns an http response" do
+    stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/)
+
     args = {
       notification_class: "::MicrosoftTeamsTest::MicrosoftTeamsExample",
       recipient: user,

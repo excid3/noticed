@@ -21,7 +21,6 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
 end
 
 require "minitest/unit"
-require "mocha/minitest"
 require "webmock/minitest"
 
 class ExampleNotification < Noticed::Base
@@ -53,10 +52,7 @@ class ActiveSupport::TestCase
     ExampleNotification.with(params)
   end
 
-  def without_webmock
-    WebMock.disable!
-    yield if block_given?
-  ensure
-    WebMock.enable!
+  def stub_delivery_method_request(method: :post, matcher:, delivery_method:, type: :success)
+    stub_request(method, matcher).to_return(File.new(file_fixture("#{delivery_method}/#{type}.txt")))
   end
 end

@@ -1,10 +1,6 @@
 require "test_helper"
 
 class VonageTest < ActiveSupport::TestCase
-  setup do
-    stub_request(:post, /rest.nexmo.com/).to_return(File.new(file_fixture("vonage.txt")))
-  end
-
   class VonageExample < Noticed::Base
     deliver_by :vonage, format: :to_vonage, debug: true
 
@@ -21,19 +17,21 @@ class VonageTest < ActiveSupport::TestCase
   end
 
   test "sends a POST to Vonage" do
+    stub_delivery_method_request(delivery_method: :vonage, matcher: /rest.nexmo.com/)
     VonageExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do
-    without_webmock do
-      e = assert_raises(::Noticed::ResponseUnsuccessful) {
-        VonageExample.new.deliver(user)
-      }
-      assert_equal HTTP::Response, e.response.class
-    end
+    stub_delivery_method_request(delivery_method: :vonage, matcher: /rest.nexmo.com/, type: :failure)
+    e = assert_raises(::Noticed::ResponseUnsuccessful) {
+      VonageExample.new.deliver(user)
+    }
+    assert_equal HTTP::Response, e.response.class
   end
 
   test "deliver returns an http response" do
+    stub_delivery_method_request(delivery_method: :vonage, matcher: /rest.nexmo.com/)
+
     args = {
       notification_class: "::VonageTest::VonageExample",
       recipient: user,

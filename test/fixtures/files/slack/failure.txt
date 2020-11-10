@@ -1,0 +1,11 @@
+HTTP/1.1 403
+date: Mon, 09 Nov 2020 12:14:30 GMT
+server: Apache
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-slack-backend: r
+access-control-allow-origin: *
+x-frame-options: SAMEORIGIN
+referrer-policy: no-referrer
+vary: Accept-Encoding
+content-type: text/html
+x-via: haproxy-www-2n6w,haproxy-edge-fra-9k3b

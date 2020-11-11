@@ -1,6 +1,10 @@
 require "test_helper"
 
 class DatabaseTest < ActiveSupport::TestCase
+  class WithDelayedDatabaseDelivery < Noticed::Base
+    deliver_by :database, delay: 5.minutes
+  end
+
   test "writes to database" do
     notification = CommentNotification.with(foo: :bar)
 
@@ -40,5 +44,11 @@ class DatabaseTest < ActiveSupport::TestCase
     record = Noticed::DeliveryMethods::Database.new.perform(args)
 
     assert_kind_of ActiveRecord::Base, record
+  end
+
+  test "delay option is not provided" do
+    assert_raises ArgumentError do
+      WithDelayedDatabaseDelivery.new.deliver(user)
+    end
   end
 end

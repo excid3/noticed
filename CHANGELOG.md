@@ -1,5 +1,7 @@
 ### Unreleased
 
+* [FIX] Database delivery can't be delayed, otherwise the database record won't be available for the other deliveries - @rbague
+
 ### 1.2.18
 
 * [NEW] Add `delay` option to delay the delivery of a specific delivery method - @rbague

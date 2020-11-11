@@ -1,6 +1,14 @@
 require "test_helper"
 
 class DatabaseTest < ActiveSupport::TestCase
+  class JustDatabaseDelivery < Noticed::Base
+    deliver_by :database
+  end
+
+  class WithDelayedDatabaseDelivery < Noticed::Base
+    deliver_by :database, delay: 5.minutes
+  end
+
   test "writes to database" do
     notification = CommentNotification.with(foo: :bar)
 
@@ -10,6 +18,13 @@ class DatabaseTest < ActiveSupport::TestCase
 
     assert_equal 1, user.notifications.count
     assert_equal :bar, user.notifications.last.params[:foo]
+  end
+
+  test "delivery is executed but not enqueued" do
+    assert_difference "Notification.count" do
+      JustDatabaseDelivery.new.deliver_later(user)
+      assert_enqueued_jobs 0
+    end
   end
 
   test "writes to custom params database" do
@@ -40,5 +55,11 @@ class DatabaseTest < ActiveSupport::TestCase
     record = Noticed::DeliveryMethods::Database.new.perform(args)
 
     assert_kind_of ActiveRecord::Base, record
+  end
+
+  test "delay option is not provided" do
+    assert_raises ArgumentError do
+      WithDelayedDatabaseDelivery.new.deliver(user)
+    end
   end
 end

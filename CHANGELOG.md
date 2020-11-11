@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 1.2.19
+
 * [FIX] Database delivery can't be delayed, otherwise the database record won't be available for the other deliveries - @rbague
 
 ### 1.2.18

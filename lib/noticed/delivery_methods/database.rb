@@ -8,7 +8,7 @@ module Noticed
 
       def self.validate!(options)
         super
-        
+
         # Must be executed right away so the other deliveries can access the db record
         raise ArgumentError, "database delivery cannot be delayed" if options.key?(:delay)
       end

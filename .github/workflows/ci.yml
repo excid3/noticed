@@ -10,6 +10,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [ '2.7', '2.6' ]
+
     services:
       postgres:
         image: postgres:12

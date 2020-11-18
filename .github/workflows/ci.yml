@@ -35,9 +35,9 @@ jobs:
         uses: actions/cache@v1
         with:
           path: vendor/bundle
-          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-${{ matrix.ruby }}-gem-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-gem-
+            ${{ runner.os }}-${{ matrix.ruby }}-gem-
 
       - name: Install dependencies
         run: |
@@ -45,7 +45,8 @@ jobs:
           sudo apt-get install libsqlite3-dev
           gem update --system
           gem install bundler
-          bundle install --path vendor/bundle --jobs 4 --retry 3
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
 
       - name: StandardRb check
         run: bundle exec standardrb

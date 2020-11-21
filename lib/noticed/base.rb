@@ -103,7 +103,7 @@ module Noticed
         # Always perfrom later if a delay is present
         if (delay = delivery_method.dig(:options, :delay) || wait = @set_options.dig(:wait))
           method.set(wait: delay.to_i + wait.to_i).perform_later(args)
-        elsif(wait_until = @set_options.dig(:wait_until))
+        elsif (wait_until = @set_options.dig(:wait_until))
           method.set(wait_until: wait_until).perform_later(args)
         elsif enqueue
           method.perform_later(args)

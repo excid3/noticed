@@ -10,7 +10,7 @@ module Noticed
     class_attribute :param_names, instance_writer: false, default: []
 
     # Gives notifications access to the record and recipient when formatting for delivery
-    attr_accessor :record, :recipient
+    attr_accessor :record, :recipient, :set_options
 
     class << self
       def deliver_by(name, options = {})
@@ -27,6 +27,10 @@ module Noticed
 
       def with(params)
         new(params)
+      end
+
+      def set(**options)
+        @set_options = args
       end
 
       def params(*names)
@@ -97,8 +101,10 @@ module Noticed
         method = delivery_method_for(delivery_method[:name], delivery_method[:options])
 
         # Always perfrom later if a delay is present
-        if (delay = delivery_method.dig(:options, :delay))
-          method.set(wait: delay).perform_later(args)
+        if (delay = delivery_method.dig(:options, :delay) || wait = @set_options.dig(:wait))
+          method.set(wait: delay.to_i + wait.to_i).perform_later(args)
+        elsif(wait_until = @set_options.dig(:wait_until))
+          method.set(wait_until: wait_until).perform_later(args)
         elsif enqueue
           method.perform_later(args)
         else

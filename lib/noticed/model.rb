@@ -14,7 +14,7 @@ module Noticed
       scope :read, -> { where.not(read_at: nil) }
     end
 
-    module ClassMethods
+    class_methods do
       def mark_as_read!
         update_all(read_at: Time.current, updated_at: Time.current)
       end

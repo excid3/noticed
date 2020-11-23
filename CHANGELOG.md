@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.2.20
+
+* [NEW] Add `Notification.mark_as_unread!` class method - @excid3
+
 ### 1.2.19
 
 * [FIX] Database delivery can't be delayed, otherwise the database record won't be available for the other deliveries - @rbague

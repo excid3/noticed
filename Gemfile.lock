@@ -11,7 +11,7 @@ GIT
 PATH
   remote: .
   specs:
-    noticed (1.2.19)
+    noticed (1.2.20)
       http (>= 4.0.0)
       rails (>= 6.0.0)
 
@@ -83,7 +83,7 @@ GEM
     crass (1.0.6)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    erubi (1.9.0)
+    erubi (1.10.0)
     ffi (1.13.1)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
@@ -99,8 +99,8 @@ GEM
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
-    http-parser (1.2.1)
-      ffi-compiler (>= 1.0, < 2.0)
+    http-parser (1.2.2)
+      ffi-compiler
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     loofah (2.7.0)

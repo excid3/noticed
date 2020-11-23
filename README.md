@@ -464,10 +464,19 @@ Sorting notifications by newest first:
 user.notifications.newest_first
 ```
 
-Marking all notifications as read:
+Query for read or unread notifications:
+
+```ruby
+user.notifications.read
+user.notifications.unread
+```
+
+
+Marking all notifications as read or unread:
 
 ```ruby
 user.notifications.mark_as_read!
+user.notifications.mark_as_unread!
 ```
 
 #### Instance methods

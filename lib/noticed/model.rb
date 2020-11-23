@@ -19,6 +19,10 @@ module Noticed
         update_all(read_at: Time.current, updated_at: Time.current)
       end
 
+      def mark_as_unread!
+        update_all(read_at: nil, updated_at: Time.current)
+      end
+
       def noticed_coder
         case attribute_types["params"].type
         when :json, :jsonb

@@ -80,8 +80,18 @@ class Noticed::Test < ActiveSupport::TestCase
     assert_equal user, notification.params[:user]
   end
 
+  test "stores data in set_options" do
+    notification = make_notification_with_set(wait_until: Date.tomorrow.noon, queue: :some_queue)
+    assert_equal Date.tomorrow.noon, notification.set_options[:wait_until]
+    assert_equal :some_queue, notification.set_options[:queue]
+  end
+
   test "can deliver a notification" do
     assert make_notification(foo: :bar).deliver(user)
+  end
+
+  test "can deliver a notification with set options" do
+    assert make_notification_with_set(wait_until: Date.tomorrow.noon).deliver(user)
   end
 
   test "enqueues notification jobs (skipping database)" do

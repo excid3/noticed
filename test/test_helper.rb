@@ -52,6 +52,10 @@ class ActiveSupport::TestCase
     ExampleNotification.with(params)
   end
 
+  def make_notification_with_set(options)
+    ExampleNotification.with(foo: "bar").set(options)
+  end
+
   def stub_delivery_method_request(delivery_method:, matcher:, method: :post, type: :success)
     stub_request(method, matcher).to_return(File.new(file_fixture("#{delivery_method}/#{type}.txt")))
   end

@@ -91,7 +91,9 @@ class Noticed::Test < ActiveSupport::TestCase
   end
 
   test "can deliver a notification with set options" do
-    assert make_notification_with_set(wait_until: Date.tomorrow.noon).deliver(user)
+    assert_enqueued_jobs 1 do
+      make_notification_with_set(wait_until: Date.tomorrow.noon).deliver_later(user)
+    end
   end
 
   test "enqueues notification jobs (skipping database)" do
@@ -175,6 +177,24 @@ class Noticed::Test < ActiveSupport::TestCase
   test "asserts delivery is delayed" do
     assert_enqueued_with(at: 5.minutes.from_now) do
       With5MinutesDelay.new.deliver(user)
+    end
+  end
+
+  test "asset delivery is delayed when using set" do
+    assert_enqueued_with(at: 5.minutes.from_now) do
+      make_notification_with_set(wait: 5.minutes).deliver_later(user)
+    end
+  end
+
+  test "asset enqueued at specified time" do
+    assert_enqueued_with(at: Date.tomorrow.noon) do
+      make_notification_with_set(wait_until: Date.tomorrow.noon).deliver_later(user)
+    end
+  end
+
+  test "assert enqueued with specified queue" do
+    assert_enqueued_with(queue: "urgent") do
+      make_notification_with_set(queue: "urgent").deliver_later(user)
     end
   end
 end

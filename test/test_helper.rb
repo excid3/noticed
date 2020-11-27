@@ -53,7 +53,7 @@ class ActiveSupport::TestCase
   end
 
   def make_notification_with_set(options)
-    ExampleNotification.with(foo: "bar").set(options)
+    ExampleNotification.with(foo: :bar).set(options)
   end
 
   def stub_delivery_method_request(delivery_method:, matcher:, method: :post, type: :success)

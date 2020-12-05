@@ -354,6 +354,33 @@ Sends an SMS notification via Vonage / Nexmo.
   }
   ```
 
+### Fallback Notifications
+
+A common pattern is to deliver a notification via the database and then, after some time has passed, email the user if they have not yet read the notification. You can implement this functionality by combining multiple delivery methods, the `delay` option, and the conditional `if` / `unless` option.
+
+```ruby
+class CommentNotification < Noticed::Base
+  deliver_by :database
+  deliver_by :email, mailer: 'CommentMailer', delay: 15.minutes, unless: :read?
+end
+```
+
+Here a notification will be created immediately in the database (for display directly in your app). If the notification has not been read after 15 minutes, the email notification will be sent. If the notification has already been read in the app, the email will be skipped.
+
+You can also configure multiple fallback options:
+
+```ruby
+class CriticalSystemNotification < Noticed::Base
+  deliver_by :slack
+  deliver_by :email, mailer: 'CriticalSystemMailer', delay: 10.minutes, unless: :read?
+  deliver_by :twilio, delay: 20.minutes, unless: :read?
+end
+```
+
+In this scenario, you can create an escalating notification that starts with a ping in Slack, then emails the team, and then finally sends an SMS to the on-call phone.
+
+You can mix and match the options and delivery methods to suit your application specific needs. 
+
 ### 🚚 Custom Delivery Methods
 
 To generate a custom delivery method, simply run

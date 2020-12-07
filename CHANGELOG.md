@@ -1,5 +1,10 @@
 ### Unreleased
 
+### 1.2.21
+
+* [NEW] Delegate `read?` and `unread?` in notification objects to the database record - @excid3
+* [NEW] Always merge `recipient` and `record` into email params - @silva96
+
 ### 1.2.20
 
 * [NEW] Add `Notification.mark_as_unread!` class method - @excid3

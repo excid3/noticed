@@ -11,7 +11,7 @@ GIT
 PATH
   remote: .
   specs:
-    noticed (1.2.20)
+    noticed (1.2.21)
       http (>= 4.0.0)
       rails (>= 6.0.0)
 
@@ -103,7 +103,7 @@ GEM
       ffi-compiler
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
-    loofah (2.7.0)
+    loofah (2.8.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -197,7 +197,7 @@ GEM
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.4.1)
+    zeitwerk (2.4.2)
 
 PLATFORMS
   ruby

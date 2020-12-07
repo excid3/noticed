@@ -18,14 +18,12 @@ module Noticed
       end
 
       def format
-        if (method = options[:format])
+        params = if (method = options[:format])
           notification.send(method)
         else
-          notification.params.merge(
-            recipient: recipient,
-            record: record
-          )
+          notification.params
         end
+        params.merge(recipient: recipient, record: record)
       end
     end
   end

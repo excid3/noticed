@@ -12,6 +12,8 @@ module Noticed
     # Gives notifications access to the record and recipient when formatting for delivery
     attr_accessor :record, :recipient
 
+    delegate :read?, :unread?, to: :record
+
     class << self
       def deliver_by(name, options = {})
         delivery_methods.push(name: name, options: options)

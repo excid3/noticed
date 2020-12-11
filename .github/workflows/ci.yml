@@ -9,13 +9,11 @@ on:
     branches:
       - master
 jobs:
-
-  # MySQL
   mysql:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.6', '2.7', 'head']
+        ruby: ['2.6', '2.7']
 
     services:
       mysql:
@@ -44,6 +42,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install libsqlite3-dev
+          gem update --system
           gem install bundler
           bundle install --jobs 4 --retry 3
           bundle exec appraisal install
@@ -57,12 +58,12 @@ jobs:
         run: |
           bundle exec appraisal rake
 
-  # Postgres
+
   postgres:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.6', '2.7', 'head']
+        ruby: ['2.6', '2.7']
 
     services:
       postgres:
@@ -91,6 +92,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install libsqlite3-dev
+          gem update --system
           gem install bundler
           bundle install --jobs 4 --retry 3
           bundle exec appraisal install
@@ -104,12 +108,12 @@ jobs:
         run: |
           bundle exec appraisal rake
 
-  # SQLite
+
   sqlite:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.6', '2.7', 'head']
+        ruby: ['2.6', '2.7']
     steps:
       - uses: actions/checkout@master
 

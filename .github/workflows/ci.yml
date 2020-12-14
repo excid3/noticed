@@ -1,3 +1,4 @@
+---
 name: Tests
 
 on:
@@ -8,12 +9,106 @@ on:
     branches:
       - master
 jobs:
+  mysql:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: ['2.6', '2.7']
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MSQL_DATABASE: my_sql_test_db
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Ruby ${{ matrix.ruby }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+
+      - name: Cache gems
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-${{ matrix.ruby }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.ruby }}-gem-
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+          bundle exec appraisal install
+      - name: StandardRb check
+        run: bundle exec standardrb
+
+      - name: Run tests
+        env:
+          DATABASE_URL: mysql2://root:password@127.0.0.1:3306/my_sql_test_db
+          RAILS_ENV: test
+        run: |
+          cp test/dummy/config/mysql_database.yml.ci test/dummy/config/database.yml
+          bundle exec appraisal rake
+
+
+  postgres:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: ['2.6', '2.7']
+
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: noticed_test
+        ports: ['5432:5432']
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Ruby ${{ matrix.ruby }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+
+      - name: Cache gems
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-${{ matrix.ruby }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.ruby }}-gem-
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+          bundle exec appraisal install
+      - name: StandardRb check
+        run: bundle exec standardrb
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgres://postgres:password@localhost:5432/noticed_test
+          RAILS_ENV: test
+        run: |
+          bundle exec appraisal rake
+
+
   sqlite:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.6', '2.7', 'head']
-
+        ruby: ['2.6', '2.7']
     steps:
       - uses: actions/checkout@master
 
@@ -36,111 +131,14 @@ jobs:
           sudo apt-get install libsqlite3-dev
           gem update --system
           gem install bundler
-          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
-
+          bundle exec appraisal install
       - name: StandardRb check
         run: bundle exec standardrb
 
       - name: Run tests
         env:
-          DATABASE_URL: sqlite://noticed_test
           RAILS_ENV: test
         run: |
-          bundle exec appraisal install
-
-  mysql:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby: [ '2.6', '2.7', 'head']
-
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          MSQL_DATABASE: test
-        ports: ['3306:3306']
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    steps:
-      - uses: actions/checkout@master
-
-      - name: Set up Ruby ${{ matrix.ruby }}
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-
-      - name: Cache gems
-        uses: actions/cache@v1
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.ruby }}-gem-
-
-      - name: Install dependencies
-        run: |
-          gem update --system
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-
-      - name: StandardRb check
-        run: bundle exec standardrb
-
-      - name: Run tests
-        env:
-          DATABASE_URL: mysql2://root:password@127.0.0.1:3306/test
-          RAILS_ENV: test
-        run: |
-          bundle exec appraisal install
-
-  postgres:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby: [ '2.6', '2.7', 'head']
-
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: test
-        ports: ['5432:5432']
-
-    steps:
-      - uses: actions/checkout@master
-
-      - name: Set up Ruby ${{ matrix.ruby }}
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-
-      - name: Cache gems
-        uses: actions/cache@v1
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.ruby }}-gem-
-
-      - name: Install dependencies
-        run: |
-          gem update --system
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-
-      - name: StandardRb check
-        run: bundle exec standardrb
-
-      - name: Run tests
-        env:
-          DATABASE_URL: postgres://postgres:password@localhost:5432/test
-          RAILS_ENV: test
-        run: |
-          bundle exec appraisal install
+          cp test/dummy/config/sqlite_database.yml.ci test/dummy/config/database.yml
+          bundle exec appraisal rake

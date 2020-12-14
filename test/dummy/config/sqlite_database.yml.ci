@@ -1,0 +1,7 @@
+---
+default: &default
+  adapter: sqlite3
+
+test:
+  <<: *default
+  database: db/test.sqlite3

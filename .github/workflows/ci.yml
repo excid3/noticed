@@ -26,70 +26,20 @@ jobs:
       - name: Run StandardRB
         run: bundle exec standardrb --format progress
 
-
-  # SQLITE
-  sqlite:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby: ['2.5', '2.6', '2.7']
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Ruby ${{ matrix.ruby }}
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-
-      - name: Run tests
-        env:
-          RAILS_ENV: test
-        run: |
-          gem update --system
-          bundle exec appraisal install
-          bundle exec appraisal rake
-
-
-  # MYSQL
-  mysql:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        ruby: ['2.5', '2.6', '2.7']
-
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          MSQL_DATABASE: test
-        ports: ['3306:3306']
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Ruby ${{ matrix.ruby }}
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-
-      - name: Run tests
-        env:
-          DATABASE_URL: mysql2://root:password@127.0.0.1:3306/test
-          RAILS_ENV: test
-        run: |
-          gem update --system
-          bundle exec appraisal install
-          bundle exec appraisal rake
-
-
   # POSTGRES
   postgres:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         ruby: ['2.5', '2.6', '2.7']
+        gemfile:
+          - rails_5
+          - rails_6
+          - rails_6_1
+          - rails_master
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
+      BUNDLE_PATH_RELATIVE_TO_CWD: true
 
     services:
       postgres:
@@ -113,6 +63,4 @@ jobs:
           DATABASE_URL: postgres://postgres:password@localhost:5432/test
           RAILS_ENV: test
         run: |
-          gem update --system
-          bundle exec appraisal install
-          bundle exec appraisal rake
+          bundle exec rake

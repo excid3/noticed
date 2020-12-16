@@ -63,4 +63,5 @@ jobs:
           DATABASE_URL: postgres://postgres:password@localhost:5432/test
           RAILS_ENV: test
         run: |
+          bundle exec rake db:migrate
           bundle exec rake

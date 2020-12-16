@@ -33,7 +33,6 @@ jobs:
       matrix:
         ruby: ['2.5', '2.6', '2.7']
         gemfile:
-          - rails_5
           - rails_6
           - rails_6_1
           - rails_master
@@ -62,5 +61,4 @@ jobs:
         env:
           DATABASE_URL: postgres://postgres:password@localhost:5432/test
           RAILS_ENV: test
-        run: |
-          bundle exec bin/rails test
+        run: bundle exec rake

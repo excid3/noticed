@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails", ">= 6.0.0"
   spec.add_dependency "http", ">= 4.0.0"
 
+  spec.add_development_dependency "appraisal"
   spec.add_development_dependency "pg"
   spec.add_development_dependency "standard"
   spec.add_development_dependency "webmock"

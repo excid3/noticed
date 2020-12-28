@@ -36,7 +36,7 @@ jobs:
 
       - name: Run tests
         env:
-          DATABASE_URL: sqlite3::memory:
+          DATABASE_URL: "sqlite3::memory:"
           RAILS_ENV: test
         run: |
           bundle exec rake

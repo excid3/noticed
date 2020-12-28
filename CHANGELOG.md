@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Add Ruby 3.0 to CI
+
 ### 1.2.21
 
 * [NEW] Delegate `read?` and `unread?` in notification objects to the database record - @excid3

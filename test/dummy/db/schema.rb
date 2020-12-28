@@ -45,7 +45,11 @@ ActiveRecord::Schema.define(version: 2020_08_03_191250) do
     t.string "recipient_type", null: false
     t.bigint "recipient_id", null: false
     t.string "type"
-    t.jsonb "params"
+    if t.respond_to? :jsonb
+      t.jsonb "params"
+    else
+      t.json "params"
+    end
     t.datetime "read_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

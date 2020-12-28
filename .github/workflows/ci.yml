@@ -36,10 +36,11 @@ jobs:
 
       - name: Run tests
         env:
-          DATABASE_URL: "sqlite3::memory:"
+          DATABASE_URL: "sqlite3:noticed_test"
           RAILS_ENV: test
         run: |
-          bundle exec rake
+          bundle exec rails db:test:prepare
+          bundle exec rails test
 
   mysql:
     runs-on: ubuntu-latest
@@ -81,7 +82,8 @@ jobs:
           DATABASE_URL: mysql2://root:password@127.0.0.1:3306/test
           RAILS_ENV: test
         run: |
-          bundle exec rake
+          bundle exec rails db:test:prepare
+          bundle exec rails test
 
   postgres:
     runs-on: ubuntu-latest
@@ -123,4 +125,5 @@ jobs:
           DATABASE_URL: postgres://postgres:password@localhost:5432/test
           RAILS_ENV: test
         run: |
-          bundle exec rake
+          bundle exec rails db:test:prepare
+          bundle exec rails test

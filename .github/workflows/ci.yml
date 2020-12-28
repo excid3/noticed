@@ -14,7 +14,6 @@ jobs:
       matrix:
         ruby: [ '2.6', '2.7', '3.0']
         gemfile:
-          - rails_5
           - rails_6
           - rails_6_1
           - rails_master
@@ -48,7 +47,6 @@ jobs:
       matrix:
         ruby: [ '2.6', '2.7', '3.0']
         gemfile:
-          - rails_5
           - rails_6
           - rails_6_1
           - rails_master
@@ -91,7 +89,6 @@ jobs:
       matrix:
         ruby: [ '2.6', '2.7', '3.0']
         gemfile:
-          - rails_5
           - rails_6
           - rails_6_1
           - rails_master

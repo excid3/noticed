@@ -13,79 +13,66 @@ jobs:
     strategy:
       matrix:
         ruby: [ '2.6', '2.7', '3.0']
+        gemfile:
+          - rails_6
+          - rails_6_1
+          - rails_master
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
+      BUNDLE_PATH_RELATIVE_TO_CWD: true
 
     steps:
       - uses: actions/checkout@master
 
-      - name: Set up Ruby ${{ matrix.ruby }}
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-
-      - name: Cache gems
-        uses: actions/cache@v1
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.ruby }}-gem-
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install libsqlite3-dev
-          gem update --system
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+          bundler: default
+          bundler-cache: true
 
       - name: StandardRb check
         run: bundle exec standardrb
 
       - name: Run tests
         env:
-          DATABASE_URL: sqlite://noticed_test
+          DATABASE_URL: "sqlite3:noticed_test"
           RAILS_ENV: test
         run: |
-          bundle exec appraisal install
+          bundle exec rails db:test:prepare
+          bundle exec rails test
 
   mysql:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.6', '2.7', 'head']
+        ruby: [ '2.6', '2.7', '3.0']
+        gemfile:
+          - rails_6
+          - rails_6_1
+          - rails_master
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
+      BUNDLE_PATH_RELATIVE_TO_CWD: true
 
     services:
       mysql:
         image: mysql:8
         env:
           MYSQL_ROOT_PASSWORD: password
-          MSQL_DATABASE: test
+          MYSQL_DATABASE: test
         ports: ['3306:3306']
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@master
 
-      - name: Set up Ruby ${{ matrix.ruby }}
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-
-      - name: Cache gems
-        uses: actions/cache@v1
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.ruby }}-gem-
-
-      - name: Install dependencies
-        run: |
-          gem update --system
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+          bundler: default
+          bundler-cache: true
 
       - name: StandardRb check
         run: bundle exec standardrb
@@ -95,13 +82,21 @@ jobs:
           DATABASE_URL: mysql2://root:password@127.0.0.1:3306/test
           RAILS_ENV: test
         run: |
-          bundle exec appraisal install
+          bundle exec rails db:test:prepare
+          bundle exec rails test
 
   postgres:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.6', '2.7', 'head']
+        ruby: [ '2.6', '2.7', '3.0']
+        gemfile:
+          - rails_6
+          - rails_6_1
+          - rails_master
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
+      BUNDLE_PATH_RELATIVE_TO_CWD: true
 
     services:
       postgres:
@@ -115,25 +110,12 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: Set up Ruby ${{ matrix.ruby }}
+      - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-
-      - name: Cache gems
-        uses: actions/cache@v1
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-${{ matrix.ruby }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.ruby }}-gem-
-
-      - name: Install dependencies
-        run: |
-          gem update --system
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+          bundler: default
+          bundler-cache: true
 
       - name: StandardRb check
         run: bundle exec standardrb
@@ -143,4 +125,5 @@ jobs:
           DATABASE_URL: postgres://postgres:password@localhost:5432/test
           RAILS_ENV: test
         run: |
-          bundle exec appraisal install
+          bundle exec rails db:test:prepare
+          bundle exec rails test

@@ -562,7 +562,9 @@ end
 
 If your notification is only associated with one model or you're using a `text` column for your params column , then a polymorphic association is what you'll want to use.
 
-1. Add a polymorphic association to the Notification model. `rails g migration AddNotifiableToNotifications notifiable:belongs_to{polymorphic}`
+1. Generate a polymorphic association for the Notification model. `rails g migration AddNotifiableToNotifications notifiable:belongs_to{polymorphic}`
+    
+    a. Make sure to add the association to the model: `belongs_to :notifiable, polymorphic: true`
 
 2. Add `has_many :notifications, as: :notifiable, dependent: :destroy` to each model
 

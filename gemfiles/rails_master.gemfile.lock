@@ -188,6 +188,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    sqlite3 (1.4.2)
     standard (0.9.0)
       rubocop (= 1.2.0)
       rubocop-performance (= 1.8.1)
@@ -217,6 +218,7 @@ DEPENDENCIES
   noticed!
   pg
   rails!
+  sqlite3
   standard
   webmock
 

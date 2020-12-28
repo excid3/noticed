@@ -23,4 +23,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "standard"
   spec.add_development_dependency "webmock"
   spec.add_development_dependency "mysql2"
+  spec.add_development_dependency "sqlite3"
 end

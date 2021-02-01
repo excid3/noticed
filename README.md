@@ -576,9 +576,9 @@ If your notification is only associated with one model or you're using a `text` 
 
      def format_for_database
        {
-         notifiable: params.delete(:post),
+         notifiable: params[:post],
          type: self.class.name,
-         params: params
+         params: params.except(:post)
        }
      end
    end

@@ -265,7 +265,7 @@ Sends a Teams notification via webhook.
 
 * `format: :format_for_teams` - *Optional*
 
-  Use a custom method to define the payload sent to slack. Method should return a Hash.
+  Use a custom method to define the payload sent to Microsoft Teams. Method should return a Hash.
   Documentation for posting via Webhooks available at: https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook
 
   ```ruby

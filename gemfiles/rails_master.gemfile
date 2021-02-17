@@ -4,6 +4,6 @@ source "https://rubygems.org"
 
 gem "byebug", group: [:development, :test]
 gem "appraisal", branch: "fix-bundle-env", git: "https://github.com/excid3/appraisal.git"
-gem "rails", git: "https://github.com/rails/rails.git"
+gem "rails", branch: "main", git: "https://github.com/rails/rails.git"
 
 gemspec path: "../"

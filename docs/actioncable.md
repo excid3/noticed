@@ -2,9 +2,36 @@
 
 ActionCable notifications in noticed are broadcast to the Noticed::NotificationChannel.
 
-By default, we simply send over the `params` as JSON and subscribe to the `current_user` stream.
+By default, we simply send over the `params` as JSON and subscribe to the `current_user` stream. 
+
+This requires `identified_by :current_user` in your ApplicationCable::Connection. For example, using Devise for authentication:
+
+```ruby
+module ApplicationCable
+  class Connection < ActionCable::Connection::Base
+    identified_by :current_user
+
+    def connect
+      self.current_user = find_verified_user
+      logger.add_tags "ActionCable", "User #{current_user.id}"
+    end
+
+    protected
+
+      def find_verified_user
+        if current_user = env['warden'].user
+          current_user
+        else
+          reject_unauthorized_connection
+        end
+      end
+  end
+end
+```
 
 ## Subscribing to the Noticed::NotificationChannel with Javascript
+
+To receive Noticed notifications client-side, you'll need to subscribe to the Noticed::NotificationChannel.
 
 ```javascript
 // app/javascript/channels/notification_channel.js

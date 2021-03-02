@@ -584,6 +584,16 @@ If your notification is only associated with one model or you're using a `text` 
    end
    ```
 
+#### Handling Deleted Records
+
+If you create a notification but delete the associated record, the jobs for sending the notification will not be able to find the record when ActiveJob deserializes. You can discord the job on these errors by adding the following to `ApplicationJob`:
+
+```ruby
+class ApplicationJob < ActiveJob::Base
+  discard_on ActiveJob::DeserializationError
+end
+```
+
 ## 🙏 Contributing
 
 This project uses [Standard](https://github.com/testdouble/standard) for formatting Ruby code. Please make sure to run `standardrb` before submitting pull requests.

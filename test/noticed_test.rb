@@ -75,18 +75,18 @@ end
 
 class Noticed::Test < ActiveSupport::TestCase
   test "stores data in params" do
-    notification = make_notification(foo: :bar, user: user)
+    notification = make_notifier(foo: :bar, user: user)
     assert_equal :bar, notification.params[:foo]
     assert_equal user, notification.params[:user]
   end
 
   test "can deliver a notification" do
-    assert make_notification(foo: :bar).deliver(user)
+    assert make_notifier(foo: :bar).deliver(user)
   end
 
   test "enqueues notification jobs (skipping database)" do
-    assert_enqueued_jobs CommentNotification.delivery_methods.length - 1 do
-      CommentNotification.new.deliver_later(user)
+    assert_enqueued_jobs CommentNotifier.delivery_methods.length - 1 do
+      CommentNotifier.new.deliver_later(user)
     end
   end
 
@@ -129,24 +129,24 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test "runs callbacks on delivery methods" do
     assert_difference "Noticed::DeliveryMethods::Test.callbacks.count" do
-      make_notification(foo: :bar).deliver(user)
+      make_notifier(foo: :bar).deliver(user)
     end
   end
 
   test "can send notifications to multiple recipients" do
     assert User.count >= 2
     assert_difference "Notification.count", User.count do
-      make_notification(foo: :bar).deliver(User.all)
+      make_notifier(foo: :bar).deliver(User.all)
     end
   end
 
   test "assigns record to notification when delivering" do
-    make_notification(foo: :bar).deliver(user)
+    make_notifier(foo: :bar).deliver(user)
     assert_equal Notification.last, Noticed::DeliveryMethods::Test.delivered.last.record
   end
 
   test "assigns recipient to notification when delivering" do
-    make_notification(foo: :bar).deliver(user)
+    make_notifier(foo: :bar).deliver(user)
     assert_equal user, Noticed::DeliveryMethods::Test.delivered.last.recipient
   end
 

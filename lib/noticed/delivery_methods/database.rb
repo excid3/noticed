@@ -21,11 +21,11 @@ module Noticed
 
       def attributes
         if (method = options[:format])
-          notification.send(method)
+          notifier.send(method)
         else
           {
-            type: notification.class.name,
-            params: notification.params
+            type: notifier.class.name,
+            params: notifier.params
           }
         end
       end

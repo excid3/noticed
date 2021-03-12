@@ -9,19 +9,19 @@ module Noticed
 
       def format
         if (method = options[:format])
-          notification.send(method)
+          notifier.send(method)
         else
           {
             From: phone_number,
             To: recipient.phone_number,
-            Body: notification.params[:message]
+            Body: notifier.params[:message]
           }
         end
       end
 
       def url
         if (method = options[:url])
-          notification.send(method)
+          notifier.send(method)
         else
           "https://api.twilio.com/2010-04-01/Accounts/#{account_sid}/Messages.json"
         end
@@ -41,7 +41,7 @@ module Noticed
 
       def credentials
         if (method = options[:credentials])
-          notification.send(method)
+          notifier.send(method)
         else
           Rails.application.credentials.twilio
         end

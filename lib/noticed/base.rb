@@ -88,7 +88,7 @@ module Noticed
     # Actually runs an individual delivery
     def run_delivery_method(delivery_method, recipient:, enqueue:)
       args = {
-        notification_class: self.class.name,
+        notifier_class: self.class.name,
         options: delivery_method[:options],
         params: params,
         recipient: recipient,

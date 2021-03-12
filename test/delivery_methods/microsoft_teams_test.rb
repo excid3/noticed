@@ -49,7 +49,7 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
     stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/)
 
     args = {
-      notification_class: "::MicrosoftTeamsTest::MicrosoftTeamsExample",
+      notifier_class: "::MicrosoftTeamsTest::MicrosoftTeamsExample",
       recipient: user,
       options: {url: :teams_url, format: :to_teams}
     }

@@ -30,7 +30,7 @@ class TwilioTest < ActiveSupport::TestCase
     stub_delivery_method_request(delivery_method: :twilio, matcher: /api.twilio.com/)
 
     args = {
-      notification_class: "::TwilioTest::TwilioExample",
+      notifier_class: "::TwilioTest::TwilioExample",
       recipient: user,
       options: {credentials: :twilio_creds}
     }

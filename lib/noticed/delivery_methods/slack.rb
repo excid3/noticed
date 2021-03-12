@@ -9,15 +9,15 @@ module Noticed
 
       def format
         if (method = options[:format])
-          notification.send(method)
+          notifier.send(method)
         else
-          notification.params
+          notifier.params
         end
       end
 
       def url
         if (method = options[:url])
-          notification.send(method)
+          notifier.send(method)
         else
           Rails.application.credentials.slack[:notification_url]
         end

@@ -11,7 +11,7 @@ class EmailTest < ActiveSupport::TestCase
 
   test "sends email" do
     assert_emails 1 do
-      CommentNotification.new.deliver(user)
+      CommentNotifier.new.deliver(user)
     end
   end
 
@@ -23,11 +23,11 @@ class EmailTest < ActiveSupport::TestCase
 
   test "deliver returns the email object" do
     args = {
-      notification_class: "Noticed::Base",
+      notifier_class: "Noticed::Base",
       recipient: user,
       options: {
         mailer: "UserMailer",
-        method: "comment_notification"
+        method: "comment_notifier"
       }
     }
     email = Noticed::DeliveryMethods::Email.new.perform(args)

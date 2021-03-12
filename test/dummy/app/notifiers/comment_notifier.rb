@@ -1,4 +1,4 @@
-class CommentNotification < Noticed::Base
+class CommentNotifier < Noticed::Base
   deliver_by :database, format: :attributes_for_database
   deliver_by :action_cable
   deliver_by :email, mailer: "UserMailer"

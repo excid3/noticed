@@ -15,14 +15,14 @@ module Noticed
 
       def format
         if (method = options[:format])
-          notification.send(method)
+          notifier.send(method)
         else
           {
             api_key: credentials[:api_key],
             api_secret: credentials[:api_secret],
-            from: notification.params[:from],
-            text: notification.params[:body],
-            to: notification.params[:to],
+            from: notifier.params[:from],
+            text: notifier.params[:body],
+            to: notifier.params[:to],
             type: "unicode"
           }
         end
@@ -30,7 +30,7 @@ module Noticed
 
       def credentials
         if (method = options[:credentials])
-          notification.send(method)
+          notifier.send(method)
         else
           Rails.application.credentials.vonage
         end

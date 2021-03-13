@@ -1,5 +1,9 @@
 ### Unreleased
 
+# 1.3.1
+
+* Safely handle choosing coder when database or table doesn't exist - @excid3
+
 # 1.3.0
 
 * Add `has_noticed_notifications` helper for models - @excid3

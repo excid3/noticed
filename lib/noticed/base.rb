@@ -8,6 +8,7 @@ module Noticed
 
     class_attribute :delivery_methods, instance_writer: false, default: []
     class_attribute :param_names, instance_writer: false, default: []
+    class_attribute :set_options, default: {}
 
     # Gives notifications access to the record and recipient when formatting for delivery
     attr_accessor :record, :recipient
@@ -65,6 +66,11 @@ module Noticed
       @params || {}
     end
 
+    def set(options)
+      self.set_options = options
+      self
+    end
+
     private
 
     # Runs all delivery methods for a notification
@@ -100,7 +106,12 @@ module Noticed
 
         # Always perfrom later if a delay is present
         if (delay = delivery_method.dig(:options, :delay))
-          method.set(wait: delay).perform_later(args)
+          # Join delay and set_options :wait
+          wait = delay.to_i + set_options.dig(:wait).to_i
+          set_options[:wait] = wait
+          method.set(set_options).perform_later(args)
+        elsif enqueue && set_options.present?
+          method.set(set_options).perform_later(args)
         elsif enqueue
           method.perform_later(args)
         else

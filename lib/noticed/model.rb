@@ -24,12 +24,16 @@ module Noticed
       end
 
       def noticed_coder
+        return Noticed::TextCoder unless table_exists?
+
         case attribute_types["params"].type
         when :json, :jsonb
           Noticed::Coder
         else
           Noticed::TextCoder
         end
+      rescue ActiveRecord::NoDatabaseError
+        Noticed::TextCoder
       end
     end
 

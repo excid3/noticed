@@ -1,6 +1,14 @@
 ### Unreleased
 
-* Add Ruby 3.0 to CI
+# 1.3.1
+
+* Safely handle choosing coder when database or table doesn't exist - @excid3
+
+# 1.3.0
+
+* Add `has_noticed_notifications` helper for models - @excid3
+* Use `json` column for params on SQLite by default instead of text - @excid3
+* Add Ruby 3.0 to CI - @excid3
 
 ### 1.2.21
 

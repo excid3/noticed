@@ -11,7 +11,7 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (1.2.21)
+    noticed (1.3.0)
       http (>= 4.0.0)
       rails (>= 6.0.0)
 
@@ -84,7 +84,7 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.10.0)
-    ffi (1.13.1)
+    ffi (1.15.0)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -99,8 +99,8 @@ GEM
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
-    http-parser (1.2.2)
-      ffi-compiler
+    http-parser (1.2.3)
+      ffi-compiler (>= 1.0, < 2.0)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     loofah (2.7.0)
@@ -215,4 +215,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.1.4
+   2.2.3

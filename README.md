@@ -379,7 +379,7 @@ end
 
 In this scenario, you can create an escalating notification that starts with a ping in Slack, then emails the team, and then finally sends an SMS to the on-call phone.
 
-You can mix and match the options and delivery methods to suit your application specific needs. 
+You can mix and match the options and delivery methods to suit your application specific needs.
 
 ### 🚚 Custom Delivery Methods
 
@@ -534,59 +534,37 @@ Adding notification associations to your models makes querying and deleting noti
 
 For example, in most cases, you'll want to delete notifications for records that are destroyed.
 
-##### JSON Columns
+We'll need two associations for this:
 
-If you're using MySQL or Postgresql, the `params` column on the notifications table is in `json` or `jsonb` format and can be queried against directly.
+1. Notifications where the record is the recipient
+2. Notifications where the record is in the notification params
 
 For example,  we can query the notifications and delete them on destroy like so:
 
 ```ruby
 class Post < ApplicationRecord
-  def notifications
-    # Exact match
-    @notifications ||= Notification.where(params: { post: self })
+  # Standard association for deleting notifications when you're the recipient
+  has_many :notifications, as: :recipient, dependent: :destroy
 
-    # Or Postgres syntax to query the post key in the JSON column
-    # @notifications ||= Notification.where("params->'post' = ?", Noticed::Coder.dump(self).to_json)
-  end
+  # Helper for associating and destroying Notification records where(params: {post: self})
+  has_noticed_notifications
 
-  before_destroy :destroy_notifications
-
-  def destroy_notifications
-    notifications.destroy_all
-  end
+  # You can override the param_name, the notification model name, or disable the before_destroy callback
+  has_noticed_notifications param_name: :parent, destroy: false, model: "Notification"
 end
+
+# Create a CommentNotification with a post param
+CommentNotification.with(post: @post).deliver(user)
+# Lookup Notifications where params: {post: @post}
+@post.notifications_as_post
+
+CommentNotification.with(parent: @post).deliver(user)
+@post.notifications_as_parent
 ```
-
-##### Polymorphic Association
-
-If your notification is only associated with one model or you're using a `text` column for your params column , then a polymorphic association is what you'll want to use.
-
-1. Generate a polymorphic association for the Notification model. `rails g migration AddNotifiableToNotifications notifiable:belongs_to{polymorphic}`
-    
-    a. Make sure to add the association to the model: `belongs_to :notifiable, polymorphic: true`
-
-2. Add `has_many :notifications, as: :notifiable, dependent: :destroy` to each model
-
-3. Customize database `format: ` option to write the `notifiable` attribute(s) when saving the notification
-
-   ```ruby
-   class ExampleNotification < Noticed::Base
-     deliver_by :database, format: :format_for_database
-
-     def format_for_database
-       {
-         notifiable: params[:post],
-         type: self.class.name,
-         params: params.except(:post)
-       }
-     end
-   end
-   ```
 
 #### Handling Deleted Records
 
-If you create a notification but delete the associated record, the jobs for sending the notification will not be able to find the record when ActiveJob deserializes. You can discord the job on these errors by adding the following to `ApplicationJob`:
+If you create a notification but delete the associated record and forgot `has_noticed_notifications` on the model, the jobs for sending the notification will not be able to find the record when ActiveJob deserializes. You can discord the job on these errors by adding the following to `ApplicationJob`:
 
 ```ruby
 class ApplicationJob < ActiveJob::Base

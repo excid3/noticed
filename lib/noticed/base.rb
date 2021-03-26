@@ -98,7 +98,8 @@ module Noticed
       run_callbacks delivery_method[:name] do
         method = delivery_method_for(delivery_method[:name], delivery_method[:options])
 
-        queue = delivery_method.dig(:options, :queue) || :default
+        # If the queue is `nil`, ActiveJob will use a default queue name.
+        queue = delivery_method.dig(:options, :queue)
 
         # Always perfrom later if a delay is present
         if (delay = delivery_method.dig(:options, :delay))

@@ -98,11 +98,13 @@ module Noticed
       run_callbacks delivery_method[:name] do
         method = delivery_method_for(delivery_method[:name], delivery_method[:options])
 
+        queue = delivery_method.dig(:options, :queue) || :default
+
         # Always perfrom later if a delay is present
         if (delay = delivery_method.dig(:options, :delay))
-          method.set(wait: delay).perform_later(args)
+          method.set(wait: delay, queue: queue).perform_later(args)
         elsif enqueue
-          method.perform_later(args)
+          method.set(queue: queue).perform_later(args)
         else
           method.perform_now(args)
         end

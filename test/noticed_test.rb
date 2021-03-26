@@ -74,7 +74,7 @@ class With5MinutesDelay < Noticed::Base
 end
 
 class WithCustomQueue < Noticed::Base
-  deliver_by :test, queue: :custom
+  deliver_by :test, queue: 'custom'
 end
 
 class Noticed::Test < ActiveSupport::TestCase
@@ -172,8 +172,8 @@ class Noticed::Test < ActiveSupport::TestCase
     end
   end
 
-  test "asserts delivery is queued with different queue" do
-    assert_enqueued_with(queue: :custom) do
+  test 'asserts delivery is queued with different queue' do
+    assert_enqueued_with(queue: 'custom') do
       WithCustomQueue.new.deliver(user)
     end
   end

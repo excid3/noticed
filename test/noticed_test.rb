@@ -73,6 +73,10 @@ class With5MinutesDelay < Noticed::Base
   deliver_by :test, delay: 5.minutes
 end
 
+class WithCustomQueue < Noticed::Base
+  deliver_by :test, queue: "custom"
+end
+
 class Noticed::Test < ActiveSupport::TestCase
   test "stores data in params" do
     notification = make_notification(foo: :bar, user: user)
@@ -165,6 +169,12 @@ class Noticed::Test < ActiveSupport::TestCase
   test "asserts delivery is delayed" do
     assert_enqueued_with(at: 5.minutes.from_now) do
       With5MinutesDelay.new.deliver(user)
+    end
+  end
+
+  test "asserts delivery is queued with different queue" do
+    assert_enqueued_with(queue: "custom") do
+      WithCustomQueue.new.deliver_later(user)
     end
   end
 end

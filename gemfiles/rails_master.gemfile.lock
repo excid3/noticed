@@ -10,7 +10,7 @@ GIT
 
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 4ef77ac8de4caea38e83663e7cd0fdbe5d1ebf1d
+  revision: 513cf351d4fbafe675eb0309930647afbcb92074
   branch: main
   specs:
     actioncable (7.0.0.alpha)
@@ -64,8 +64,8 @@ GIT
       activejob (= 7.0.0.alpha)
       activerecord (= 7.0.0.alpha)
       activesupport (= 7.0.0.alpha)
-      marcel (~> 0.3.1)
-      mimemagic (~> 0.3.2)
+      marcel (~> 1.0.0)
+      mini_mime (~> 1.0.2)
     activesupport (7.0.0.alpha)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
@@ -91,7 +91,7 @@ GIT
       actionpack (= 7.0.0.alpha)
       activesupport (= 7.0.0.alpha)
       method_source
-      rake (>= 0.8.7)
+      rake (>= 0.13)
       thor (~> 1.0)
 
 PATH
@@ -106,11 +106,12 @@ GEM
   specs:
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    ast (2.4.1)
+    ast (2.4.2)
     builder (3.2.4)
     byebug (11.1.3)
     concurrent-ruby (1.1.8)
-    crack (0.4.4)
+    crack (0.4.5)
+      rexml
     crass (1.0.6)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
@@ -139,20 +140,18 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
-    marcel (0.3.3)
-      mimemagic (~> 0.3.2)
+    marcel (1.0.0)
     method_source (1.0.0)
-    mimemagic (0.3.5)
-    mini_mime (1.0.2)
+    mini_mime (1.0.3)
     mini_portile2 (2.5.0)
-    minitest (5.14.3)
+    minitest (5.14.4)
     mysql2 (0.5.3)
-    nio4r (2.5.5)
-    nokogiri (1.11.1)
+    nio4r (2.5.7)
+    nokogiri (1.11.2)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     parallel (1.20.1)
-    parser (2.7.2.0)
+    parser (3.0.0.0)
       ast (~> 2.4.1)
     pg (1.2.3)
     public_suffix (4.0.6)
@@ -166,24 +165,24 @@ GEM
     rails-html-sanitizer (1.3.0)
       loofah (~> 2.3)
     rainbow (3.0.0)
-    rake (13.0.1)
-    regexp_parser (1.8.2)
+    rake (13.0.3)
+    regexp_parser (2.1.1)
     rexml (3.2.4)
-    rubocop (1.2.0)
+    rubocop (1.11.0)
       parallel (~> 1.10)
-      parser (>= 2.7.1.5)
+      parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8)
+      regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.0.1)
+      rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (1.1.1)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.4.1)
       parser (>= 2.7.1.5)
-    rubocop-performance (1.8.1)
-      rubocop (>= 0.87.0)
+    rubocop-performance (1.10.1)
+      rubocop (>= 0.90.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    ruby-progressbar (1.10.1)
+    ruby-progressbar (1.11.0)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -192,17 +191,17 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
-    standard (0.9.0)
-      rubocop (= 1.2.0)
-      rubocop-performance (= 1.8.1)
-    thor (1.0.1)
+    standard (1.0.4)
+      rubocop (= 1.11.0)
+      rubocop-performance (= 1.10.1)
+    thor (1.1.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
-    unicode-display_width (1.7.0)
-    webmock (3.10.0)
+    unicode-display_width (2.0.0)
+    webmock (3.12.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -226,4 +225,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.2.3
+   2.2.14

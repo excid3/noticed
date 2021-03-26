@@ -1,5 +1,9 @@
 ### Unreleased
 
+# 1.3.2
+
+* Add `queue` option for delivery methods - @iheanyi
+
 # 1.3.1
 
 * Safely handle choosing coder when database or table doesn't exist - @excid3

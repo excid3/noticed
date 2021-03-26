@@ -174,7 +174,7 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test 'asserts delivery is queued with different queue' do
     assert_enqueued_with(queue: 'custom') do
-      WithCustomQueue.new.deliver(user)
+      WithCustomQueue.new.deliver_later(user)
     end
   end
 end

@@ -10,7 +10,7 @@ GIT
 
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 513cf351d4fbafe675eb0309930647afbcb92074
+  revision: 6675f6b785d9ea7f6650344fb98555fc5acb0a3d
   branch: main
   specs:
     actioncable (7.0.0.alpha)
@@ -99,7 +99,7 @@ PATH
   specs:
     noticed (1.3.2)
       http (>= 4.0.0)
-      rails (>= 6.0.0)
+      rails (>= 5.2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -143,12 +143,10 @@ GEM
     marcel (1.0.0)
     method_source (1.0.0)
     mini_mime (1.0.3)
-    mini_portile2 (2.5.0)
     minitest (5.14.4)
     mysql2 (0.5.3)
     nio4r (2.5.7)
-    nokogiri (1.11.2)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.11.2-x86_64-linux)
       racc (~> 1.4)
     parallel (1.20.1)
     parser (3.0.0.0)
@@ -211,7 +209,7 @@ GEM
     zeitwerk (2.4.2)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   appraisal!

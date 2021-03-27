@@ -17,7 +17,7 @@ class DatabaseTest < ActiveSupport::TestCase
     end
 
     assert_equal 1, user.notifications.count
-    assert_equal :bar, user.notifications.last.params[:foo]
+    assert_equal :bar, user.notifications.last.params[:foo].to_sym
   end
 
   test "delivery is executed but not enqueued" do

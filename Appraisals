@@ -1,5 +1,4 @@
 appraise "rails-5-2" do
-  ENV["APPRAISAL"] = "5.2"
   gem "rails", "~> 5.2.0"
 end
 

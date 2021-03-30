@@ -12,8 +12,6 @@ module ActiveJob
         case argument
         when *TYPE_WHITELIST
           argument
-        when Symbol
-          argument.to_s
         when GlobalID::Identification
           convert_to_global_id_hash(argument)
         when Array
@@ -30,6 +28,31 @@ module ActiveJob
         else # Add Rails 6 support for Serializers
           Serializers.serialize(argument)
         end
+      end
+
+      def deserialize_argument(argument)
+        case argument
+        when String
+          argument
+        when *TYPE_WHITELIST
+          argument
+        when Array
+          argument.map { |arg| deserialize_argument(arg) }
+        when Hash
+          if serialized_global_id?(argument)
+            deserialize_global_id argument
+          elsif custom_serialized?(argument)
+            Serializers.deserialize(argument)
+          else
+            deserialize_hash(argument)
+          end
+        else
+          raise ArgumentError, "Can only deserialize primitive arguments: #{argument.inspect}"
+        end
+      end
+
+      def custom_serialized?(hash)
+        hash.key?(OBJECT_SERIALIZER_KEY)
       end
     end
 
@@ -104,6 +127,22 @@ module ActiveJob
         end
       end
 
+      class SymbolSerializer < ObjectSerializer # :nodoc:
+        def serialize(argument)
+          super("value" => argument.to_s)
+        end
+
+        def deserialize(argument)
+          argument["value"].to_sym
+        end
+
+        private
+
+        def klass
+          Symbol
+        end
+      end
+
       # -----------------------------
 
       mattr_accessor :_additional_serializers
@@ -143,7 +182,8 @@ module ActiveJob
         end
       end
 
-      add_serializers DurationSerializer
+      add_serializers DurationSerializer,
+        SymbolSerializer
       # The full set of 6 serializers that Rails 6.0 normally adds here -- feel free to include any others if you wish:
       # SymbolSerializer,
       # DurationSerializer, # (The one that we've added above in order to support testing)

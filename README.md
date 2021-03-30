@@ -477,7 +477,7 @@ For Rails 5.2 and 6.0, you must pass strings of the class names in the `deliver_
   deliver_by :discord, class: "DeliveryMethods::Discord"
 ```
 
-We recommend using a string in this Rails 6.0 compatible way in order to prevent confusion.
+We recommend using a string in order to prevent confusion.
 
 ### 📦 Database Model
 

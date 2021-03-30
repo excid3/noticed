@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Provide compatibility layer for Rails 5.2 - @lorint and @excid3
+
 # 1.3.2
 
 * Add `queue` option for delivery methods - @iheanyi

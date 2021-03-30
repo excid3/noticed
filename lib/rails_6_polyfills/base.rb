@@ -12,7 +12,7 @@ module ActionCable
   end
 end
 
-# If the Rails 6.0 ActionJob DurationSerializer is missing then allow it to autoload
-unless Object.const_defined?("ActiveJob::Serializers::DurationSerializer")
-  require "rails_6_polyfills/activejob/duration_serializer"
+# If the Rails 6.0 ActionJob Serializers are missing then load support for them
+unless Object.const_defined?("ActiveJob::Serializers")
+  require "rails_6_polyfills/activejob/serializers"
 end

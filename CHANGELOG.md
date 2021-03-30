@@ -5,7 +5,6 @@
 * Add Rails 5.2 support. Backports ActiveJob and ActionCable functionality for compatibility. - @lorint & @excid3
 
 # 1.3.2
->>>>>>> 40099cd35e653838c5adaa5baffcefc976eceaef
 
 * Add `queue` option for delivery methods - @iheanyi
 

@@ -42,12 +42,20 @@ module Noticed
       end
 
       def params_column
-        case ActiveRecord::Base.configurations.configs_for(spec_name: "primary").config["adapter"]
+        case current_adapter
         when "postgresql"
           "params:jsonb"
         else
           # MySQL and SQLite both support json
           "params:json"
+        end
+      end
+
+      def current_adapter
+        if ActiveRecord::Base.respond_to?(:connection_db_config)
+          ActiveRecord::Base.connection_db_config.adapter
+        else
+          ActiveRecord::Base.connection_config[:adapter]
         end
       end
     end

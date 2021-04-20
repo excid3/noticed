@@ -17,6 +17,18 @@ class HasNotificationsTest < ActiveSupport::TestCase
     assert user.respond_to?(:notifications_as_owner)
   end
 
+  test "association returns notifications" do
+    assert_difference "user.notifications_as_user.count" do
+      DatabaseDelivery.with(user: user).deliver(user)
+    end
+  end
+
+  test "association with custom name returns notifications" do
+    assert_difference "user.notifications_as_owner.count" do
+      DatabaseDelivery.with(owner: user).deliver(user)
+    end
+  end
+
   test "deletes notifications with matching param" do
     DatabaseDelivery.with(user: user).deliver(users(:two))
 

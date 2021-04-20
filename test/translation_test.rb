@@ -35,6 +35,6 @@ class TranslationTest < ActiveSupport::TestCase
 
   test "I18n supports custom scopes" do
     assert_equal "noticed.scoped_i18n_example.message", ScopedI18nExample.new.send(:scope_translation_key, ".message")
-    assert_equal "This is a custom scoped trnaslation", ScopedI18nExample.new.message
+    assert_equal "This is a custom scoped translation", ScopedI18nExample.new.message
   end
 end

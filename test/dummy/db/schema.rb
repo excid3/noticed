@@ -70,8 +70,8 @@ ActiveRecord::Schema.define(version: 2020_08_03_191250) do
     t.datetime "read_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["account_id"], name: "index_notifications_on_account_id"
-    t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient_type_and_recipient_id"
+    t.index ["account_id"], name: "index_text_notifications_on_account_id"
+    t.index ["recipient_type", "recipient_id"], name: "index_text_on_recipient_type_and_recipient_id"
   end
 
   create_table "accounts", force: :cascade do |t|

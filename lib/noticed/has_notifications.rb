@@ -18,7 +18,7 @@ module Noticed
         model = options.fetch(:model_name, "Notification").constantize
 
         define_method "notifications_as_#{param_name}" do
-          case model.connection_db_config.adapter
+          case current_adapter
           when "postgresql"
             model.where("params @> ?", Noticed::Coder.dump(param_name.to_sym => self).to_json)
           else
@@ -31,6 +31,14 @@ module Noticed
             send("notifications_as_#{param_name}").destroy_all
           end
         end
+      end
+    end
+
+    def current_adapter
+      if ActiveRecord::Base.respond_to?(:connection_db_config)
+        ActiveRecord::Base.connection_db_config.adapter
+      else
+        ActiveRecord::Base.connection_config[:adapter]
       end
     end
   end

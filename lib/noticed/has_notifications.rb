@@ -18,7 +18,12 @@ module Noticed
         model = options.fetch(:model_name, "Notification").constantize
 
         define_method "notifications_as_#{param_name}" do
-          model.where(params: {param_name.to_sym => self})
+          case model.connection_db_config.adapter
+          when "postgresql"
+            model.where("params @> ?", Noticed::Coder.dump(param_name.to_sym => self).to_json)
+          else
+            model.where(params: {param_name.to_sym => self})
+          end
         end
 
         if options.fetch(:destroy, true)

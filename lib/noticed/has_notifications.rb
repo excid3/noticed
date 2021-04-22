@@ -21,6 +21,8 @@ module Noticed
           case current_adapter
           when "postgresql"
             model.where("params @> ?", Noticed::Coder.dump(param_name.to_sym => self).to_json)
+          when "sqlite3"
+            model.where("json_extract(params, ?) = ?", "$.#{param_name}", Noticed::Coder.dump(self).to_json)
           else
             model.where(params: {param_name.to_sym => self})
           end

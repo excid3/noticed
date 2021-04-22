@@ -18,7 +18,17 @@ module Noticed
         model = options.fetch(:model_name, "Notification").constantize
 
         define_method "notifications_as_#{param_name}" do
-          model.where(params: {param_name.to_sym => self})
+          case current_adapter
+          when "postgresql"
+            model.where("params @> ?", Noticed::Coder.dump(param_name.to_sym => self).to_json)
+          when "mysql2"
+            model.where("JSON_CONTAINS(params, ?)", Noticed::Coder.dump(param_name.to_sym => self).to_json)
+          when "sqlite3"
+            model.where("json_extract(params, ?) = ?", "$.#{param_name}", Noticed::Coder.dump(self).to_json)
+          else
+            # This will perform an exact match which isn't ideal
+            model.where(params: {param_name.to_sym => self})
+          end
         end
 
         if options.fetch(:destroy, true)
@@ -26,6 +36,14 @@ module Noticed
             send("notifications_as_#{param_name}").destroy_all
           end
         end
+      end
+    end
+
+    def current_adapter
+      if ActiveRecord::Base.respond_to?(:connection_db_config)
+        ActiveRecord::Base.connection_db_config.adapter
+      else
+        ActiveRecord::Base.connection_config[:adapter]
       end
     end
   end

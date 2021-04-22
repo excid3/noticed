@@ -2,7 +2,7 @@ require "test_helper"
 
 class CoderTest < ActiveSupport::TestCase
   test "uses TextCoder for text columns" do
-    assert_equal Noticed::TextCoder, Notification.noticed_coder
+    assert_equal Noticed::TextCoder, TextNotification.noticed_coder
   end
 
   test "uses Coder for json columns" do

@@ -19,18 +19,18 @@ class HasNotificationsTest < ActiveSupport::TestCase
 
   test "association returns notifications" do
     assert_difference "user.notifications_as_user.count" do
-      DatabaseDelivery.with(user: user).deliver(user)
+      DatabaseDelivery.with(user: user, foo: :bar).deliver(user)
     end
   end
 
   test "association with custom name returns notifications" do
     assert_difference "user.notifications_as_owner.count" do
-      DatabaseDelivery.with(owner: user).deliver(user)
+      DatabaseDelivery.with(owner: user, foo: :bar).deliver(user)
     end
   end
 
   test "deletes notifications with matching param" do
-    DatabaseDelivery.with(user: user).deliver(users(:two))
+    DatabaseDelivery.with(user: user, foo: :bar).deliver(users(:two))
 
     assert_difference "Notification.count", -1 do
       user.destroy
@@ -38,7 +38,7 @@ class HasNotificationsTest < ActiveSupport::TestCase
   end
 
   test "doesn't delete notifications when disabled" do
-    DatabaseDelivery.with(owner: user).deliver(users(:two))
+    DatabaseDelivery.with(owner: user, foo: :bar).deliver(users(:two))
 
     assert_no_difference "Notification.count" do
       user.destroy

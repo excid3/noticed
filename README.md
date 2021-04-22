@@ -576,5 +576,13 @@ end
 
 This project uses [Standard](https://github.com/testdouble/standard) for formatting Ruby code. Please make sure to run `standardrb` before submitting pull requests.
 
+Running tests against multiple databases locally:
+
+```
+DATABASE_URL=sqlite3:noticed_test rails test
+DATABASE_URL=mysql2://root:@127.0.0.1/noticed_test rails test
+DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
+```
+
 ## 📝 License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

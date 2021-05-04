@@ -97,7 +97,7 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (1.4.0)
+    noticed (1.4.1)
       http (>= 4.0.0)
       rails (>= 5.2.0)
 

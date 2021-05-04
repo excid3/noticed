@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.4.1
+
+* Fix early db access by moving constant lookup into the method. Fixes the situation of compiling assets needing database access. - @excid3
+
 ### 1.4.0
 
 * Add Rails 5.2 support. Backports ActiveJob and ActionCable functionality for compatibility. - @lorint & @excid3

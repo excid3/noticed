@@ -15,9 +15,8 @@ module Noticed
 
     class_methods do
       def has_noticed_notifications(param_name: model_name.singular, **options)
-        model = options.fetch(:model_name, "Notification").constantize
-
         define_method "notifications_as_#{param_name}" do
+          model = options.fetch(:model_name, "Notification").constantize
           case current_adapter
           when "postgresql"
             model.where("params @> ?", Noticed::Coder.dump(param_name.to_sym => self).to_json)

@@ -550,7 +550,7 @@ class Post < ApplicationRecord
   has_noticed_notifications
 
   # You can override the param_name, the notification model name, or disable the before_destroy callback
-  has_noticed_notifications param_name: :parent, destroy: false, model: "Notification"
+  has_noticed_notifications param_name: :parent, destroy: false, model_name: "Notification"
 end
 
 # Create a CommentNotification with a post param

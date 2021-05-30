@@ -382,8 +382,8 @@ In this scenario, you have created an escalating notification system that
 
 -  Immediately creates a record in the database (for display directly in the app)
 -  Immediately issues a ping in Slack.
--  If the database notification remains unread after 10 minutes, it emails the team.
--  If the database notification remains unread after 20 minutes, it sends an SMS to the on-call phone.
+-  If the notification remains unread after 10 minutes, it emails the team.
+-  If the notification remains unread after 20 minutes, it sends an SMS to the on-call phone.
 
 You can mix and match the options and delivery methods to suit your application specific needs.
 

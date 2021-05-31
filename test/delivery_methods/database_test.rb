@@ -9,6 +9,10 @@ class DatabaseTest < ActiveSupport::TestCase
     deliver_by :database, delay: 5.minutes
   end
 
+  class WithBulkDatabaseDelivery < Noticed::Base
+    deliver_by :database, bulk: {group_size: 1000}
+  end
+
   test "writes to database" do
     notification = CommentNotification.with(foo: :bar)
 
@@ -36,7 +40,7 @@ class DatabaseTest < ActiveSupport::TestCase
     CommentNotification.with(foo: :bar).deliver_later(user)
     perform_enqueued_jobs
     assert_not_nil Notification.last
-    assert_equal Notification.last, Noticed::DeliveryMethods::Test.delivered.first.record
+    assert_equal Notification.last, Noticed::DeliveryMethods::Test.individual_deliveries.first.record
   end
 
   test "serializes database attributes like ActiveJob does" do
@@ -57,9 +61,15 @@ class DatabaseTest < ActiveSupport::TestCase
     assert_kind_of ActiveRecord::Base, record
   end
 
-  test "delay option is not provided" do
+  test "delay option is provided" do
     assert_raises ArgumentError do
       WithDelayedDatabaseDelivery.new.deliver(user)
+    end
+  end
+
+  test "option for bulk delivery is provided" do
+    assert_raises ArgumentError do
+      WithBulkDatabaseDelivery.new.deliver(user)
     end
   end
 end

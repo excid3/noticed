@@ -50,6 +50,10 @@ class CallbackExample < Noticed::Base
   end
 end
 
+class DeliverInBulkExample < Noticed::Base
+  deliver_by :test, bulk: {group_size: 2}
+end
+
 class RequiredOption < Noticed::DeliveryMethods::Base
   def deliver
   end
@@ -96,12 +100,12 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test "cancels delivery when if clause is falsey" do
     IfExample.new.deliver(user)
-    assert_empty Noticed::DeliveryMethods::Test.delivered
+    assert_empty Noticed::DeliveryMethods::Test.individual_deliveries
   end
 
   test "cancels delivery when unless clause is truthy" do
     UnlessExample.new.deliver(user)
-    assert_empty Noticed::DeliveryMethods::Test.delivered
+    assert_empty Noticed::DeliveryMethods::Test.individual_deliveries
   end
 
   test "has access to recipient in if clause" do
@@ -118,7 +122,7 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test "validates attributes for params" do
     assert_raises Noticed::ValidationError do
-      AttributeExample.new.deliver(users(:one))
+      AttributeExample.new.deliver(user)
     end
   end
 
@@ -144,14 +148,45 @@ class Noticed::Test < ActiveSupport::TestCase
     end
   end
 
-  test "assigns record to notification when delivering" do
+  test "assigns record to notification when delivering individual notifications" do
     make_notification(foo: :bar).deliver(user)
-    assert_equal Notification.last, Noticed::DeliveryMethods::Test.delivered.last.record
+    assert_equal Notification.last, Noticed::DeliveryMethods::Test.individual_deliveries.last.record
   end
 
-  test "assigns recipient to notification when delivering" do
+  test "assigns recipient to notification when delivering individual notifications" do
     make_notification(foo: :bar).deliver(user)
-    assert_equal user, Noticed::DeliveryMethods::Test.delivered.last.recipient
+    assert_equal user, Noticed::DeliveryMethods::Test.individual_deliveries.last.recipient
+  end
+
+  test "does not assign recipients to notification when delivering individual notifications" do
+    make_notification(foo: :bar).deliver(user)
+    assert_nil Noticed::DeliveryMethods::Test.individual_deliveries.last.recipients
+  end
+
+  test "does not assign record to notification when delivering bulk notifications" do
+    DeliverInBulkExample.new.deliver(User.all)
+    Noticed::DeliveryMethods::Test.bulk_deliveries.each do |bulk_delivery|
+      assert_nil bulk_delivery.record
+    end
+  end
+
+  test "does not assign a recipient to notification when delivering bulk notifications" do
+    DeliverInBulkExample.new.deliver(User.all)
+    Noticed::DeliveryMethods::Test.bulk_deliveries.each do |bulk_delivery|
+      assert_nil bulk_delivery.recipient
+    end
+  end
+
+  test "assigns recipients to notification when delivering bulk notifications" do
+    assert_equal 3, User.count
+
+    DeliverInBulkExample.new.deliver(User.all)
+    # For 3 users, with a group_size of 2, 2 batches of deliveries will be made.
+    assert_equal 2, Noticed::DeliveryMethods::Test.bulk_deliveries.count
+
+    Noticed::DeliveryMethods::Test.bulk_deliveries.each do |bulk_delivery|
+      assert bulk_delivery.recipients
+    end
   end
 
   test "validates options of delivery methods when options are valid" do

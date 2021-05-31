@@ -6,7 +6,7 @@ module Noticed
 
       class_attribute :option_names, instance_writer: false, default: []
 
-      attr_reader :notification, :options, :params, :recipient, :record
+      attr_reader :notification, :options, :params, :recipient, :record, :recipients
 
       class << self
         # Copy option names from parent
@@ -26,6 +26,12 @@ module Noticed
               raise ValidationError, "option `#{option_name}` must be set for #{name}"
             end
           end
+
+          if delivery_method_options.key?(:bulk)
+            unless delivery_method_options.dig(:bulk, :group_size)
+              raise ValidationError, "a bulk delivery method must specify a `group_size`"
+            end
+          end
         end
       end
 
@@ -33,18 +39,24 @@ module Noticed
         @notification = args[:notification_class].constantize.new(args[:params])
         @options = args[:options]
         @params = args[:params]
-        @recipient = args[:recipient]
-        @record = args[:record]
+        @recipient = args[:recipient] # only available for individual deliveries
+        @record = args[:record] # only available for individual deliveries
+        @recipients = args[:recipients] # only available for bulk deliveries
 
         # Make notification aware of database record and recipient during delivery
         @notification.record = args[:record]
         @notification.recipient = args[:recipient]
+        @notification.recipients = args[:recipients]
 
         return if (condition = @options[:if]) && !@notification.send(condition)
         return if (condition = @options[:unless]) && @notification.send(condition)
 
         run_callbacks :deliver do
-          deliver
+          if bulk_delivery?(args)
+            bulk_deliver
+          else
+            deliver
+          end
         end
       end
 
@@ -52,7 +64,15 @@ module Noticed
         raise NotImplementedError, "Delivery methods must implement a deliver method"
       end
 
+      def bulk_deliver
+        raise NotImplementedError, "Delivery methods must implement a bulk_deliver method"
+      end
+
       private
+
+      def bulk_delivery?(args)
+        args.has_key?(:recipients)
+      end
 
       # Helper method for making POST requests from delivery methods
       #

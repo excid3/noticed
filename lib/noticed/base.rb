@@ -44,20 +44,20 @@ module Noticed
     def deliver(recipients)
       validate!
 
+      recipients = Array.wrap(recipients).uniq
+
       run_callbacks :deliver do
-        Array.wrap(recipients).uniq.each do |recipient|
-          run_delivery(recipient, enqueue: false)
-        end
+        run_all_deliveries(recipients, enqueue: false)
       end
     end
 
     def deliver_later(recipients)
       validate!
 
+      recipients = Array.wrap(recipients).uniq
+
       run_callbacks :deliver do
-        Array.wrap(recipients).uniq.each do |recipient|
-          run_delivery(recipient, enqueue: true)
-        end
+        run_all_deliveries(recipients, enqueue: true)
       end
     end
 
@@ -67,23 +67,31 @@ module Noticed
 
     private
 
-    # Runs all delivery methods for a notification
-    def run_delivery(recipient, enqueue: true)
-      delivery_methods = self.class.delivery_methods.dup
+    def run_all_deliveries(recipients, enqueue: true)
+      individual_delivery_methods = self.class.delivery_methods.dup
 
-      # Run database delivery inline first if it exists so other methods have access to the record
+      run_individual_deliveries(individual_delivery_methods, recipients, enqueue: enqueue)
+    end
+
+    # Runs all individual delivery methods for each recipient
+    def run_individual_deliveries(delivery_methods, recipients, enqueue: true)
       if (index = delivery_methods.find_index { |m| m[:name] == :database })
-        delivery_method = delivery_methods.delete_at(index)
-        record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false, record: nil)
+        database_delivery_method = delivery_methods.delete_at(index)
       end
 
-      delivery_methods.each do |delivery_method|
-        run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue, record: record)
+      recipients.each do |recipient|
+        # Run database delivery inline first if it exists so other methods have access to the record
+        if database_delivery_method
+          notification_record = run_individual_delivery(database_delivery_method, recipient: recipient, enqueue: false, record: nil)
+        end
+
+        delivery_methods.each do |delivery_method|
+          run_individual_delivery(delivery_method, recipient: recipient, enqueue: enqueue, record: notification_record)
+        end
       end
     end
 
-    # Actually runs an individual delivery
-    def run_delivery_method(delivery_method, recipient:, enqueue:, record:)
+    def run_individual_delivery(delivery_method, recipient:, enqueue:, record:)
       args = {
         notification_class: self.class.name,
         options: delivery_method[:options],
@@ -92,6 +100,10 @@ module Noticed
         record: record
       }
 
+      perform_delivery(delivery_method: delivery_method, args: args, enqueue: enqueue)
+    end
+
+    def perform_delivery(delivery_method:, args:, enqueue:)
       run_callbacks delivery_method[:name] do
         method = delivery_method_for(delivery_method[:name], delivery_method[:options])
 

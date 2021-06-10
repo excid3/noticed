@@ -9,7 +9,7 @@ module Noticed
     class_attribute :delivery_methods, instance_writer: false, default: []
     class_attribute :param_names, instance_writer: false, default: []
 
-    # Gives notifications access to the record and recipient when formatting for delivery
+    # Gives notifications access to the record and recipient during delivery
     attr_accessor :record, :recipient
 
     delegate :read?, :unread?, to: :record
@@ -71,22 +71,19 @@ module Noticed
     def run_delivery(recipient, enqueue: true)
       delivery_methods = self.class.delivery_methods.dup
 
-      # Set recipient to instance var so it is available to Notification class
-      @recipient = recipient
-
       # Run database delivery inline first if it exists so other methods have access to the record
       if (index = delivery_methods.find_index { |m| m[:name] == :database })
         delivery_method = delivery_methods.delete_at(index)
-        @record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false)
+        record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false, record: nil)
       end
 
       delivery_methods.each do |delivery_method|
-        run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue)
+        run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue, record: record)
       end
     end
 
     # Actually runs an individual delivery
-    def run_delivery_method(delivery_method, recipient:, enqueue:)
+    def run_delivery_method(delivery_method, recipient:, enqueue:, record:)
       args = {
         notification_class: self.class.name,
         options: delivery_method[:options],

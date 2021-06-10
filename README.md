@@ -371,15 +371,23 @@ You can also configure multiple fallback options:
 
 ```ruby
 class CriticalSystemNotification < Noticed::Base
+  deliver_by :database
   deliver_by :slack
-  deliver_by :email, mailer: 'CriticalSystemMailer', delay: 10.minutes, unless: :read?
-  deliver_by :twilio, delay: 20.minutes, unless: :read?
+  deliver_by :email, mailer: 'CriticalSystemMailer', delay: 10.minutes, if: :unread?
+  deliver_by :twilio, delay: 20.minutes, if: :unread?
 end
 ```
 
-In this scenario, you can create an escalating notification that starts with a ping in Slack, then emails the team, and then finally sends an SMS to the on-call phone.
+In this scenario, you have created an escalating notification system that
+
+-  Immediately creates a record in the database (for display directly in the app)
+-  Immediately issues a ping in Slack.
+-  If the notification remains unread after 10 minutes, it emails the team.
+-  If the notification remains unread after 20 minutes, it sends an SMS to the on-call phone.
 
 You can mix and match the options and delivery methods to suit your application specific needs.
+
+Please note that to implement this pattern, it is essential `deliver_by :database` is one among the different delivery methods specified. Without this, a database record of the notification will not be created.
 
 ### 🚚 Custom Delivery Methods
 

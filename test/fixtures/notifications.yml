@@ -1,0 +1,10 @@
+one:
+  type: CommentNotification
+  recipient: one (User)
+  params:
+    foo: bar
+    account:
+      _aj_globalid: gid://dummy/Account/<%= ActiveRecord::FixtureSet.identify(:primary) %>
+    _aj_symbol_keys:
+    - account
+  read_at: <%= Time.current %>

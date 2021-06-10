@@ -179,4 +179,9 @@ class Noticed::Test < ActiveSupport::TestCase
       WithCustomQueue.new.deliver_later(user)
     end
   end
+
+  test "loading notification from fixture" do
+    notification = notifications(:one)
+    assert_equal accounts(:primary), notification.params[:account]
+  end
 end

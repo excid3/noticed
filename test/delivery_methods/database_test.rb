@@ -12,11 +12,12 @@ class DatabaseTest < ActiveSupport::TestCase
   test "writes to database" do
     notification = CommentNotification.with(foo: :bar)
 
-    assert_difference "Notification.count" do
-      notification.deliver(user)
+    assert_difference "user.notifications.count" do
+      assert_difference "Notification.count" do
+        notification.deliver(user)
+      end
     end
 
-    assert_equal 1, user.notifications.count
     assert_equal :bar, user.notifications.last.params[:foo]
   end
 
@@ -29,7 +30,7 @@ class DatabaseTest < ActiveSupport::TestCase
 
   test "writes to custom params database" do
     CommentNotification.with(foo: :bar).deliver(user)
-    assert_equal 1, user.notifications.first.account_id
+    assert_equal 1, user.notifications.last.account_id
   end
 
   test "writes to the database before other delivery methods" do

@@ -159,6 +159,10 @@ For example:
 
  `t(".message")` looks up `en.notifications.new_comment.message`
 
+Or when notification class is in module:
+
+`t(".message") # in Admin::NewComment` looks up `en.notifications.admin.new_comment.message`
+
 ##### User Preferences
 
 You can use the `if:` and `unless: ` options on your delivery methods to check the user's preferences and skip processing if they have disabled that type of notification.

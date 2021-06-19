@@ -29,7 +29,7 @@ class TranslationTest < ActiveSupport::TestCase
   end
 
   test "I18n supports namespaces" do
-    assert_equal "notifications.noticed/i18n_example.message", Noticed::I18nExample.new.send(:scope_translation_key, ".message")
+    assert_equal "notifications.noticed.i18n_example.message", Noticed::I18nExample.new.send(:scope_translation_key, ".message")
     assert_equal "This is a notification", Noticed::I18nExample.new.message
   end
 

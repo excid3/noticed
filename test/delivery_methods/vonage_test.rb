@@ -33,7 +33,7 @@ class VonageTest < ActiveSupport::TestCase
     stub_delivery_method_request(delivery_method: :vonage, matcher: /rest.nexmo.com/)
 
     args = {
-      notification_class: "::VonageTest::VonageExample",
+      notifier_class: "::VonageTest::VonageExample",
       recipient: user,
       options: {format: :to_vonage}
     }

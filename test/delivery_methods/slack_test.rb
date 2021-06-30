@@ -26,7 +26,7 @@ class SlackTest < ActiveSupport::TestCase
     stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
 
     args = {
-      notification_class: "::SlackTest::SlackExample",
+      notifier_class: "::SlackTest::SlackExample",
       recipient: user,
       options: {url: :slack_url}
     }

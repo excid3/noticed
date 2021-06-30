@@ -9,20 +9,20 @@ module Noticed
 
       def format
         if (method = options[:format])
-          notification.send(method)
+          notifier.send(method)
         else
           {
-            title: notification.params[:title],
-            text: notification.params[:text],
-            sections: notification.params[:sections],
-            potentialAction: notification.params[:notification_action]
+            title: notifier.params[:title],
+            text: notifier.params[:text],
+            sections: notifier.params[:sections],
+            potentialAction: notifier.params[:notification_action]
           }
         end
       end
 
       def url
         if (method = options[:url])
-          notification.send(method)
+          notifier.send(method)
         else
           Rails.application.credentials.microsoft_teams[:notification_url]
         end

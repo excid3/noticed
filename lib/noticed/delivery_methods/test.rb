@@ -14,7 +14,7 @@ module Noticed
       end
 
       def deliver
-        self.class.delivered << notification
+        self.class.delivered << notifier
       end
     end
   end

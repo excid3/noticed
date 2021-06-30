@@ -1,4 +1,4 @@
-# To deliver this notification:
+# To deliver notifications via this notifier:
 #
 # <%= class_name %>.with(post: @post).deliver_later(current_user)
 # <%= class_name %>.with(post: @post).deliver(current_user)

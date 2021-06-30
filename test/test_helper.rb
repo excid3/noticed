@@ -23,7 +23,7 @@ end
 require "minitest/unit"
 require "webmock/minitest"
 
-class ExampleNotification < Noticed::Base
+class ExampleNotifier < Noticed::Base
   class_attribute :callback_responses, default: []
 
   deliver_by :test, foo: :bar
@@ -48,8 +48,8 @@ class ActiveSupport::TestCase
     @user ||= users(:one)
   end
 
-  def make_notification(params)
-    ExampleNotification.with(params)
+  def make_notifier(params)
+    ExampleNotifier.with(params)
   end
 
   def stub_delivery_method_request(delivery_method:, matcher:, method: :post, type: :success)

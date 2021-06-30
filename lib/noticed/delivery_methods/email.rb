@@ -14,14 +14,14 @@ module Noticed
       end
 
       def method
-        options[:method] || notification.class.name.underscore
+        options[:method] || notifier.class.name.underscore
       end
 
       def format
         params = if (method = options[:format])
-          notification.send(method)
+          notifier.send(method)
         else
-          notification.params
+          notifier.params
         end
         params.merge(recipient: recipient, record: record)
       end

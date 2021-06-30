@@ -9,9 +9,9 @@ module Noticed
 
       def format
         if (method = options[:format])
-          notification.send(method)
+          notifier.send(method)
         else
-          notification.params
+          notifier.params
         end
       end
 
@@ -22,7 +22,7 @@ module Noticed
           when String
             value.constantize
           when Symbol
-            notification.send(value)
+            notifier.send(value)
           when Class
             value
           else

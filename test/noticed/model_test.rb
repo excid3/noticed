@@ -14,13 +14,15 @@ class ModelTest < ActiveSupport::TestCase
   end
 
   test "unread scope" do
-    make_notifier
-    assert_equal 1, Notification.unread.count
+    assert_difference "Notification.unread.count" do
+      make_notifier
+    end
   end
 
   test "read scope" do
-    make_notifier(read: true)
-    assert_equal 1, Notification.read.count
+    assert_difference "Notification.read.count" do
+      make_notifier(read: true)
+    end
   end
 
   def make_notifier(read: false)

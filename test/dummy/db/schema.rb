@@ -19,7 +19,11 @@ ActiveRecord::Schema.define(version: 2020_08_03_191250) do
     t.string "recipient_type", null: false
     t.bigint "recipient_id", null: false
     t.string "type"
-    t.text "params"
+    if t.respond_to? :jsonb
+      t.jsonb "params"
+    else
+      t.json "params"
+    end
     t.datetime "read_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -55,6 +59,19 @@ ActiveRecord::Schema.define(version: 2020_08_03_191250) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_with_jsonb_on_account_id"
     t.index ["recipient_type", "recipient_id"], name: "index_with_jsonb_on_recipient_type_and_recipient_id"
+  end
+
+  create_table "text_notifications", force: :cascade do |t|
+    t.integer "account_id"
+    t.string "recipient_type", null: false
+    t.bigint "recipient_id", null: false
+    t.string "type"
+    t.text "params"
+    t.datetime "read_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_text_notifications_on_account_id"
+    t.index ["recipient_type", "recipient_id"], name: "index_text_on_recipient_type_and_recipient_id"
   end
 
   create_table "accounts", force: :cascade do |t|

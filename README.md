@@ -159,6 +159,10 @@ For example:
 
  `t(".message")` looks up `en.notifiers.new_comment.message`
 
+Or when notification class is in module:
+
+`t(".message") # in Admin::NewComment` looks up `en.notifications.admin.new_comment.message`
+
 ##### User Preferences
 
 You can use the `if:` and `unless: ` options on your delivery methods to check the user's preferences and skip processing if they have disabled that type of notification.
@@ -371,15 +375,23 @@ You can also configure multiple fallback options:
 
 ```ruby
 class CriticalSystemNotifier < Noticed::Base
+  deliver_by :database
   deliver_by :slack
-  deliver_by :email, mailer: 'CriticalSystemMailer', delay: 10.minutes, unless: :read?
-  deliver_by :twilio, delay: 20.minutes, unless: :read?
+  deliver_by :email, mailer: 'CriticalSystemMailer', delay: 10.minutes, if: :unread?
+  deliver_by :twilio, delay: 20.minutes, if: :unread?
 end
 ```
 
-In this scenario, you can create an escalating notification that starts with a ping in Slack, then emails the team, and then finally sends an SMS to the on-call phone.
+In this scenario, you have created an escalating notification system that
+
+-  Immediately creates a record in the database (for display directly in the app)
+-  Immediately issues a ping in Slack.
+-  If the notification remains unread after 10 minutes, it emails the team.
+-  If the notification remains unread after 20 minutes, it sends an SMS to the on-call phone.
 
 You can mix and match the options and delivery methods to suit your application specific needs.
+
+Please note that to implement this pattern, it is essential `deliver_by :database` is one among the different delivery methods specified. Without this, a database record of the notification will not be created.
 
 ### 🚚 Custom Delivery Methods
 
@@ -471,13 +483,13 @@ Rails 6.1+ can serialize Class and Module objects as arguments to ActiveJob. The
   deliver_by DeliveryMethods::Discord
 ```
 
-For Rails 6.0, you must pass strings of the class names in the `deliver_by` options.
+For Rails 5.2 and 6.0, you must pass strings of the class names in the `deliver_by` options.
 
 ```ruby
   deliver_by :discord, class: "DeliveryMethods::Discord"
 ```
 
-We recommend the Rails 6.0 compatible options to prevent confusion.
+We recommend using a string in order to prevent confusion.
 
 ### 📦 Database Model
 
@@ -550,7 +562,7 @@ class Post < ApplicationRecord
   has_noticed_notifications
 
   # You can override the param_name, the notification model name, or disable the before_destroy callback
-  has_noticed_notifications param_name: :parent, destroy: false, model: "Notification"
+  has_noticed_notifications param_name: :parent, destroy: false, model_name: "Notification"
 end
 
 # Create a CommentNotifier with a post param
@@ -575,6 +587,14 @@ end
 ## 🙏 Contributing
 
 This project uses [Standard](https://github.com/testdouble/standard) for formatting Ruby code. Please make sure to run `standardrb` before submitting pull requests.
+
+Running tests against multiple databases locally:
+
+```
+DATABASE_URL=sqlite3:noticed_test rails test
+DATABASE_URL=mysql2://root:@127.0.0.1/noticed_test rails test
+DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
+```
 
 ## 📝 License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

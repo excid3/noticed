@@ -1,10 +1,22 @@
 ### Unreleased
 
-# 1.3.1
+### 1.4.1
+
+* Fix early db access by moving constant lookup into the method. Fixes the situation of compiling assets needing database access. - @excid3
+
+### 1.4.0
+
+* Add Rails 5.2 support. Backports ActiveJob and ActionCable functionality for compatibility. - @lorint & @excid3
+
+# 1.3.2
+
+* Add `queue` option for delivery methods - @iheanyi
+
+### 1.3.1
 
 * Safely handle choosing coder when database or table doesn't exist - @excid3
 
-# 1.3.0
+### 1.3.0
 
 * Add `has_noticed_notifications` helper for models - @excid3
 * Use `json` column for params on SQLite by default instead of text - @excid3

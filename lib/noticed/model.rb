@@ -1,5 +1,13 @@
 module Noticed
   module Model
+    DATABASE_ERROR_CLASS_NAMES = lambda {
+      classes = [ ActiveRecord::NoDatabaseError ]
+      classes << ActiveRecord::ConnectionNotEstablished
+      classes << Mysql2::Error if defined?(::Mysql2)
+      classes << PG::ConnectionBad if defined?(::PG)
+      classes
+    }.call.freeze
+
     extend ActiveSupport::Concern
 
     included do
@@ -32,7 +40,9 @@ module Noticed
         else
           Noticed::TextCoder
         end
-      rescue ActiveRecord::NoDatabaseError
+      rescue *DATABASE_ERROR_CLASS_NAMES => _error
+        warn("Noticed was unable to bootstrap correctly as the database is unavailable.")
+
         Noticed::TextCoder
       end
     end

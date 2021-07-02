@@ -576,7 +576,7 @@ CommentNotification.with(parent: @post).deliver(user)
 
 #### Handling Deleted Records
 
-If you create a notification but delete the associated record and forgot `has_noticed_notifications` on the model, the jobs for sending the notification will not be able to find the record when ActiveJob deserializes. You can discord the job on these errors by adding the following to `ApplicationJob`:
+If you create a notification but delete the associated record and forgot `has_noticed_notifications` on the model, the jobs for sending the notification will not be able to find the record when ActiveJob deserializes. You can discard the job on these errors by adding the following to `ApplicationJob`:
 
 ```ruby
 class ApplicationJob < ActiveJob::Base

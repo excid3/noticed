@@ -7,3 +7,8 @@ two:
   first_name: "Second"
   last_name: "User"
   email: "second@example.com"
+
+three:
+  first_name: "Third"
+  last_name: "User"
+  email: "third@example.com"

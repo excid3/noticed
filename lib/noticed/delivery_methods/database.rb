@@ -11,6 +11,7 @@ module Noticed
 
         # Must be executed right away so the other deliveries can access the db record
         raise ArgumentError, "database delivery cannot be delayed" if options.key?(:delay)
+        raise ArgumentError, "database delivery cannot be executed in bulk" if options.key?(:bulk)
       end
 
       private

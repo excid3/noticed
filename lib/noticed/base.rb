@@ -31,6 +31,14 @@ module Noticed
         new(params)
       end
 
+      def deliver(recipients)
+        new.deliver(recipients)
+      end
+
+      def deliver_later(recipients)
+        new.deliver_later(recipients)
+      end
+
       def params(*names)
         param_names.concat Array.wrap(names)
       end

@@ -179,6 +179,16 @@ class CommentNotification < Noticed::Base
 end
 ```
 
+## 🐞 Debugging
+
+In order to figure out what's up when you run in to errors, you can set the `debug` parameter to `true` in your notification, which will give you a more detailed error message about what went wrong.
+
+Example:
+
+```ruby
+deliver_by :slack, debug: true
+```
+
 ## 🚛 Delivery Methods
 
 The delivery methods are designed to be modular so you can customize the way each type gets delivered.

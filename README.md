@@ -338,6 +338,14 @@ Sends an SMS notification via Twilio.
     To: recipient.phone_number
   }
   ```
+ 
+* `message` - *Required*
+
+  Message is required and needs to be passed in as part of the params:
+  
+  ```
+  SmsNotification.with(message: "Howdy!")
+  ```
 
 ### Vonage SMS
 

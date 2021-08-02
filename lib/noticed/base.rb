@@ -35,7 +35,7 @@ module Noticed
       def deliver(recipients)
         new.deliver(recipients)
       end
-      
+
       # Shortcut for delivering later without params
       def deliver_later(recipients)
         new.deliver_later(recipients)

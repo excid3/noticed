@@ -90,35 +90,35 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test "enqueues notification jobs (skipping database)" do
     assert_enqueued_jobs CommentNotification.delivery_methods.length - 1 do
-      CommentNotification.new.deliver_later(user)
+      CommentNotification.deliver_later(user)
     end
   end
 
   test "cancels delivery when if clause is falsey" do
-    IfExample.new.deliver(user)
+    IfExample.deliver(user)
     assert_empty Noticed::DeliveryMethods::Test.delivered
   end
 
   test "cancels delivery when unless clause is truthy" do
-    UnlessExample.new.deliver(user)
+    UnlessExample.deliver(user)
     assert_empty Noticed::DeliveryMethods::Test.delivered
   end
 
   test "has access to recipient in if clause" do
     assert_nothing_raised do
-      IfRecipientExample.new.deliver(user)
+      IfRecipientExample.deliver(user)
     end
   end
 
   test "has access to recipient in unless clause" do
     assert_nothing_raised do
-      UnlessRecipientExample.new.deliver(user)
+      UnlessRecipientExample.deliver(user)
     end
   end
 
   test "validates attributes for params" do
     assert_raises Noticed::ValidationError do
-      AttributeExample.new.deliver(users(:one))
+      AttributeExample.deliver(users(:one))
     end
   end
 
@@ -127,7 +127,7 @@ class Noticed::Test < ActiveSupport::TestCase
   end
 
   test "runs callbacks on notifications" do
-    CallbackExample.new.deliver(user)
+    CallbackExample.deliver(user)
     assert_equal [:database, :everything], CallbackExample.callbacks
   end
 
@@ -156,27 +156,27 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test "validates options of delivery methods when options are valid" do
     assert_nothing_raised do
-      NotificationWithValidOptions.new.deliver(user)
+      NotificationWithValidOptions.deliver(user)
     end
   end
 
   test "validates options of delivery methods when options are invalid" do
     assert_raises Noticed::ValidationError do
-      NotificationWithoutValidOptions.new.deliver(user)
+      NotificationWithoutValidOptions.deliver(user)
     end
   end
 
   test "asserts delivery is delayed" do
     freeze_time do
       assert_enqueued_with(at: 5.minutes.from_now) do
-        With5MinutesDelay.new.deliver(user)
+        With5MinutesDelay.deliver(user)
       end
     end
   end
 
   test "asserts delivery is queued with different queue" do
     assert_enqueued_with(queue: "custom") do
-      WithCustomQueue.new.deliver_later(user)
+      WithCustomQueue.deliver_later(user)
     end
   end
 

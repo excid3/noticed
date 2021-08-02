@@ -31,6 +31,16 @@ module Noticed
         new(params)
       end
 
+      # Shortcut for delivering without params
+      def deliver(recipients)
+        new.deliver(recipients)
+      end
+
+      # Shortcut for delivering later without params
+      def deliver_later(recipients)
+        new.deliver_later(recipients)
+      end
+
       def params(*names)
         param_names.concat Array.wrap(names)
       end

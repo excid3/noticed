@@ -42,6 +42,7 @@ module Noticed
       @_notification ||= begin
         instance = type.constantize.with(params)
         instance.record = self
+        instance.recipient = recipient
         instance
       end
     end

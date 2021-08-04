@@ -14,6 +14,14 @@ class UnlessExample < Noticed::Base
   end
 end
 
+class RecipientExample < Noticed::Base
+  deliver_by :database
+
+  def message
+    recipient.id
+  end
+end
+
 class IfRecipientExample < Noticed::Base
   deliver_by :test, if: :falsey
   def falsey
@@ -114,6 +122,11 @@ class Noticed::Test < ActiveSupport::TestCase
     assert_nothing_raised do
       UnlessRecipientExample.deliver(user)
     end
+  end
+
+  test "has access to recipient in notification instance" do
+    RecipientExample.deliver(user)
+    assert_equal user.id, Notification.last.to_notification.message
   end
 
   test "validates attributes for params" do

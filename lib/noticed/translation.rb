@@ -7,6 +7,10 @@ module Noticed
       :notifications
     end
 
+    def class_scope
+      self.class.name.underscore.tr("/", ".")
+    end
+
     def translate(key, **options)
       I18n.translate(scope_translation_key(key), **options)
     end
@@ -14,7 +18,7 @@ module Noticed
 
     def scope_translation_key(key)
       if key.to_s.start_with?(".")
-        "#{i18n_scope}.#{self.class.name.underscore}#{key}"
+        "#{i18n_scope}.#{class_scope}#{key}"
       else
         key
       end

@@ -159,6 +159,10 @@ For example:
 
  `t(".message")` looks up `en.notifications.new_comment.message`
 
+Or when notification class is in module:
+
+`t(".message") # in Admin::NewComment` looks up `en.notifications.admin.new_comment.message`
+
 ##### User Preferences
 
 You can use the `if:` and `unless: ` options on your delivery methods to check the user's preferences and skip processing if they have disabled that type of notification.
@@ -173,6 +177,16 @@ class CommentNotification < Noticed::Base
     recipient.email_notifications?
   end
 end
+```
+
+## 🐞 Debugging
+
+In order to figure out what's up when you run in to errors, you can set the `debug` parameter to `true` in your notification, which will give you a more detailed error message about what went wrong.
+
+Example:
+
+```ruby
+deliver_by :slack, debug: true
 ```
 
 ## 🚛 Delivery Methods
@@ -265,7 +279,7 @@ Sends a Teams notification via webhook.
 
 * `format: :format_for_teams` - *Optional*
 
-  Use a custom method to define the payload sent to slack. Method should return a Hash.
+  Use a custom method to define the payload sent to Microsoft Teams. Method should return a Hash.
   Documentation for posting via Webhooks available at: https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook
 
   ```ruby
@@ -324,6 +338,14 @@ Sends an SMS notification via Twilio.
     To: recipient.phone_number
   }
   ```
+ 
+* `message` - *Required*
+
+  Message is required and needs to be passed in as part of the params:
+  
+  ```
+  SmsNotification.with(message: "Howdy!")
+  ```
 
 ### Vonage SMS
 
@@ -371,15 +393,23 @@ You can also configure multiple fallback options:
 
 ```ruby
 class CriticalSystemNotification < Noticed::Base
+  deliver_by :database
   deliver_by :slack
-  deliver_by :email, mailer: 'CriticalSystemMailer', delay: 10.minutes, unless: :read?
-  deliver_by :twilio, delay: 20.minutes, unless: :read?
+  deliver_by :email, mailer: 'CriticalSystemMailer', delay: 10.minutes, if: :unread?
+  deliver_by :twilio, delay: 20.minutes, if: :unread?
 end
 ```
 
-In this scenario, you can create an escalating notification that starts with a ping in Slack, then emails the team, and then finally sends an SMS to the on-call phone.
+In this scenario, you have created an escalating notification system that
 
-You can mix and match the options and delivery methods to suit your application specific needs. 
+-  Immediately creates a record in the database (for display directly in the app)
+-  Immediately issues a ping in Slack.
+-  If the notification remains unread after 10 minutes, it emails the team.
+-  If the notification remains unread after 20 minutes, it sends an SMS to the on-call phone.
+
+You can mix and match the options and delivery methods to suit your application specific needs.
+
+Please note that to implement this pattern, it is essential `deliver_by :database` is one among the different delivery methods specified. Without this, a database record of the notification will not be created.
 
 ### 🚚 Custom Delivery Methods
 
@@ -471,13 +501,13 @@ Rails 6.1+ can serialize Class and Module objects as arguments to ActiveJob. The
   deliver_by DeliveryMethods::Discord
 ```
 
-For Rails 6.0, you must pass strings of the class names in the `deliver_by` options.
+For Rails 5.2 and 6.0, you must pass strings of the class names in the `deliver_by` options.
 
 ```ruby
   deliver_by :discord, class: "DeliveryMethods::Discord"
 ```
 
-We recommend the Rails 6.0 compatible options to prevent confusion.
+We recommend using a string in order to prevent confusion.
 
 ### 📦 Database Model
 
@@ -534,59 +564,55 @@ Adding notification associations to your models makes querying and deleting noti
 
 For example, in most cases, you'll want to delete notifications for records that are destroyed.
 
-##### JSON Columns
+We'll need two associations for this:
 
-If you're using MySQL or Postgresql, the `params` column on the notifications table is in `json` or `jsonb` format and can be queried against directly.
+1. Notifications where the record is the recipient
+2. Notifications where the record is in the notification params
 
 For example,  we can query the notifications and delete them on destroy like so:
 
 ```ruby
 class Post < ApplicationRecord
-  def notifications
-    # Exact match
-    @notifications ||= Notification.where(params: { post: self })
+  # Standard association for deleting notifications when you're the recipient
+  has_many :notifications, as: :recipient, dependent: :destroy
 
-    # Or Postgres syntax to query the post key in the JSON column
-    # @notifications ||= Notification.where("params->'post' = ?", Noticed::Coder.dump(self).to_json)
-  end
+  # Helper for associating and destroying Notification records where(params: {post: self})
+  has_noticed_notifications
 
-  before_destroy :destroy_notifications
-
-  def destroy_notifications
-    notifications.destroy_all
-  end
+  # You can override the param_name, the notification model name, or disable the before_destroy callback
+  has_noticed_notifications param_name: :parent, destroy: false, model_name: "Notification"
 end
+
+# Create a CommentNotification with a post param
+CommentNotification.with(post: @post).deliver(user)
+# Lookup Notifications where params: {post: @post}
+@post.notifications_as_post
+
+CommentNotification.with(parent: @post).deliver(user)
+@post.notifications_as_parent
 ```
 
-##### Polymorphic Association
+#### Handling Deleted Records
 
-If your notification is only associated with one model or you're using a `text` column for your params column , then a polymorphic association is what you'll want to use.
+If you create a notification but delete the associated record and forgot `has_noticed_notifications` on the model, the jobs for sending the notification will not be able to find the record when ActiveJob deserializes. You can discard the job on these errors by adding the following to `ApplicationJob`:
 
-1. Generate a polymorphic association for the Notification model. `rails g migration AddNotifiableToNotifications notifiable:belongs_to{polymorphic}`
-    
-    a. Make sure to add the association to the model: `belongs_to :notifiable, polymorphic: true`
-
-2. Add `has_many :notifications, as: :notifiable, dependent: :destroy` to each model
-
-3. Customize database `format: ` option to write the `notifiable` attribute(s) when saving the notification
-
-   ```ruby
-   class ExampleNotification < Noticed::Base
-     deliver_by :database, format: :format_for_database
-
-     def format_for_database
-       {
-         notifiable: params[:post],
-         type: self.class.name,
-         params: params.except(:post)
-       }
-     end
-   end
-   ```
+```ruby
+class ApplicationJob < ActiveJob::Base
+  discard_on ActiveJob::DeserializationError
+end
+```
 
 ## 🙏 Contributing
 
 This project uses [Standard](https://github.com/testdouble/standard) for formatting Ruby code. Please make sure to run `standardrb` before submitting pull requests.
+
+Running tests against multiple databases locally:
+
+```
+DATABASE_URL=sqlite3:noticed_test rails test
+DATABASE_URL=mysql2://root:@127.0.0.1/noticed_test rails test
+DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
+```
 
 ## 📝 License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

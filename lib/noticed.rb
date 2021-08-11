@@ -5,6 +5,7 @@ require "noticed/engine"
 module Noticed
   autoload :Base, "noticed/base"
   autoload :Coder, "noticed/coder"
+  autoload :HasNotifications, "noticed/has_notifications"
   autoload :Model, "noticed/model"
   autoload :TextCoder, "noticed/text_coder"
   autoload :Translation, "noticed/translation"

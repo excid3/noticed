@@ -91,6 +91,10 @@ module Noticed
         recipient: recipient,
         record: record
       }
+      # set to ensure if a `delay` method is provided, these accessors are defined
+      # for use in that method
+      self.recipient = recipient
+      self.record = record
 
       run_callbacks delivery_method[:name] do
         method = delivery_method_for(delivery_method[:name], delivery_method[:options])

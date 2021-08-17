@@ -100,8 +100,7 @@ module Noticed
 
         # Always perfrom later if a delay is present
         if (delay = delivery_method.dig(:options, :delay))
-          delay_duration = repond_to?(delay) ? send(delay) : delay
-
+          delay_duration = respond_to?(delay) ? send(delay) : delay
           method.set(wait: delay_duration, queue: queue).perform_later(args)
         elsif enqueue
           method.set(queue: queue).perform_later(args)

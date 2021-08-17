@@ -30,11 +30,11 @@ module Noticed
       end
 
       def perform(args)
+        @notifier = args[:notifier_class].constantize.new(args[:params])
         @options = args[:options]
         @params = args[:params]
         @recipient = args[:recipient]
         @record = args[:record]
-        @notifier = @record.to_notifier
 
         # Make notifier aware of database record and recipient during delivery
         @notifier.record = args[:record]

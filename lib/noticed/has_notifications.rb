@@ -1,6 +1,6 @@
 module Noticed
   module HasNotifications
-    # Defines a method for the association and a before_destory callback to remove notifications
+    # Defines a method for the association and a before_destroy callback to remove notifications
     # where this record is a param
     #
     #    class User < ApplicationRecord
@@ -18,7 +18,7 @@ module Noticed
         define_method "notifications_as_#{param_name}" do
           model = options.fetch(:model_name, "Notification").constantize
           case current_adapter
-          when "postgresql"
+          when "postgresql", "postgis"
             model.where("params @> ?", Noticed::Coder.dump(param_name.to_sym => self).to_json)
           when "mysql2"
             model.where("JSON_CONTAINS(params, ?)", Noticed::Coder.dump(param_name.to_sym => self).to_json)

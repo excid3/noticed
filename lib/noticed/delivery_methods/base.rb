@@ -33,12 +33,12 @@ module Noticed
         @notification = args[:notification_class].constantize.new(args[:params])
         @options = args[:options]
         @params = args[:params]
-        @recipient = args[:recipient]
         @record = args[:record]
+        @recipient = args[:recipient]
 
         # Make notification aware of database record and recipient during delivery
-        @notification.record = args[:record]
-        @notification.recipient = args[:recipient]
+        @notification.record = record
+        @notification.recipient = recipient
 
         return if (condition = @options[:if]) && !@notification.send(condition)
         return if (condition = @options[:unless]) && @notification.send(condition)

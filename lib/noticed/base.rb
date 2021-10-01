@@ -10,7 +10,7 @@ module Noticed
     class_attribute :param_names, instance_writer: false, default: []
 
     # Gives notifications access to the record and recipient during delivery
-    attr_accessor :record, :recipient
+    attr_accessor :record, :recipient, :records
 
     delegate :read?, :unread?, to: :record
 
@@ -55,9 +55,7 @@ module Noticed
       validate!
 
       run_callbacks :deliver do
-        Array.wrap(recipients).uniq.each do |recipient|
-          run_delivery(recipient, enqueue: false)
-        end
+        run_delivery(Array.wrap(recipients).uniq, enqueue: false)
       end
     end
 
@@ -65,9 +63,7 @@ module Noticed
       validate!
 
       run_callbacks :deliver do
-        Array.wrap(recipients).uniq.each do |recipient|
-          run_delivery(recipient, enqueue: true)
-        end
+        run_delivery(Array.wrap(recipients).uniq, enqueue: true)
       end
     end
 
@@ -78,22 +74,52 @@ module Noticed
     private
 
     # Runs all delivery methods for a notification
-    def run_delivery(recipient, enqueue: true)
+    def run_delivery(recipients, enqueue: true)
       delivery_methods = self.class.delivery_methods.dup
 
       # Run database delivery inline first if it exists so other methods have access to the record
       if (index = delivery_methods.find_index { |m| m[:name] == :database })
         delivery_method = delivery_methods.delete_at(index)
-        record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false, record: nil)
+        records = run_database_delivery_method(delivery_method, recipients: recipients, enqueue: false)
       end
 
-      delivery_methods.each do |delivery_method|
-        run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue, record: record)
+      recipients.each do |recipient|
+        record = Array.wrap(records).detect{|record| record.recipient == recipient}
+        delivery_methods.each do |delivery_method|
+          run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue, record: record)
+        end
       end
     end
 
+    #run_database_delivery_method
+    def run_database_delivery_method(delivery_method, recipients:, enqueue:)
+      args = {
+        notification_class: self.class.name,
+        options: delivery_method[:options],
+        params: params,
+        recipients: recipients
+      }
+
+      run_callbacks delivery_method[:name] do
+        method = delivery_method_for(delivery_method[:name], delivery_method[:options])
+
+        # If the queue is `nil`, ActiveJob will use a default queue name.
+        queue = delivery_method.dig(:options, :queue)
+
+        # Always perfrom later if a delay is present
+        if (delay = delivery_method.dig(:options, :delay))
+          method.set(wait: delay, queue: queue).perform_later(args)
+        elsif enqueue
+          method.set(queue: queue).perform_later(args)
+        else
+          method.perform_now(args)
+        end
+      end
+    end
+
+
     # Actually runs an individual delivery
-    def run_delivery_method(delivery_method, recipient:, enqueue:, record:)
+    def run_delivery_method(delivery_method, recipient:, record:, enqueue:)
       args = {
         notification_class: self.class.name,
         options: delivery_method[:options],

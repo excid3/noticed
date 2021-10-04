@@ -4,10 +4,8 @@ module Noticed
       attr_reader :recipients
       # Must return the database record
       def deliver
-        to_store = Array.wrap(recipients).uniq.map do |recipient|
-          recipient.send(association_name).new(attributes).attributes
-        end
-        relation.create!(to_store)
+        notifications = build_notifications
+        save_notifications(notifications)
       end
 
       def self.validate!(options)
@@ -40,8 +38,25 @@ module Noticed
         end
       end
 
-      def relation
+      def klass
         association_name.to_s.upcase_first.singularize.constantize
+      end
+
+      def build_notifications
+        Array.wrap(recipients).uniq.map do |recipient|
+          build_notification(recipient)
+        end
+      end
+
+      def build_notification(recipient)
+        recipient.send(association_name).new(attributes).attributes.
+          merge({created_at: DateTime.current, updated_at: DateTime.current}).
+          except("id")
+      end
+
+      def save_notifications(notifications)
+        ids = klass.insert_all!(notifications).rows
+        klass.find(ids)
       end
     end
   end

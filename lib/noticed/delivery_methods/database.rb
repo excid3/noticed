@@ -55,8 +55,21 @@ module Noticed
       end
 
       def save_notifications(notifications)
-        ids = klass.insert_all!(notifications).rows
-        klass.find(ids)
+        if Rails::VERSION::MAJOR > 6 && ["postgresql", "postgis"].include?(current_adapter)
+          ids = klass.insert_all!(notifications).rows
+          records = klass.find(ids)
+        else
+          records = klass.create!(notifications)
+        end
+        records
+      end
+
+      def current_adapter
+        if ActiveRecord::Base.respond_to?(:connection_db_config)
+          ActiveRecord::Base.connection_db_config.adapter
+        else
+          ActiveRecord::Base.connection_config[:adapter]
+        end
       end
     end
   end

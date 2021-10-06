@@ -4,7 +4,9 @@ module Noticed
       attr_reader :recipients
       # Must return the database record
       def deliver
+        #build array of notification attributes
         notifications = build_notifications
+        #save all the notification
         save_notifications(notifications)
       end
 
@@ -38,24 +40,28 @@ module Noticed
         end
       end
 
+      #retun the class notifications or the association
       def klass
         association_name.to_s.upcase_first.singularize.constantize
       end
 
+      #with the recipients build an array of notifications
       def build_notifications
         Array.wrap(recipients).uniq.map do |recipient|
           build_notification(recipient)
         end
       end
 
+      #new notification and then return the attributes without id and with timestamps
       def build_notification(recipient)
         recipient.send(association_name).new(attributes).attributes.
           merge({created_at: DateTime.current, updated_at: DateTime.current}).
           except("id")
       end
 
+      #if the notification can bulk, use insert_all if not creates records
       def save_notifications(notifications)
-        if Rails::VERSION::MAJOR > 6 && ["postgresql", "postgis"].include?(current_adapter)
+        if bulk?
           ids = klass.insert_all!(notifications).rows
           records = klass.find(ids)
         else
@@ -70,6 +76,10 @@ module Noticed
         else
           ActiveRecord::Base.connection_config[:adapter]
         end
+      end
+
+      def bulk?
+        Rails::VERSION::MAJOR > 6 && ["postgresql", "postgis"].include?(current_adapter)
       end
     end
   end

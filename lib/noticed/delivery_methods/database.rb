@@ -4,7 +4,7 @@ module Noticed
       attr_reader :recipients
       # Must return the database record
       def deliver
-        #build array of notification attributes
+        # build array of notification attributes
         notifications = build_notifications
         #save all the notification
         save_notifications(notifications)
@@ -40,26 +40,26 @@ module Noticed
         end
       end
 
-      #retun the class notifications or the association
+      # retun the class notifications or the association
       def klass
         association_name.to_s.upcase_first.singularize.constantize
       end
 
-      #with the recipients build an array of notifications
+      # with the recipients build an array of notifications
       def build_notifications
         Array.wrap(recipients).uniq.map do |recipient|
           build_notification(recipient)
         end
       end
 
-      #new notification and then return the attributes without id and with timestamps
+      # new notification and then return the attributes without id and with timestamps
       def build_notification(recipient)
         recipient.send(association_name).new(attributes).attributes.
           merge({created_at: DateTime.current, updated_at: DateTime.current}).
           except("id")
       end
 
-      #if the notification can bulk, use insert_all if not creates records
+      # if the notification can bulk, use insert_all if not creates records
       def save_notifications(notifications)
         if bulk?
           ids = klass.insert_all!(notifications).rows

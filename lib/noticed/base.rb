@@ -91,7 +91,7 @@ module Noticed
       end
     end
 
-    #run_database_delivery_method
+    # Run database delivery method for all recipients
     def run_database_delivery_method(delivery_method, recipients:, enqueue:)
       args = {
         notification_class: self.class.name,

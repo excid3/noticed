@@ -10,7 +10,7 @@ module Noticed
     class_attribute :param_names, instance_writer: false, default: []
 
     # Gives notifications access to the record and recipient during delivery
-    attr_accessor :record, :recipient, :records
+    attr_accessor :record, :recipient
 
     delegate :read?, :unread?, to: :record
 
@@ -80,11 +80,11 @@ module Noticed
       # Run database delivery inline first if it exists so other methods have access to the record
       if (index = delivery_methods.find_index { |m| m[:name] == :database })
         delivery_method = delivery_methods.delete_at(index)
-        records = run_database_delivery_method(delivery_method, recipients: recipients, enqueue: false)
+        records = run_database_delivery_method(delivery_method, recipients: recipients)
       end
 
       recipients.each do |recipient|
-        record = Array.wrap(records).detect{|record| record.recipient == recipient}
+        record = Array.wrap(records).detect { |record| record.recipient == recipient }
         delivery_methods.each do |delivery_method|
           run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue, record: record)
         end
@@ -92,7 +92,7 @@ module Noticed
     end
 
     # Run database delivery method for all recipients
-    def run_database_delivery_method(delivery_method, recipients:, enqueue:)
+    def run_database_delivery_method(delivery_method, recipients:)
       args = {
         notification_class: self.class.name,
         options: delivery_method[:options],
@@ -100,16 +100,11 @@ module Noticed
         recipients: recipients
       }
 
-      run_callbacks delivery_method[:name] do
-        method = delivery_method_for(delivery_method[:name], delivery_method[:options])
-
-        # If the queue is `nil`, ActiveJob will use a default queue name.
-        queue = delivery_method.dig(:options, :queue)
-
+      run_callbacks :database do
+        method = delivery_method_for(:database, delivery_method[:options])
         method.perform_now(args)
       end
     end
-
 
     # Actually runs an individual delivery
     def run_delivery_method(delivery_method, recipient:, record:, enqueue:)

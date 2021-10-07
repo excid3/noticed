@@ -6,7 +6,7 @@ module Noticed
       def deliver
         # build array of notification attributes
         notifications = build_notifications
-        #save all the notification
+        # save all the notification
         save_notifications(notifications)
       end
 
@@ -54,20 +54,21 @@ module Noticed
 
       # new notification and then return the attributes without id and with timestamps
       def build_notification(recipient)
-        recipient.send(association_name).new(attributes).attributes.
-          merge({created_at: DateTime.current, updated_at: DateTime.current}).
-          except("id")
+        recipient.send(association_name)
+          .new(attributes)
+          .attributes
+          .merge({created_at: DateTime.current, updated_at: DateTime.current})
+          .except("id")
       end
 
       # if the notification can bulk, use insert_all if not creates records
       def save_notifications(notifications)
         if bulk?
           ids = klass.insert_all!(notifications).rows
-          records = klass.find(ids)
+          klass.preload(:recipient).find(ids)
         else
-          records = klass.create!(notifications)
+          klass.create!(notifications)
         end
-        records
       end
 
       def current_adapter

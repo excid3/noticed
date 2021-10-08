@@ -83,10 +83,12 @@ module Noticed
         records = run_database_delivery_method(delivery_method, recipients: recipients)
       end
 
+      # build hash with recipients as keys
+      records = Array.wrap(records).to_h { |record| [record.recipient, record] }
+
       recipients.each do |recipient|
-        record = Array.wrap(records).detect { |record| record.recipient == recipient }
         delivery_methods.each do |delivery_method|
-          run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue, record: record)
+          run_delivery_method(delivery_method, recipient: recipient, enqueue: enqueue, record: records[recipient])
         end
       end
     end

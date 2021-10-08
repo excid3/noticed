@@ -10,7 +10,15 @@ module Noticed
       private
 
       def mailer
-        options.fetch(:mailer).constantize
+        option = options.fetch(:mailer)
+        case option
+        when String
+          option.constantize
+        when Symbol
+          send(option)
+        else
+          option
+        end
       end
 
       def method

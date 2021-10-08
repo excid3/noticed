@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Allow string, symbol, or class for `mailer` option with email delivery - @excid3
+
 ### 1.4.1
 
 * Fix early db access by moving constant lookup into the method. Fixes the situation of compiling assets needing database access. - @excid3

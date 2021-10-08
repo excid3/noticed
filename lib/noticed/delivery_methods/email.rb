@@ -15,7 +15,7 @@ module Noticed
         when String
           option.constantize
         when Symbol
-          send(option)
+          notification.send(option)
         else
           option
         end

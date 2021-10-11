@@ -44,16 +44,14 @@ module Noticed
       end
 
       def connection_pool
-        self.class.connection_pool ||= begin
-          Apnotic::ConnectionPool.new({
-            auth_method: :token,
-            cert_path: Rails.root.join("config/certs/ios/production.p8"),
-            key_id: Rails.application.credentials.dig(:ios, :key_id),
-            team_id: Rails.application.credentials.dig(:ios, :team_id),
-          }, size: 5) do |connection|
-            connection.on(:error) do |exception|
-              Rails.logger.info "Apnotic exception raised: #{exception}"
-            end
+        self.class.connection_pool ||= Apnotic::ConnectionPool.new({
+          auth_method: :token,
+          cert_path: Rails.root.join("config/certs/ios/production.p8"),
+          key_id: Rails.application.credentials.dig(:ios, :key_id),
+          team_id: Rails.application.credentials.dig(:ios, :team_id)
+        }, size: options.fetch(:pool_size, 5)) do |connection|
+          connection.on(:error) do |exception|
+            Rails.logger.info "Apnotic exception raised: #{exception}"
           end
         end
       end

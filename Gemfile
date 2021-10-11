@@ -14,3 +14,5 @@ gemspec
 # To use a debugger
 gem "byebug", group: [:development, :test]
 gem "appraisal", github: "excid3/appraisal", branch: "fix-bundle-env"
+
+gem "rpush"

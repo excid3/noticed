@@ -83,6 +83,7 @@ GEM
     builder (3.2.4)
     byebug (11.1.3)
     concurrent-ruby (1.1.9)
+    connection_pool (2.2.5)
     crack (0.4.5)
       rexml
     crass (1.0.6)
@@ -96,6 +97,8 @@ GEM
     globalid (0.5.2)
       activesupport (>= 5.0)
     hashdiff (1.0.1)
+    hkdf (0.3.0)
+    http-2 (0.11.0)
     http (4.4.1)
       addressable (~> 2.3)
       http-cookie (~> 1.0)
@@ -108,6 +111,7 @@ GEM
       ffi-compiler (>= 1.0, < 2.0)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
+    jwt (2.3.0)
     loofah (2.12.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -118,7 +122,12 @@ GEM
     mini_mime (1.1.1)
     mini_portile2 (2.6.1)
     minitest (5.14.4)
+    multi_json (1.15.0)
     mysql2 (0.5.3)
+    net-http-persistent (4.0.1)
+      connection_pool (~> 2.2)
+    net-http2 (0.18.4)
+      http-2 (~> 0.11)
     nio4r (2.5.8)
     nokogiri (1.12.3)
       mini_portile2 (~> 2.6.1)
@@ -162,6 +171,16 @@ GEM
     rake (13.0.6)
     regexp_parser (2.1.1)
     rexml (3.2.5)
+    rpush (6.0.1)
+      activesupport (>= 5.2)
+      jwt (>= 1.5.6)
+      multi_json (~> 1.0)
+      net-http-persistent
+      net-http2 (~> 0.18, >= 0.18.3)
+      railties
+      rainbow
+      thor (>= 0.18.1, < 2.0)
+      webpush (~> 1.0)
     rubocop (1.11.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
@@ -199,6 +218,9 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    webpush (1.1.0)
+      hkdf (~> 0.2)
+      jwt (~> 2.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -213,6 +235,7 @@ DEPENDENCIES
   mysql2
   noticed!
   pg
+  rpush
   sqlite3
   standard
   webmock

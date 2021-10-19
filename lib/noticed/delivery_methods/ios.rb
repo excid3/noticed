@@ -35,7 +35,7 @@ module Noticed
       end
 
       def bad_token?(response)
-        response.status == "410" || (response.status == "400" && response.body["reaseon"] == "BadDeviceToken")
+        response.status == "410" || (response.status == "400" && response.body["reason"] == "BadDeviceToken")
       end
 
       def cleanup_invalid_token(token)

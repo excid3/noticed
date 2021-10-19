@@ -15,6 +15,7 @@ Currently, we support these notification delivery methods out of the box:
 * Microsoft Teams
 * Twilio (SMS)
 * Vonage / Nexmo (SMS)
+* iOS Apple Push Notifications
 
 And you can easily add new notification types for any other delivery methods.
 
@@ -195,186 +196,15 @@ The delivery methods are designed to be modular so you can customize the way eac
 
 For example, emails will require a subject, body, and email address while an SMS requires a phone number and simple message. You can define the formats for each of these in your Notification and the delivery method will handle the processing of it.
 
-### Database
-
-Writes notification to the database.
-
-`deliver_by :database`
-
-**Note:** Database notifications are special in that they will run before the other delivery methods. We do this so you can reference the database record ID in other delivery methods. For that same reason, the delivery can't be delayed (via the `delay` option) or an error will be raised.
-
-##### Options
-
-* `association` - *Optional*
-
-  The name of the database association to use. Defaults to `:notifications`
-
-* `format: :format_for_database` - *Optional*
-
-  Use a custom method to define the attributes saved to the database
-
-### Email
-
-Sends an email notification. Emails will always be sent with `deliver_later`
-
-`deliver_by :email, mailer: "UserMailer"`
-
-##### Options
-
-* `mailer` - **Required**
-
-  The mailer that should send the email
-
-* `method: :invoice_paid` - *Optional*
-
-  Used to customize the method on the mailer that is called
-
-* `format: :format_for_email` - *Optional*
-
-  Use a custom method to define the params sent to the mailer. `recipient` will be merged into the params.
-
-### ActionCable
-
-Sends a notification to the browser via websockets (ActionCable channel by default).
-
-`deliver_by :action_cable`
-
-##### Options
-
-* `format: :format_for_action_cable` - *Optional*
-
-  Use a custom method to define the Hash sent through ActionCable
-
-* `channel` - *Optional*
-
-  Override the ActionCable channel used to send notifications.
-
-  Defaults to `Noticed::NotificationChannel`
-
-### Slack
-
-Sends a Slack notification via webhook.
-
-`deliver_by :slack`
-
-##### Options
-
-* `format: :format_for_slack` - *Optional*
-
-  Use a custom method to define the payload sent to Slack. Method should return a Hash.
-
-* `url: :url_for_slack` - *Optional*
-
-  Use a custom method to retrieve the Slack Webhook URL. Method should return a String.
-
-  Defaults to `Rails.application.credentials.slack[:notification_url]`
-
-### Microsoft Teams
-
-Sends a Teams notification via webhook.
-
-`deliver_by :microsoft_teams`
-
-#### Options
-
-* `format: :format_for_teams` - *Optional*
-
-  Use a custom method to define the payload sent to Microsoft Teams. Method should return a Hash.
-  Documentation for posting via Webhooks available at: https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook
-
-  ```ruby
-  {
-    title: "This is the title for the card",
-    text: "This is the body text for the card",
-    sections: [{activityTitle: "Section Title", activityText: "Section Text"}],
-    "potentialAction": [{
-      "@type": "OpenUri",
-      name: "Button Text",
-      targets: [{
-        os: "default",
-        uri: "https://example.com/foo/action"
-      }]
-    }]
-
-  }
-  ```
-
-* `url: :url_for_teams_channel`: - *Optional*
-
-  Use a custom method to retrieve the MS Teams Webhook URL. Method should return a string.
-
-  Defaults to `Rails.application.credentials.microsoft_teams[:notification_url]`
-
-### Twilio SMS
-
-Sends an SMS notification via Twilio.
-
-`deliver_by :twilio`
-
-##### Options
-
-* `credentials: :get_twilio_credentials` - *Optional*
-
-  Use a custom method to retrieve the credentials for Twilio. Method should return a Hash with `:account_sid`, `:auth_token` and `:phone_number` keys.
-
-  Defaults to `Rails.application.credentials.twilio[:account_sid]` and `Rails.application.credentials.twilio[:auth_token]`
-
-* `url: :get_twilio_url` - *Optional*
-
-  Use a custom method to retrieve the Twilio URL.  Method should return the Twilio API url as a string.
-
-  Defaults to `"https://api.twilio.com/2010-04-01/Accounts/#{twilio_credentials(recipient)[:account_sid]}/Messages.json"`
-
-* `format: :format_for_twilio` - *Optional*
-
-  Use a custom method to define the payload sent to Twilio. Method should return a Hash.
-
-  Defaults to:
-
-  ```ruby
-  {
-    Body: notification.params[:message],
-    From: twilio_credentials[:number],
-    To: recipient.phone_number
-  }
-  ```
- 
-* `message` - *Required*
-
-  Message is required and needs to be passed in as part of the params:
-  
-  ```
-  SmsNotification.with(message: "Howdy!")
-  ```
-
-### Vonage SMS
-
-Sends an SMS notification via Vonage / Nexmo.
-
-`deliver_by :vonage`
-
-##### Options
-
-* `credentials: :get_credentials` - *Optional*
-
-  Use a custom method for retrieving credentials. Method should return a Hash with `:api_key` and `:api_secret` keys.
-
-  Defaults to `Rails.application.credentials.vonage[:api_key]` and `Rails.application.credentials.vonage[:api_secret]`
-
-* `deliver_by :vonage, format: :format_for_vonage` - *Optional*
-
-  Use a custom method to generate the params sent to Vonage. Method should return a Hash. Defaults to:
-
-  ```ruby
-  {
-    api_key: vonage_credentials[:api_key],
-    api_secret: vonage_credentials[:api_secret],
-    from: notification.params[:from],
-    text: notification.params[:body],
-    to: notification.params[:to],
-    type: "unicode"
-  }
-  ```
+* [Database](docs/delivery_methods/database.md)
+* [Email](docs/delivery_methods/email.md)
+* [ActionCable](docs/delivery_methods/action_cable.md)
+* [iOS Apple Push Notifications](docs/delivery_methods/ios.md)
+* [Microsoft Teams](docs/delivery_methods/microsoft_teams.md)
+* [Slack](docs/delivery_methods/slack.md)
+* [Test](docs/delivery_methods/test.md)
+* [Twilio](docs/delivery_methods/twilio.md)
+* [Vonage](docs/delivery_methods/vonage.md)
 
 ### Fallback Notifications
 

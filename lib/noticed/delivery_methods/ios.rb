@@ -24,7 +24,7 @@ module Noticed
       private
 
       def format_notification(apn)
-        apn.topic = Rails.application.credentials.dig(:ios, :bundle_identifier)
+        apn.topic = bundle_identifier
 
         if (method = options[:format])
           notification.send(method, apn)
@@ -71,6 +71,18 @@ module Noticed
           key_id: key_id,
           team_id: team_id
         }
+      end
+
+      def bundle_identifier
+        option = options.fetch(:bundle_identifier)
+        case option
+        when String
+          option
+        when Symbol
+          notification.send(option)
+        else
+          Rails.application.credentials.dig(:ios, :bundle_identifier)
+        end
       end
 
       def cert_path

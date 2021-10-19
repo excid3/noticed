@@ -13,6 +13,7 @@ module Noticed
 
             response = connection.push(apn)
             raise "Timeout sending iOS push notification" unless response
+            raise "Request failed #{response.body}" unless response.ok?
 
             # Allow notification to cleanup invalid iOS device tokens
             cleanup_invalid_token(device_token) if bad_token?(response)

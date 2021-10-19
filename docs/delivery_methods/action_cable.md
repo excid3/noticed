@@ -1,0 +1,17 @@
+### ActionCable Delivery Method
+
+Sends a notification to the browser via websockets (ActionCable channel by default).
+
+`deliver_by :action_cable`
+
+##### Options
+
+* `format: :format_for_action_cable` - *Optional*
+
+  Use a custom method to define the Hash sent through ActionCable
+
+* `channel` - *Optional*
+
+  Override the ActionCable channel used to send notifications.
+
+  Defaults to `Noticed::NotificationChannel`

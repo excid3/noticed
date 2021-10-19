@@ -24,6 +24,8 @@ module Noticed
       private
 
       def format_notification(apn)
+        apn.topic = Rails.application.credentials.dig(:ios, :bundle_identifier)
+
         if (method = options[:format])
           notification.send(method, apn)
         else

@@ -1,7 +1,7 @@
 require "apnotic"
 
 module Noticed
-  module Deliverymethod
+  module DeliveryMethods
     class Ios < Base
       cattr_accessor :connection_pool
 
@@ -13,6 +13,7 @@ module Noticed
 
             response = connection.push(apn)
             raise "Timeout sending iOS push notification" unless response
+            raise "Request failed #{response.body}" unless response.ok?
 
             # Allow notification to cleanup invalid iOS device tokens
             cleanup_invalid_token(device_token) if bad_token?(response)
@@ -23,6 +24,8 @@ module Noticed
       private
 
       def format_notification(apn)
+        apn.topic = Rails.application.credentials.dig(:ios, :bundle_identifier)
+
         if (method = options[:format])
           notification.send(method, apn)
         else
@@ -35,7 +38,7 @@ module Noticed
       end
 
       def bad_token?(response)
-        response.status == "410" || (response.status == "400" && response.body["reaseon"] == "BadDeviceToken")
+        response.status == "410" || (response.status == "400" && response.body["reason"] == "BadDeviceToken")
       end
 
       def cleanup_invalid_token(token)
@@ -44,16 +47,36 @@ module Noticed
       end
 
       def connection_pool
-        self.class.connection_pool ||= Apnotic::ConnectionPool.new({
-          auth_method: :token,
-          cert_path: Rails.root.join("config/certs/ios/production.p8"),
-          key_id: Rails.application.credentials.dig(:ios, :key_id),
-          team_id: Rails.application.credentials.dig(:ios, :team_id)
-        }, size: options.fetch(:pool_size, 5)) do |connection|
+        self.class.connection_pool ||= new_connection_pool
+      end
+
+      def new_connection_pool
+        handler = proc do |connection|
           connection.on(:error) do |exception|
             Rails.logger.info "Apnotic exception raised: #{exception}"
           end
         end
+
+        if options[:development]
+          Apnotic::ConnectionPool.development(connection_pool_options, pool_options, &handler)
+        else
+          Apnotic::ConnectionPool.new(connection_pool_options, pool_options, &handler)
+        end
+      end
+
+      def connection_pool_options
+        {
+          auth_method: :token,
+          cert_path: Rails.root.join("config/certs/ios/apns.p8"),
+          key_id: Rails.application.credentials.dig(:ios, :key_id),
+          team_id: Rails.application.credentials.dig(:ios, :team_id)
+        }
+      end
+
+      def pool_options
+        {
+          size: options.fetch(:pool_size, 5)
+        }
       end
     end
   end

@@ -47,16 +47,36 @@ module Noticed
       end
 
       def connection_pool
-        self.class.connection_pool ||= Apnotic::ConnectionPool.new({
-          auth_method: :token,
-          cert_path: Rails.root.join("config/certs/ios/production.p8"),
-          key_id: Rails.application.credentials.dig(:ios, :key_id),
-          team_id: Rails.application.credentials.dig(:ios, :team_id)
-        }, size: options.fetch(:pool_size, 5)) do |connection|
+        self.class.connection_pool ||= new_connection_pool
+      end
+
+      def new_connection_pool
+        handler = proc do |connection|
           connection.on(:error) do |exception|
             Rails.logger.info "Apnotic exception raised: #{exception}"
           end
         end
+
+        if options[:development]
+          Apnotic::ConnectionPool.development(connection_pool_options, pool_options, &handler)
+        else
+          Apnotic::ConnectionPool.new(connection_pool_options, pool_options, &handler)
+        end
+      end
+
+      def connection_pool_options
+        {
+          auth_method: :token,
+          cert_path: Rails.root.join("config/certs/ios/apns.p8"),
+          key_id: Rails.application.credentials.dig(:ios, :key_id),
+          team_id: Rails.application.credentials.dig(:ios, :team_id)
+        }
+      end
+
+      def pool_options
+        {
+          size: options.fetch(:pool_size, 5)
+        }
       end
     end
   end

@@ -67,10 +67,46 @@ module Noticed
       def connection_pool_options
         {
           auth_method: :token,
-          cert_path: Rails.root.join("config/certs/ios/apns.p8"),
-          key_id: Rails.application.credentials.dig(:ios, :key_id),
-          team_id: Rails.application.credentials.dig(:ios, :team_id)
+          cert_path: cert_path,
+          key_id: key_id,
+          team_id: team_id
         }
+      end
+
+      def cert_path
+        option = options.fetch(:cert_path)
+        case option
+        when String
+          option
+        when Symbol
+          notification.send(option)
+        else
+          Rails.root.join("config/certs/ios/apns.p8")
+        end
+      end
+
+      def key_id
+        option = options.fetch(:key_id)
+        case option
+        when String
+          option
+        when Symbol
+          notification.send(option)
+        else
+          Rails.application.credentials.dig(:ios, :key_id)
+        end
+      end
+
+      def team_id
+        option = options.fetch(:team_id)
+        case option
+        when String
+          option
+        when Symbol
+          notification.send(option)
+        else
+          Rails.application.credentials.dig(:ios, :team_id)
+        end
       end
 
       def pool_options

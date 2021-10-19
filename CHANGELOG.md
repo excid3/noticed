@@ -1,6 +1,10 @@
 ### Unreleased
 
+* Set recipient when rehydrating notification objects from the database - @RolandStuder
+* Add iOS Apple Push Notifications - @excid3 @joemasilotti
+* Support postgis database in model generator - @bmorrall @csutter
 * Allow string, symbol, or class for `mailer` option with email delivery - @excid3
+* Parameterless notification helpers - @SirRawlins
 
 ### 1.4.1
 

@@ -2,7 +2,7 @@ module Noticed
   module DeliveryMethods
     class ActionCable < Base
       def deliver
-        channel.broadcast_to recipient, format
+        channel.broadcast_to stream, format
       end
 
       private
@@ -28,6 +28,18 @@ module Noticed
           else
             Noticed::NotificationChannel
           end
+        end
+      end
+
+      def stream
+        value = options[:stream]
+        case value
+        when String
+          value
+        when Symbol
+          notification.send(value)
+        else
+          recipient
         end
       end
     end

@@ -74,7 +74,7 @@ module Noticed
       end
 
       def bundle_identifier
-        option = options.fetch(:bundle_identifier)
+        option = options[:bundle_identifier]
         case option
         when String
           option
@@ -86,7 +86,7 @@ module Noticed
       end
 
       def cert_path
-        option = options.fetch(:cert_path)
+        option = options[:cert_path]
         case option
         when String
           option
@@ -98,7 +98,7 @@ module Noticed
       end
 
       def key_id
-        option = options.fetch(:key_id)
+        option = options[:key_id]
         case option
         when String
           option
@@ -110,7 +110,7 @@ module Noticed
       end
 
       def team_id
-        option = options.fetch(:team_id)
+        option = options[:team_id]
         case option
         when String
           option

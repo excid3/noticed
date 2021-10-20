@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Customizable stream name for ActionCable deliveries - @excid3
 * Set recipient when rehydrating notification objects from the database - @RolandStuder
 * Add iOS Apple Push Notifications - @excid3 @joemasilotti
 * Support postgis database in model generator - @bmorrall @csutter

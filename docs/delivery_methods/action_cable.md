@@ -15,3 +15,19 @@ Sends a notification to the browser via websockets (ActionCable channel by defau
   Override the ActionCable channel used to send notifications.
 
   Defaults to `Noticed::NotificationChannel`
+
+* `stream` - *Optional*
+
+  Overrides the stream that is broadcasted to.
+
+  Defaults to `recipient`
+
+```ruby
+deliver_by :action_cable, channel: MyChannel, stream: :custom_stream, format: :action_cable_data
+def custom_stream
+  "user_#{recipient.id}"
+end
+def action_cable_data
+  { user_id: recipient.id }
+end
+```

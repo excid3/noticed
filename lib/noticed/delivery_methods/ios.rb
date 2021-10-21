@@ -42,8 +42,8 @@ module Noticed
       end
 
       def cleanup_invalid_token(token)
-        return unless notification.respond_to?(:cleanup_invalid_token)
-        notification.send(:cleanup_invalid_token, device_token)
+        return unless notification.respond_to?(:cleanup_device_token)
+        notification.send(:cleanup_device_token, token: device_token, platform: "iOS")
       end
 
       def connection_pool

@@ -77,3 +77,20 @@ end
 
   The connection pool size for Apnotic
 
+## Handling Failures
+
+Apple Push Notifications may fail delivery if the user has removed the app from their device. Noticed allows you
+
+```ruby
+class CommentNotification
+  deliver_by :ios
+
+  # Remove invalid device tokens
+  #
+  # token - the device token from iOS or Android
+  # platform - "iOS" or "Android"
+  def cleanup_device_token(token:, platform:)
+    NotificationToken.where(token: token, platform: platform).destroy_all
+  end
+end
+```

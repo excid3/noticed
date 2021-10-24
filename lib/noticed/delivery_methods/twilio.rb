@@ -14,7 +14,7 @@ module Noticed
           {
             From: phone_number,
             To: recipient.phone_number,
-            Body: notification.params[:message]
+            Body: notification.params[:message] || notification.message
           }
         end
       end

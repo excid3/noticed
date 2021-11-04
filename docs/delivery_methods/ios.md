@@ -76,6 +76,18 @@ end
 * `pool_size: 5` - *Optional*
 
   The connection pool size for Apnotic
+  
+## Gathering Notification Tokens
+
+A recipient can have multiple tokens (i.e. multiple iOS devices), so make sure to return them all.
+
+Here, the recipient `has_many :notification_tokens` with columns `platform` and `token`.
+
+```ruby
+def ios_device_tokens(recipient)
+  recipient.notification_tokens.where(platform: "iOS").pluck(:token)
+end
+```
 
 ## Handling Failures
 

@@ -41,6 +41,6 @@ class EmailTest < ActiveSupport::TestCase
 
   test "delivery spawns an ActiveJob for email" do
     EmailDeliveryWithActiveJob.new.deliver(user)
-    assert_enqueued_jobs 1
+    assert_enqueued_emails 1
   end
 end

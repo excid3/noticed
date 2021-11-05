@@ -21,7 +21,7 @@ module Noticed
       end
 
       # Copy delivery methods from parent
-      def inherited(base) #:nodoc:
+      def inherited(base) # :nodoc:
         base.delivery_methods = delivery_methods.dup
         base.param_names = param_names.dup
         super

@@ -54,7 +54,7 @@ module ActionCable
           serialize_broadcasting([channel_name, model])
         end
 
-        def serialize_broadcasting(object) #:nodoc:
+        def serialize_broadcasting(object) # :nodoc:
           case # standard:disable Style/EmptyCaseCondition
           when object.is_a?(Array)
             object.map { |m| serialize_broadcasting(m) }.join(":")

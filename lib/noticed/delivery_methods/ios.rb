@@ -44,13 +44,14 @@ module Noticed
         if notification.respond_to?(:ios_device_tokens)
           Array.wrap(notification.ios_device_tokens(recipient))
         else
-          raise NoMethodError, """You must implement `ios_device_tokens` to send iOS notifications
+          raise NoMethodError, <<~MESSAGE
+            You must implement `ios_device_tokens` to send iOS notifications
 
-          # This must return an Array of iOS device tokens
-          def ios_device_tokens(user)
-            user.ios_device_tokens.pluck(:token)
-          end
-          """
+            # This must return an Array of iOS device tokens
+            def ios_device_tokens(user)
+              user.ios_device_tokens.pluck(:token)
+            end
+          MESSAGE
         end
       end
 

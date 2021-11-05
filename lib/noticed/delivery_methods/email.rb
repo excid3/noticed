@@ -1,10 +1,14 @@
 module Noticed
   module DeliveryMethods
     class Email < Base
-      option :mailer
+      option :mailer, :enqueue
 
       def deliver
-        mailer.with(format).send(method.to_sym).deliver_now
+        if options[:enqueue]
+          mailer.with(format).send(method.to_sym).deliver_later
+        else
+          mailer.with(format).send(method.to_sym).deliver_now
+        end
       end
 
       private

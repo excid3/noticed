@@ -6,6 +6,11 @@ module Noticed
       cattr_accessor :connection_pool
 
       def deliver
+        raise ArgumentError, "bundle_identifier is missing" if bundle_identifier.blank?
+        raise ArgumentError, "key_id is missing" if key_id.blank?
+        raise ArgumentError, "team_id is missing" if team_id.blank?
+        raise ArgumentError, "Could not find APN cert at '#{cert_path}'" if File.exists?(cert_path)
+
         device_tokens.each do |device_token|
           connection_pool.with do |connection|
             apn = Apnotic::Notification.new(device_token)
@@ -28,13 +33,25 @@ module Noticed
 
         if (method = options[:format])
           notification.send(method, apn)
-        else
+        elsif params[:message].present?
           apn.alert = params[:message]
+        else
+          raise ArgumentError, "No message for iOS delivery. Either include message in params or add the 'format' option in 'deliver_by :ios'."
         end
       end
 
       def device_tokens
-        notification.ios_device_tokens(recipient)
+        if notification.respond_to?(:ios_device_tokens)
+          Array.wrap(notification.ios_device_tokens(recipient))
+        else
+          raise NoMethodError, """You must implement `ios_device_tokens` to send iOS notifications
+
+          # This must return an Array of iOS device tokens
+          def ios_device_tokens(user)
+            user.ios_device_tokens.pluck(:token)
+          end
+          """
+        end
       end
 
       def bad_token?(response)

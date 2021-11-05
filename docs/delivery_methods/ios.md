@@ -77,6 +77,22 @@ end
 
   The connection pool size for Apnotic
 
+* `development: false` - *Optional*
+
+  Set this to true to use the APNS sandbox environment for sending notifications. This is required when running the app to your device via Xcode. Running the app via TestFlight or the App Store should not use development.
+
+## Gathering Notification Tokens
+
+A recipient can have multiple tokens (i.e. multiple iOS devices), so make sure to return them all.
+
+Here, the recipient `has_many :notification_tokens` with columns `platform` and `token`.
+
+```ruby
+def ios_device_tokens(recipient)
+  recipient.notification_tokens.where(platform: "iOS").pluck(:token)
+end
+```
+
 ## Handling Failures
 
 Apple Push Notifications may fail delivery if the user has removed the app from their device. Noticed allows you

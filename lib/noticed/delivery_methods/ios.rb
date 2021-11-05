@@ -9,7 +9,7 @@ module Noticed
         raise ArgumentError, "bundle_identifier is missing" if bundle_identifier.blank?
         raise ArgumentError, "key_id is missing" if key_id.blank?
         raise ArgumentError, "team_id is missing" if team_id.blank?
-        raise ArgumentError, "Could not find APN cert at '#{cert_path}'" if File.exists?(cert_path)
+        raise ArgumentError, "Could not find APN cert at '#{cert_path}'" if File.exist?(cert_path)
 
         device_tokens.each do |device_token|
           connection_pool.with do |connection|

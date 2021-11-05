@@ -1,7 +1,7 @@
 module Noticed
   module DeliveryMethods
     class Email < Base
-      option :mailer, :enqueue
+      option :mailer
 
       def deliver
         if options[:enqueue]

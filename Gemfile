@@ -14,3 +14,6 @@ gemspec
 # To use a debugger
 gem "byebug", group: [:development, :test]
 gem "appraisal"
+
+# Rails 7 is removing sprockets as a base dependency
+gem "sprockets-rails", ">= 2.0.0"

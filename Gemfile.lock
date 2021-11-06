@@ -208,6 +208,7 @@ DEPENDENCIES
   mysql2
   noticed!
   pg
+  sprockets-rails (>= 2.0.0)
   sqlite3
   standard
   webmock

@@ -209,6 +209,7 @@ DEPENDENCIES
   noticed!
   pg
   rails (~> 6.1.0)
+  sprockets-rails (>= 2.0.0)
   sqlite3
   standard
   webmock

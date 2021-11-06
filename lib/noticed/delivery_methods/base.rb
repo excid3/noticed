@@ -31,7 +31,7 @@ module Noticed
 
       def perform(args)
         @notification = args[:notification_class].constantize.new(args[:params])
-        @options = args[:options]
+        @options = args[:options] || {}
         @params = args[:params]
         @recipient = args[:recipient]
         @record = args[:record]

@@ -66,7 +66,7 @@ class IosTest < ActiveSupport::TestCase
   test "raises error when ios_device_tokens method is missing" do
     assert_raises NoMethodError do
       File.stub :exist?, true do
-        delivery_method = Noticed::DeliveryMethods::Ios.new.perform(
+        Noticed::DeliveryMethods::Ios.new.perform(
           notification_class: "IosExampleWithoutDeviceTokens",
           options: {
             bundle_identifier: "test",

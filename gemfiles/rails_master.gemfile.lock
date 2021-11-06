@@ -95,6 +95,9 @@ GEM
   specs:
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
+    apnotic (1.7.0)
+      connection_pool (~> 2)
+      net-http2 (>= 0.18.3, < 2)
     appraisal (2.4.1)
       bundler
       rake
@@ -103,6 +106,7 @@ GEM
     builder (3.2.4)
     byebug (11.1.3)
     concurrent-ruby (1.1.9)
+    connection_pool (2.2.5)
     crack (0.4.5)
       rexml
     crass (1.0.6)
@@ -116,6 +120,7 @@ GEM
     globalid (0.5.2)
       activesupport (>= 5.0)
     hashdiff (1.0.1)
+    http-2 (0.11.0)
     http (5.0.4)
       addressable (~> 2.8)
       http-cookie (~> 1.0)
@@ -139,6 +144,8 @@ GEM
     mini_mime (1.1.2)
     minitest (5.14.4)
     mysql2 (0.5.3)
+    net-http2 (0.18.4)
+      http-2 (~> 0.11)
     nio4r (2.5.8)
     nokogiri (1.12.5-x86_64-darwin)
       racc (~> 1.4)
@@ -177,13 +184,6 @@ GEM
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.11.0)
-    sprockets (4.0.2)
-      concurrent-ruby (~> 1.0)
-      rack (> 1, < 3)
-    sprockets-rails (3.2.2)
-      actionpack (>= 4.0)
-      activesupport (>= 4.0)
-      sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
     standard (1.4.0)
       rubocop (= 1.22.3)
@@ -210,13 +210,13 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  apnotic (~> 1.7)
   appraisal
   byebug
   mysql2
   noticed!
   pg
   rails!
-  sprockets-rails (>= 2.0.0)
   sqlite3
   standard
   webmock

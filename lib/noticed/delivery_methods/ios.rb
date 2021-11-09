@@ -18,10 +18,13 @@ module Noticed
 
             response = connection.push(apn)
             raise "Timeout sending iOS push notification" unless response
-            raise "Request failed #{response.body}" unless response.ok?
 
-            # Allow notification to cleanup invalid iOS device tokens
-            cleanup_invalid_token(device_token) if bad_token?(response)
+            if bad_token?(response)
+              # Allow notification to cleanup invalid iOS device tokens
+              cleanup_invalid_token(device_token)
+            elsif !response.ok?
+              raise "Request failed #{response.body}"
+            end
           end
         end
       end
@@ -61,7 +64,7 @@ module Noticed
 
       def cleanup_invalid_token(token)
         return unless notification.respond_to?(:cleanup_device_token)
-        notification.send(:cleanup_device_token, token: device_token, platform: "iOS")
+        notification.send(:cleanup_device_token, token: token, platform: "iOS")
       end
 
       def connection_pool

@@ -84,7 +84,7 @@ module Noticed
       # Run database delivery inline first if it exists so other methods have access to the record
       if (index = delivery_methods.find_index { |m| m[:name] == :database })
         delivery_method = delivery_methods.delete_at(index)
-        record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false, record: nil)
+        self.record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false, record: nil)
       end
 
       delivery_methods.each do |delivery_method|

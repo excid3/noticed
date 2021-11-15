@@ -1,7 +1,7 @@
 module Noticed
   module Model
     DATABASE_ERROR_CLASS_NAMES = lambda {
-      classes = [ ActiveRecord::NoDatabaseError ]
+      classes = [ActiveRecord::NoDatabaseError]
       classes << ActiveRecord::ConnectionNotEstablished
       classes << Mysql2::Error if defined?(::Mysql2)
       classes << PG::ConnectionBad if defined?(::PG)

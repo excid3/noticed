@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.5.2
+
+* Rescue from database connection errors when loading Noticed::Model #121 - @adriancb
+
 ### 1.5.1
 
 * Fix `record` assignment - @leighhalliday

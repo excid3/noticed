@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.5.1
+
+* Fix `record` assignment - @leighhalliday
+
 ### 1.5.0
 
 * Add iOS Apple Push Notifications - @excid3 @joemasilotti

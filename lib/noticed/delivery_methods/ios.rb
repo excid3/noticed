@@ -78,7 +78,7 @@ module Noticed
           end
         end
 
-        if options[:development]
+        if development?
           Apnotic::ConnectionPool.development(connection_pool_options, pool_options, &handler)
         else
           Apnotic::ConnectionPool.new(connection_pool_options, pool_options, &handler)
@@ -139,6 +139,16 @@ module Noticed
           notification.send(option)
         else
           Rails.application.credentials.dig(:ios, :team_id)
+        end
+      end
+
+      def development?
+        option = options[:development]
+        case option
+        when Symbol
+          !!notification.send(option)
+        else
+          !!option
         end
       end
 

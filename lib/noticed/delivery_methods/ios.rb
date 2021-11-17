@@ -146,7 +146,7 @@ module Noticed
         option = options[:development]
         case option
         when Symbol
-          notification.send(option)
+          !!notification.send(option)
         else
           !!option
         end

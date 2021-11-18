@@ -49,12 +49,26 @@ class CallbackExample < Noticed::Base
 
   deliver_by :database
 
-  after_deliver do
-    self.class.callbacks << :everything
+  before_database do
+    raise ArgumentError unless recipient
+
+    self.class.callbacks << :before_database
+  end
+
+  around_database do
+    raise ArgumentError unless recipient
+
+    self.class.callbacks << :around_database
   end
 
   after_database do
-    self.class.callbacks << :database
+    raise ArgumentError unless recipient
+
+    self.class.callbacks << :after_database
+  end
+
+  after_deliver do
+    self.class.callbacks << :after_everything
   end
 end
 
@@ -141,7 +155,7 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test "runs callbacks on notifications" do
     CallbackExample.deliver(user)
-    assert_equal [:database, :everything], CallbackExample.callbacks
+    assert_equal [:before_database, :around_database, :after_database, :after_everything], CallbackExample.callbacks
   end
 
   test "runs callbacks on delivery methods" do

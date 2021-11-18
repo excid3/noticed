@@ -80,7 +80,7 @@ module Noticed
     # Runs all delivery methods for a notification
     def run_delivery(recipient, enqueue: true)
       delivery_methods = self.class.delivery_methods.dup
-      
+
       @recipient = recipient
 
       # Run database delivery inline first if it exists so other methods have access to the record

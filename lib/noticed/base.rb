@@ -81,7 +81,7 @@ module Noticed
     def run_delivery(recipient, enqueue: true)
       delivery_methods = self.class.delivery_methods.dup
 
-      @recipient = recipient
+      self.recipient = recipient
 
       # Run database delivery inline first if it exists so other methods have access to the record
       if (index = delivery_methods.find_index { |m| m[:name] == :database })

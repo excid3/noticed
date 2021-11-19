@@ -6,6 +6,12 @@ Send Apple Push Notifications with HTTP2 using the `apnotic` gem. The benefit of
 bundle add "apnotic"
 ```
 
+## Apple Push Notification Service (APNS) Certificate
+
+You'll need to create an APNS Certificate in order to send iOS push notifications.
+
+https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_certificate-based_connection_to_apns
+
 ## Usage
 
 ```ruby

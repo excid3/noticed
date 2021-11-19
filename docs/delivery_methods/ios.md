@@ -9,8 +9,8 @@ bundle add "apnotic"
 ## Apple Push Notification Service (APNS) Authentication
 
 Token-based authentication is used for APNS.
-* No renewal. Certificate authentication must be renewed annually.
 * A single key can be used for every app in your developer account.
+* Token authentication never expires, unlike certificate authentication which must be renewed annually.
 
 Follow these docs for setting up Token-based authentication.
 https://github.com/ostinelli/apnotic#token-based-authentication

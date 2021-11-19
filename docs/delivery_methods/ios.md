@@ -6,11 +6,15 @@ Send Apple Push Notifications with HTTP2 using the `apnotic` gem. The benefit of
 bundle add "apnotic"
 ```
 
-## Apple Push Notification Service (APNS) Certificate
+## Apple Push Notification Service (APNS) Authentication
 
-You'll need to create an APNS Certificate in order to send iOS push notifications.
+Token-based authentication is used for APNS.
+* No renewal. Certificate authentication must be renewed annually.
+* A single key can be used for every app in your developer account.
 
-https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_certificate-based_connection_to_apns
+Follow these docs for setting up Token-based authentication.
+https://github.com/ostinelli/apnotic#token-based-authentication
+https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_token-based_connection_to_apns
 
 ## Usage
 

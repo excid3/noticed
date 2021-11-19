@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.5.4
+
+* Fix `recipient` assignment - @clinejj
+
 ### 1.5.3
 
 * Add symbol support for `development` option for iOS deliveries - @joemasilotti

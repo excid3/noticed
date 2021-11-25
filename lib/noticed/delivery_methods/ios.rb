@@ -154,8 +154,8 @@ module Noticed
 
       def valid_cert_path?
         case cert_path
-        when StringIO
-          cert_path.read.present?
+        when File, StringIO
+          cert_path.size > 0
         else
           File.exist?(cert_path)
         end

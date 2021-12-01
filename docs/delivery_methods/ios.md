@@ -65,7 +65,9 @@ end
 
 * `cert_path: Rails.root.join("config/certs/ios/apns.p8")` - *Optional*
 
-  The location of your APNs p8 certificate
+  The location of your APNs p8 certificate.
+  This can also accept a StringIO object `StringIO.new("p8 file content as string")`.
+  As well as a File object `File.open("path/to/p8.file")`.
 
 * `key_id: Rails.application.credentials.dig(:ios, :key_id)` - *Optional*
 

@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.5.5
+
+* Support `File` and `StringIO` objects for iOS `cert_path` - @erbunao
+
 ### 1.5.4
 
 * Fix `recipient` assignment - @clinejj

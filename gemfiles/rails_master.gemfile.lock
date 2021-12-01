@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: b0d14930458e9de0b68061b2bc341f87a973c2ba
+  revision: eb96d5fc3a0b8ba03420b4aea8a329d28c567b39
   branch: main
   specs:
     actioncable (7.0.0.alpha2)
@@ -34,6 +34,7 @@ GIT
       activerecord (= 7.0.0.alpha2)
       activestorage (= 7.0.0.alpha2)
       activesupport (= 7.0.0.alpha2)
+      globalid (>= 0.6.0)
       nokogiri (>= 1.8.5)
     actionview (7.0.0.alpha2)
       activesupport (= 7.0.0.alpha2)
@@ -86,7 +87,7 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (1.5.4)
+    noticed (1.5.5)
       http (>= 4.0.0)
       rails (>= 5.2.0)
 
@@ -117,7 +118,7 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    globalid (0.5.2)
+    globalid (1.0.0)
       activesupport (>= 5.0)
     hashdiff (1.0.1)
     http-2 (0.11.0)
@@ -152,7 +153,7 @@ GEM
     nokogiri (1.12.5-x86_64-linux)
       racc (~> 1.4)
     parallel (1.21.0)
-    parser (3.0.2.0)
+    parser (3.0.3.1)
       ast (~> 2.4.1)
     pg (1.2.3)
     public_suffix (4.0.6)
@@ -178,7 +179,7 @@ GEM
       rubocop-ast (>= 1.12.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.12.0)
+    rubocop-ast (1.13.0)
       parser (>= 3.0.1.1)
     rubocop-performance (1.11.5)
       rubocop (>= 1.7.0, < 2.0)

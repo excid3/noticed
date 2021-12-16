@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.7', '3.0', '3.1.0-preview1']
+        ruby: ['2.7', '3.0']
         gemfile:
           - rails_5_2
           - rails_6
@@ -21,9 +21,6 @@ jobs:
           - rails_master
         exclude:
           - ruby: '3.0'
-            gemfile: 'rails_5_2'
-
-          - ruby: '3.1.0-preview1'
             gemfile: 'rails_5_2'
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile

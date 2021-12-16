@@ -199,6 +199,8 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   apnotic (~> 1.7)

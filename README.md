@@ -190,6 +190,31 @@ Example:
 deliver_by :slack, debug: true
 ```
 
+## ✅ Best Practices
+
+A common use case is to trigger a notification when a record is created. For example,
+
+```ruby
+class Message < ApplicationRecord
+  belongs_to :recipient, class_name: "User"
+  
+  after_create_commit :notify_recipient
+  
+  private
+  
+  def notify_recipient
+    NewMessageNotification.with(message: self).deliver_later(recipient)
+  end
+```
+
+If you are creating the notification on a background job (i.e. via `#deliver_later`), make sure you use a `commit` hook such as `after_create_commit` or `after_commit`.
+
+Using `after_create` might cause the notification delivery methods to fail. This is because the job was enqueued while inside a database transaction, and the `Message` record might not yet be saved to the database.
+
+A common symptom of this problem is undelivered notifications and the following error in your logs.
+
+> `Discarded Noticed::DeliveryMethods::Email due to a ActiveJob::DeserializationError.`
+
 ## 🚛 Delivery Methods
 
 The delivery methods are designed to be modular so you can customize the way each type gets delivered.

@@ -84,6 +84,7 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    digest (3.1.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.10.0)
@@ -105,6 +106,7 @@ GEM
     http-form_data (2.3.0)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
+    io-wait (0.2.1)
     llhttp-ffi (0.4.0)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
@@ -121,6 +123,13 @@ GEM
     mysql2 (0.5.3)
     net-http2 (0.18.4)
       http-2 (~> 0.11)
+    net-protocol (0.1.2)
+      io-wait
+      timeout
+    net-smtp (0.3.1)
+      digest
+      net-protocol
+      timeout
     nio4r (2.5.8)
     nokogiri (1.13.0)
       mini_portile2 (~> 2.7.0)
@@ -191,6 +200,7 @@ GEM
       rubocop (= 1.24.1)
       rubocop-performance (= 1.13.1)
     thor (1.2.1)
+    timeout (0.2.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -214,6 +224,7 @@ DEPENDENCIES
   appraisal
   byebug
   mysql2
+  net-smtp
   noticed!
   pg
   rails (~> 6.1.0)

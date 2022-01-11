@@ -234,6 +234,7 @@ DEPENDENCIES
   appraisal
   byebug
   mysql2
+  net-smtp
   noticed!
   pg
   rails (~> 7.0.0)

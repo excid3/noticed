@@ -14,6 +14,7 @@ gemspec
 # To use a debugger
 gem "byebug", group: [:development, :test]
 gem "appraisal"
+gem "net-smtp"
 
 # iOS notifications
 gem "apnotic", "~> 1.7"

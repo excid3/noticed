@@ -5,7 +5,7 @@ module ActionCable
     autoload :TestHelper, "rails_6_polyfills/actioncable/test_helper.rb"
   end
   # If the Rails 6.0 test SubscriptionAdapter is missing then allow it to autoload
-  unless ActionCable.const_defined? :"SubscriptionAdapter::Test"
+  unless ActionCable::SubscriptionAdapter.const_defined? :Test
     module SubscriptionAdapter
       autoload :Test, "rails_6_polyfills/actioncable/test_adapter.rb"
     end

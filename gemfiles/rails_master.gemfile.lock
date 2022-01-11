@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: c01de08897ffc285b84e81eab749a24f998d0c34
+  revision: 85542a0c9041dc2502b2a5afff52085fc36dca19
   branch: main
   specs:
     actioncable (7.1.0.alpha)
@@ -15,12 +15,18 @@ GIT
       activestorage (= 7.1.0.alpha)
       activesupport (= 7.1.0.alpha)
       mail (>= 2.7.1)
+      net-imap
+      net-pop
+      net-smtp
     actionmailer (7.1.0.alpha)
       actionpack (= 7.1.0.alpha)
       actionview (= 7.1.0.alpha)
       activejob (= 7.1.0.alpha)
       activesupport (= 7.1.0.alpha)
       mail (~> 2.5, >= 2.5.4)
+      net-imap
+      net-pop
+      net-smtp
       rails-dom-testing (~> 2.0)
     actionpack (7.1.0.alpha)
       actionview (= 7.1.0.alpha)
@@ -111,10 +117,11 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    digest (3.1.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.10.0)
-    ffi (1.15.4)
+    ffi (1.15.5)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -132,6 +139,7 @@ GEM
     http-form_data (2.3.0)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
+    io-wait (0.2.1)
     llhttp-ffi (0.4.0)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
@@ -147,13 +155,28 @@ GEM
     mysql2 (0.5.3)
     net-http2 (0.18.4)
       http-2 (~> 0.11)
+    net-imap (0.2.3)
+      digest
+      net-protocol
+      strscan
+    net-pop (0.1.1)
+      digest
+      net-protocol
+      timeout
+    net-protocol (0.1.2)
+      io-wait
+      timeout
+    net-smtp (0.3.1)
+      digest
+      net-protocol
+      timeout
     nio4r (2.5.8)
-    nokogiri (1.12.5-x86_64-darwin)
+    nokogiri (1.13.0-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.12.5-x86_64-linux)
+    nokogiri (1.13.0-x86_64-linux)
       racc (~> 1.4)
     parallel (1.21.0)
-    parser (3.0.3.2)
+    parser (3.1.0.0)
       ast (~> 2.4.1)
     pg (1.2.3)
     public_suffix (4.0.6)
@@ -166,30 +189,32 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
-    rainbow (3.0.0)
+    rainbow (3.1.1)
     rake (13.0.6)
     regexp_parser (2.2.0)
     rexml (3.2.5)
-    rubocop (1.23.0)
+    rubocop (1.24.1)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.12.0, < 2.0)
+      rubocop-ast (>= 1.15.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.15.0)
+    rubocop-ast (1.15.1)
       parser (>= 3.0.1.1)
-    rubocop-performance (1.12.0)
+    rubocop-performance (1.13.1)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.11.0)
     sqlite3 (1.4.2)
-    standard (1.5.0)
-      rubocop (= 1.23.0)
-      rubocop-performance (= 1.12.0)
-    thor (1.1.0)
+    standard (1.6.0)
+      rubocop (= 1.24.1)
+      rubocop-performance (= 1.13.1)
+    strscan (3.0.1)
+    thor (1.2.1)
+    timeout (0.2.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -203,7 +228,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.5.1)
+    zeitwerk (2.5.3)
 
 PLATFORMS
   x86_64-darwin-19
@@ -224,4 +249,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.2.33
+   2.3.4

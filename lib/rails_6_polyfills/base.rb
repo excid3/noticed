@@ -13,6 +13,6 @@ module ActionCable
 end
 
 # If the Rails 6.0 ActionJob Serializers are missing then load support for them
-unless Object.const_defined?(:"ActiveJob::Serializers")
+unless ActiveJob.const_defined?(:Serializers)
   require "rails_6_polyfills/activejob/serializers"
 end

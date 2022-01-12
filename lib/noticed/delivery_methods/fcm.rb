@@ -1,3 +1,5 @@
+require "googleauth"
+
 # class CommentNotifier
 #  deliver_by :fcm, credentials: Rails.root.join("config/certs/fcm.json"), format: :format_notification
 #

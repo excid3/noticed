@@ -16,11 +16,9 @@ module Noticed
 
       def deliver
         device_tokens.each do |device_token|
-          begin
-            post("#{BASE_URI}#{project_id}/messages:send", headers: { authorization: "Bearer #{access_token}" }, json: { message: format(device_token) })
-          rescue ResponseUnsuccessful
-            cleanup_invalid_token(device_token)
-          end
+          post("#{BASE_URI}#{project_id}/messages:send", headers: {authorization: "Bearer #{access_token}"}, json: {message: format(device_token)})
+        rescue ResponseUnsuccessful
+          cleanup_invalid_token(device_token)
         end
       end
 
@@ -59,7 +57,7 @@ module Noticed
       def authorizer
         @authorizer ||= options.fetch(:authorizer, Google::Auth::ServiceAccountCredentials).make_creds(
           json_key_io: StringIO.new(credentials.to_json),
-          scope: "https://www.googleapis.com/auth/firebase.messaging",
+          scope: "https://www.googleapis.com/auth/firebase.messaging"
         )
       end
 

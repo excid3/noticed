@@ -76,7 +76,6 @@ module Noticed
         request = request.basic_auth(user: basic_auth[:user], pass: basic_auth[:pass]) if basic_auth
         request = request.headers(headers) if headers
 
-
         response = request.post(url, args)
 
         if options[:debug]

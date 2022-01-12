@@ -29,12 +29,13 @@ module Noticed
         end
       end
 
-      def initialize(args)
+      def initialize(args={})
         assign_args(args)
       end
 
       def assign_args(args)
-        @notification = args[:notification_class].constantize.new(args[:params])
+        return if args.blank?
+        @notification = args.fetch(:notification_class).constantize.new(args[:params])
         @options = args[:options] || {}
         @params = args[:params]
         @recipient = args[:recipient]

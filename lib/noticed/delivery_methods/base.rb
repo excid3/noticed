@@ -29,12 +29,7 @@ module Noticed
         end
       end
 
-      def initialize(args={})
-        assign_args(args)
-      end
-
       def assign_args(args)
-        return if args.blank?
         @notification = args.fetch(:notification_class).constantize.new(args[:params])
         @options = args[:options] || {}
         @params = args[:params]
@@ -44,6 +39,7 @@ module Noticed
         # Make notification aware of database record and recipient during delivery
         @notification.record = args[:record]
         @notification.recipient = args[:recipient]
+        self
       end
 
       def perform(args)

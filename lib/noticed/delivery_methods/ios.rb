@@ -51,8 +51,8 @@ module Noticed
             You must implement `ios_device_tokens` to send iOS notifications
 
             # This must return an Array of iOS device tokens
-            def ios_device_tokens(user)
-              user.ios_device_tokens.pluck(:token)
+            def ios_device_tokens(recipient)
+              recipient.ios_device_tokens.pluck(:token)
             end
           MESSAGE
         end

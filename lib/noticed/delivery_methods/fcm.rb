@@ -1,67 +1,86 @@
+# class CommentNotifier
+#  deliver_by :fcm, credentials: Rails.root.join("config/certs/fcm.json"), format: :format_notification
+#
+#  deliver_by :fcm, credentials: :fcm_credentials
+#   def fcm_credentials
+#     { project_id: "api-12345" }
+#   end
+# end
+
 module Noticed
   module DeliveryMethods
     class Fcm < Base
-      attr_reader :credentials_path, :project_id
-
       BASE_URI = "https://fcm.googleapis.com/v1/projects/"
 
-      def initialize(credentials_path:, project_id:)
-        @credentials_path = credentials_path
-        @project_id = project_id
+      option :format
+
+      def deliver
+        device_tokens.each do |device_token|
+          begin
+            post("#{BASE_URI}#{project_id}/messages:send", headers: { authorization: "Bearer #{access_token}" }, json: { message: format(device_token) })
+          rescue ResponseUnsuccessful
+            cleanup_invalid_token(device_token)
+          end
+        end
       end
 
-      def notify(payload)
-        # project_id = json_key["project_id"]
-        post("#{BASE_URI}#{project_id}/messages:send", headers: { authorization: "Bearer #{access_token}" }, json: { message: payload })
+      def cleanup_invalid_token(device_token)
+        return unless notification.respond_to?(:cleanup_device_token)
+        notification.send(:cleanup_device_token, token: device_token, platform: "fcm")
+      end
+
+      def credentials
+        @credentials ||= begin
+          option = options[:credentials]
+          credentials_hash = case option
+          when String
+            JSON.parse(File.read(Rails.root.join(option)))
+          when Hash
+            option
+          when Symbol
+            notification.send(option)
+          else
+            Rails.application.credentials.fcm
+          end
+
+          credentials_hash.symbolize_keys
+        end
+      end
+
+      def project_id
+        credentials[:project_id]
       end
 
       def access_token
-        # token = authorizer.fetch_access_token!
-        # token["access_token"]
-        "di1YsOtPRRaWXg9Qll6C-O:APA91bGNSOR-Of5CYUmarzQYvXAuqvvPbK492FX1Bv1jwSi-ubTtUkwe8yPZU1mCAdStRlwwge120QpqbjbdOfnAsqxVowFXEozuDX3TJX3wHU8V2nqwAfJk4qLOQQXYq0xABm4XvlgX"
+        token = authorizer.fetch_access_token!
+        token["access_token"]
       end
 
       def authorizer
-        @authorizer ||= Google::Auth::ServiceAccountCredentials.make_creds(
-          json_key_io: json_key,
+        @authorizer ||= options.fetch(:authorizer, Google::Auth::ServiceAccountCredentials).make_creds(
+          json_key_io: StringIO.new(credentials.to_json),
           scope: "https://www.googleapis.com/auth/firebase.messaging",
         )
       end
 
-      def json_key
-        @json_key ||= if credentials_path.respond_to?(:read)
-                        credentials_path
-                      else
-                        File.open(credentials_path)
-                      end
+      def format(device_token)
+        notification.send(options[:format], device_token)
+      end
+
+      def device_tokens
+        if notification.respond_to?(:fcm_device_tokens)
+          Array.wrap(notification.fcm_device_tokens(recipient))
+        else
+          raise NoMethodError, <<~MESSAGE
+            You must implement `fcm_device_tokens` to send Firebase Cloud Messaging notifications
+
+            # This must return an Array of FCM device tokens
+            def fcm_device_tokens(recipient)
+              recipient.fcm_device_tokens.pluck(:token)
+            end
+          MESSAGE
+        end
       end
     end
   end
 end
-
-# payload = {
-#   token: "efz2xH7ElXktnbWRbML3lC:APA91bG-qdGh1nmmJPyNE7xvmUL_9WKi2mmq9PY0uDh8ugFGvHx4xz7kH7HJjXUTtj59k-hc99TCwwL_cefaJPyz_Pa1H9w0kUrse6-NykSWCS-RD2HC5qYPVQY5rNRam1nPmpMpeRnr",
-#   data: {
-#     payload: {
-#       data: {
-#         id: 1
-#       }
-#     }.to_json
-#   },
-#   notification: {
-#     title: "Hey Chris",
-#     body: "Am I worky?",
-#   },
-#   android: {},
-#   apns: {
-#     payload: {
-#       aps: {
-#         sound: "default",
-#         category: "#{Time.zone.now.to_i}"
-#       }
-#     }
-#   },
-#   fcm_options: {
-#     analytics_label: 'Label'
-#   }
-# }

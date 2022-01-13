@@ -6,15 +6,13 @@ Send Android Device Notifications using the Google Firebase Cloud Messaging serv
 bundle add "googleauth"
 ```
 
-## Apple Push Notification Service (APNS) Authentication
+## Google Firebase Cloud Messaging Notification Service
 
-Token-based authentication is used for APNS.
-* A single key can be used for every app in your developer account.
-* Token authentication never expires, unlike certificate authentication which must be renewed annually.
-
-Follow these docs for setting up Token-based authentication.
-https://github.com/ostinelli/apnotic#token-based-authentication
-https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_token-based_connection_to_apns
+To generate your Firebase Cloud Messaging credentials, you'll need to create your project if you have not already. See https://console.firebase.google.com/u/1/
+Once you have created your project, visit the project dashboard and click the settings cog in the top of the left sidebar menu, then click project settings.
+In the project settings screen click on the Service accounts tab in the top navigation menu, then click the Generate new private key button.
+This json file will contain the necessary credentials in order to send notifications via Google Firebase Cloud Messaging.
+See the below instructions on where to store this information within your application.
 
 ## Usage
 
@@ -53,57 +51,32 @@ end
 
   Customize the Firebase Cloud Messaging notification object
 
-  See https://github.com/ostinelli/apnotic#apnoticnotification
-
-* `credentials: Rails.root.join("config/certs/fcm.json")` - *Optional*
+* `credentials: :fcm_credentials` - *Optional*
 
   The location of your Firebase Cloud Messaging credentials.
-  This can also accept a StringIO object `StringIO.new("p8 file content as string")`.
-  As well as a File object `File.open("path/to/p8.file")`.
-
-* `key_id: Rails.application.credentials.dig(:ios, :key_id)` - *Optional*
-
-  Your APN Key ID
-
-  If nothing passed, we'll default to `Rails.application.credentials.dig(:ios, :key_id)`
-  If a String is passed, we'll use that as the key ID.
-  If a Symbol is passed, we'll call the matching method and you can return the Key ID.
-
-* `team_id: Rails.application.credentials.dig(:ios, :team_id)` - *Optional*
-
-  Your APN Team ID
-
-  If nothing passed, we'll default to `Rails.application.credentials.dig(:ios, :team_id)`
-  If a String is passed, we'll use that as the team ID.
-  If a Symbol is passed, we'll call the matching method and you can return the team ID.
-
-* `pool_size: 5` - *Optional*
-
-  The connection pool size for Apnotic
-
-* `development: false` - *Optional*
-
-  Set this to true to use the APNS sandbox environment for sending notifications. This is required when running the app to your device via Xcode. Running the app via TestFlight or the App Store should not use development.
+  This can also accept a String object, which is the path to your credentials `"config/certs/fcm.json"` for example.
+  As well as a Hash which contains your credentials or a Symbol which points to a method which returns a Hash of your credentials
+  Otherwise, if this option is left out, it will look for your credentials in `Rails.application.credentials.fcm`
 
 ## Gathering Notification Tokens
 
-A recipient can have multiple tokens (i.e. multiple iOS devices), so make sure to return them all.
+A recipient can have multiple tokens (i.e. multiple Android devices), so make sure to return them all.
 
 Here, the recipient `has_many :notification_tokens` with columns `platform` and `token`.
 
 ```ruby
-def ios_device_tokens(recipient)
-  recipient.notification_tokens.where(platform: "iOS").pluck(:token)
+def fcm_device_tokens(recipient)
+  recipient.notification_tokens.where(platform: "fcm").pluck(:token)
 end
 ```
 
 ## Handling Failures
 
-Apple Push Notifications may fail delivery if the user has removed the app from their device. Noticed allows you
+Firebase Cloud Messaging Notifications may fail delivery if the user has removed the app from their device. Noticed allows you
 
 ```ruby
 class CommentNotification
-  deliver_by :ios
+  deliver_by :fcm
 
   # Remove invalid device tokens
   #

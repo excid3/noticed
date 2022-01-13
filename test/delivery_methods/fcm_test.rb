@@ -29,14 +29,19 @@ class FakeAuthorizer
 end
 
 class FcmTest < ActiveSupport::TestCase
-  test "when credentials option is a string, it returns the file contents" do
-    credentials_hash = {project_id: "api-12345"}
-    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: "config/credentials/fcm.json"}).credentials
-  end
-
   test "when credentials option is a hash, it returns the hash" do
     credentials_hash = {foo: "bar"}
     assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: credentials_hash}).credentials
+  end
+
+  test "when credentials option is a Pathname object, it returns the file contents" do
+    credentials_hash = {project_id: "api-12345"}
+    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: Rails.root.join("config/credentials/fcm.json")}).credentials
+  end
+
+  test "when credentials option is a string, it returns the file contents" do
+    credentials_hash = {project_id: "api-12345"}
+    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: "config/credentials/fcm.json"}).credentials
   end
 
   test "when credentials option is a symbol, it returns the return value of the method" do

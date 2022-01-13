@@ -33,10 +33,12 @@ module Noticed
         @credentials ||= begin
           option = options[:credentials]
           credentials_hash = case option
-          when String
-            JSON.parse(File.read(Rails.root.join(option)))
           when Hash
             option
+          when Pathname
+            load_json(option)
+          when String
+            load_json(Rails.root.join(option))
           when Symbol
             notification.send(option)
           else
@@ -45,6 +47,10 @@ module Noticed
 
           credentials_hash.symbolize_keys
         end
+      end
+
+      def load_json(path)
+        JSON.parse(File.read(path))
       end
 
       def project_id

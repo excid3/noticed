@@ -54,7 +54,7 @@ end
 * `credentials: :fcm_credentials` - *Optional*
 
   The location of your Firebase Cloud Messaging credentials.
-  This can also accept a String object, which is the path to your credentials `"config/certs/fcm.json"` for example.
+  This can also accept a String object, which is the path to your credentials `"config/certs/fcm.json"` for example. Interally, this string is passed to `Rails.root.join()` as an argument so there is no need to do this beforehand.
   As well as a Hash which contains your credentials or a Symbol which points to a method which returns a Hash of your credentials
   Otherwise, if this option is left out, it will look for your credentials in `Rails.application.credentials.fcm`
 

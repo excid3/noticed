@@ -230,6 +230,7 @@ For example, emails will require a subject, body, and email address while an SMS
 * [Test](docs/delivery_methods/test.md)
 * [Twilio](docs/delivery_methods/twilio.md)
 * [Vonage](docs/delivery_methods/vonage.md)
+* [Firebase Cloud Messaging](docs/delivery_methods/fcm.md)
 
 ### Fallback Notifications
 

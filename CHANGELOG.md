@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.5.6
+
+* Add Firebase Cloud Messaging (FCM) delivery method - @cjilbert504 @excid3
+
 ### 1.5.5
 
 * Support `File` and `StringIO` objects for iOS `cert_path` - @erbunao

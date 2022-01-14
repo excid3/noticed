@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    noticed (1.5.5)
+    noticed (1.5.6)
       http (>= 4.0.0)
       rails (>= 5.2.0)
 
@@ -178,7 +178,11 @@ GEM
       net-protocol
       timeout
     nio4r (2.5.8)
-    nokogiri (1.13.0-x86_64-linux)
+    nokogiri (1.13.1-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.1-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.1-x86_64-linux)
       racc (~> 1.4)
     os (1.1.4)
     parallel (1.21.0)
@@ -264,6 +268,7 @@ GEM
     zeitwerk (2.5.3)
 
 PLATFORMS
+  arm64-darwin-21
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-darwin-21
@@ -284,4 +289,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.3.4
+   2.3.5

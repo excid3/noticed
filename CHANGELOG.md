@@ -2,7 +2,7 @@
 
 ### 1.5.7
 
-* Cleanup device token on 404 error only and raise other error codes - @cjilbert504
+* Cleanup device token on 404 (Unregistered) error only and raise on all other error codes - @cjilbert504
 
 ### 1.5.6
 

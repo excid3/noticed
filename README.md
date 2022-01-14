@@ -16,6 +16,7 @@ Currently, we support these notification delivery methods out of the box:
 * Twilio (SMS)
 * Vonage / Nexmo (SMS)
 * iOS Apple Push Notifications
+* Firebase Cloud Messaging (Android and more)
 
 And you can easily add new notification types for any other delivery methods.
 

@@ -10,11 +10,12 @@ bundle add "googleauth"
 
 To generate your Firebase Cloud Messaging credentials, you'll need to create your project if you have not already. See https://console.firebase.google.com/u/1/
 Once you have created your project, visit the project dashboard and click the settings cog in the top of the left sidebar menu, then click project settings.
-![CleanShot 2022-01-13 at 16 32 34](./docs/images/CleanShot 2022-01-13 at 16.32.34.png)
 
+![Firebase Console](../images/fcm-project-settings.png)
 
 In the project settings screen click on the Service accounts tab in the top navigation menu, then click the Generate new private key button.
-![CleanShot 2022-01-13 at 16 32 34](./docs/images/CleanShot 2022-01-13 at 16.35.34.png)
+
+![Service accounts](../images/fcm-credentials-json.png)
 
 This json file will contain the necessary credentials in order to send notifications via Google Firebase Cloud Messaging.
 See the below instructions on where to store this information within your application.

@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.5.7
+
+* Cleanup device token on 404 error only and raise other error codes - @cjilbert504
+
 ### 1.5.6
 
 * Add Firebase Cloud Messaging (FCM) delivery method - @cjilbert504 @excid3

@@ -19,8 +19,12 @@ module Noticed
       def deliver
         device_tokens.each do |device_token|
           post("#{BASE_URI}#{project_id}/messages:send", headers: {authorization: "Bearer #{access_token}"}, json: {message: format(device_token)})
-        rescue ResponseUnsuccessful
-          cleanup_invalid_token(device_token)
+        rescue ResponseUnsuccessful => exception
+          if exception.code == 404
+            cleanup_invalid_token(device_token)
+          else
+            raise
+          end
         end
       end
 

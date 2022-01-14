@@ -18,3 +18,6 @@ gem "net-smtp"
 
 # iOS notifications
 gem "apnotic", "~> 1.7"
+
+# firebase notifications
+gem "googleauth", "~> 1.1"

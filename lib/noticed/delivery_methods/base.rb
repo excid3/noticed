@@ -29,8 +29,8 @@ module Noticed
         end
       end
 
-      def perform(args)
-        @notification = args[:notification_class].constantize.new(args[:params])
+      def assign_args(args)
+        @notification = args.fetch(:notification_class).constantize.new(args[:params])
         @options = args[:options] || {}
         @params = args[:params]
         @recipient = args[:recipient]
@@ -39,6 +39,11 @@ module Noticed
         # Make notification aware of database record and recipient during delivery
         @notification.record = args[:record]
         @notification.recipient = args[:recipient]
+        self
+      end
+
+      def perform(args)
+        assign_args(args)
 
         return if (condition = @options[:if]) && !@notification.send(condition)
         return if (condition = @options[:unless]) && @notification.send(condition)
@@ -57,16 +62,16 @@ module Noticed
       # Helper method for making POST requests from delivery methods
       #
       # Usage:
-      #   post("http://example.com", basic_auth: {user:, pass:}, json: {}, form: {})
+      #   post("http://example.com", basic_auth: {user:, pass:}, headers: {}, json: {}, form: {})
       #
       def post(url, args = {})
+        options ||= {}
         basic_auth = args.delete(:basic_auth)
+        headers = args.delete(:headers)
 
-        request = if basic_auth
-          HTTP.basic_auth(user: basic_auth[:user], pass: basic_auth[:pass])
-        else
-          HTTP
-        end
+        request = HTTP
+        request = request.basic_auth(user: basic_auth[:user], pass: basic_auth[:pass]) if basic_auth
+        request = request.headers(headers) if headers
 
         response = request.post(url, args)
 
@@ -76,6 +81,8 @@ module Noticed
         end
 
         if !options[:ignore_failure] && !response.status.success?
+          puts response.status
+          puts response.body
           raise ResponseUnsuccessful.new(response)
         end
 

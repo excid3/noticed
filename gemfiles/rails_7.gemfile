@@ -6,6 +6,7 @@ gem "byebug", group: [:development, :test]
 gem "appraisal"
 gem "net-smtp"
 gem "apnotic", "~> 1.7"
+gem "googleauth", "~> 1.1"
 gem "rails", "~> 7.0.0"
 
 gemspec path: "../"

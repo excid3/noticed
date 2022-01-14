@@ -22,6 +22,7 @@ module Noticed
     autoload :Test, "noticed/delivery_methods/test"
     autoload :Twilio, "noticed/delivery_methods/twilio"
     autoload :Vonage, "noticed/delivery_methods/vonage"
+    autoload :Fcm, "noticed/delivery_methods/fcm"
   end
 
   def self.notify(recipients:, notification:)

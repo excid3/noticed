@@ -23,7 +23,7 @@ See the below instructions on where to store this information within your applic
 ## Usage
 
 ```ruby
-class CommentNotification
+class CommentNotifier
   deliver_by :fcm, credentials: :fcm_credentials, format: :format_notification
 
   # This needs to return the path to your FCM credentials
@@ -93,7 +93,7 @@ end
 Firebase Cloud Messaging Notifications may fail delivery if the user has removed the app from their device.
 
 ```ruby
-class CommentNotification
+class CommentNotifier
   deliver_by :fcm
 
   # Remove invalid device tokens

@@ -67,7 +67,7 @@ notifier.deliver(@comment.post.author)
 notifier.deliver_later(User.all)
 ```
 
-This will instantiate a new notification with the `comment` stored in the notification's params.
+This will instantiate a new notifier with the `comment` stored in the notifier's params.
 
 Each delivery method is able to transform this metadata that's best for the format. For example, the database may simply store the comment so it can be linked when rendering in the navbar. The websocket mechanism may transform this into a browser notification or insert it into the navbar.
 
@@ -204,7 +204,7 @@ class Message < ApplicationRecord
   private
   
   def notify_recipient
-    NewMessageNotification.with(message: self).deliver_later(recipient)
+    NewMessageNotifier.with(message: self).deliver_later(recipient)
   end
 ```
 

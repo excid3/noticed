@@ -19,7 +19,7 @@ https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_
 ## Usage
 
 ```ruby
-class CommentNotification
+class CommentNotifier
   deliver_by :ios
 end
 ```
@@ -27,7 +27,7 @@ end
 With custom configuration:
 
 ```ruby
-class CommentNotification
+class CommentNotifier
   deliver_by :ios, format: :ios_format, cert_path: :ios_cert_path, key_id: :ios_key_id, team_id: :ios_team_id, pool_size: 5
 
   # Customize notification
@@ -110,7 +110,7 @@ end
 Apple Push Notifications may fail delivery if the user has removed the app from their device. Noticed allows you
 
 ```ruby
-class CommentNotification
+class CommentNotifier
   deliver_by :ios
 
   # Remove invalid device tokens

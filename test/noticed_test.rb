@@ -83,11 +83,11 @@ class RequiredOption < Noticed::DeliveryMethods::Base
   end
 end
 
-class NotificationWithValidOptions < Noticed::Base
+class NotifierWithValidOptions < Noticed::Base
   deliver_by :custom, class: "RequiredOption", a_required_option: true
 end
 
-class NotificationWithoutValidOptions < Noticed::Base
+class NotifierWithoutValidOptions < Noticed::Base
   deliver_by :custom, class: "RequiredOption"
 end
 
@@ -185,13 +185,13 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test "validates options of delivery methods when options are valid" do
     assert_nothing_raised do
-      NotificationWithValidOptions.deliver(user)
+      NotifierWithValidOptions.deliver(user)
     end
   end
 
   test "validates options of delivery methods when options are invalid" do
     assert_raises Noticed::ValidationError do
-      NotificationWithoutValidOptions.deliver(user)
+      NotifierWithoutValidOptions.deliver(user)
     end
   end
 

@@ -5,7 +5,7 @@ class EmailDeliveryWithoutMailer < Noticed::Base
 end
 
 class EmailDeliveryWithActiveJob < Noticed::Base
-  deliver_by :email, mailer: "UserMailer", enqueue: true, method: "comment_notification"
+  deliver_by :email, mailer: "UserMailer", enqueue: true, method: "comment_notifier"
 end
 
 class EmailTest < ActiveSupport::TestCase

@@ -15,7 +15,7 @@ end
 class IosTest < ActiveSupport::TestCase
   test "raises error when bundle_identifier missing" do
     exception = assert_raises ArgumentError do
-      Noticed::DeliveryMethods::Ios.new.perform(notification_class: "IosExample")
+      Noticed::DeliveryMethods::Ios.new.perform(notifier_class: "IosExample")
     end
 
     assert_equal "bundle_identifier is missing", exception.message
@@ -24,7 +24,7 @@ class IosTest < ActiveSupport::TestCase
   test "raises error when key_id missing" do
     exception = assert_raises ArgumentError do
       Noticed::DeliveryMethods::Ios.new.perform(
-        notification_class: "IosExample",
+        notifier_class: "IosExample",
         options: {
           bundle_identifier: "test"
         }
@@ -37,7 +37,7 @@ class IosTest < ActiveSupport::TestCase
   test "raises error when team_id missing" do
     exception = assert_raises ArgumentError do
       Noticed::DeliveryMethods::Ios.new.perform(
-        notification_class: "IosExample",
+        notifier_class: "IosExample",
         options: {
           bundle_identifier: "test",
           key_id: "test"
@@ -51,7 +51,7 @@ class IosTest < ActiveSupport::TestCase
   test "raises error when cert missing" do
     exception = assert_raises ArgumentError do
       Noticed::DeliveryMethods::Ios.new.perform(
-        notification_class: "IosExample",
+        notifier_class: "IosExample",
         options: {
           bundle_identifier: "test",
           key_id: "test",
@@ -67,7 +67,7 @@ class IosTest < ActiveSupport::TestCase
     assert_raises NoMethodError do
       File.stub :exist?, true do
         Noticed::DeliveryMethods::Ios.new.perform(
-          notification_class: "IosExampleWithoutDeviceTokens",
+          notifier_class: "IosExampleWithoutDeviceTokens",
           options: {
             bundle_identifier: "test",
             key_id: "test",

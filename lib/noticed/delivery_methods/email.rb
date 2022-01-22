@@ -22,7 +22,7 @@ module Noticed
         when String
           option.constantize
         when Symbol
-          notification.send(option)
+          notifier.send(option)
         else
           option
         end
@@ -30,23 +30,23 @@ module Noticed
 
       # Method should be a symbol
       #
-      # If notification responds to symbol, call that method and use return value
-      # If notification does not respond to symbol, use the symbol for the mailer method
-      # Otherwise, use the underscored notification class name as the mailer method
+      # If notifier responds to symbol, call that method and use return value
+      # If notifier does not respond to symbol, use the symbol for the mailer method
+      # Otherwise, use the underscored notifier class name as the mailer method
       def method
         method_name = options[:method]&.to_sym
         if method_name.present?
-          notification.respond_to?(method_name) ? notification.send(method_name) : method_name
+          notifier.respond_to?(method_name) ? notifier.send(method_name) : method_name
         else
-          notification.class.name.underscore
+          notifier.class.name.underscore
         end
       end
 
       def format
         params = if (method = options[:format])
-          notification.send(method)
+          notifier.send(method)
         else
-          notification.params
+          notifier.params
         end
         params.merge(recipient: recipient, record: record)
       end

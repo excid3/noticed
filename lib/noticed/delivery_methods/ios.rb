@@ -35,7 +35,7 @@ module Noticed
         apn.topic = bundle_identifier
 
         if (method = options[:format])
-          notification.send(method, apn)
+          notifier.send(method, apn)
         elsif params[:message].present?
           apn.alert = params[:message]
         else
@@ -44,7 +44,7 @@ module Noticed
       end
 
       def device_tokens
-        if notification.respond_to?(:ios_device_tokens)
+        if notifier.respond_to?(:ios_device_tokens)
           Array.wrap(notification.ios_device_tokens(recipient))
         else
           raise NoMethodError, <<~MESSAGE
@@ -63,8 +63,8 @@ module Noticed
       end
 
       def cleanup_invalid_token(token)
-        return unless notification.respond_to?(:cleanup_device_token)
-        notification.send(:cleanup_device_token, token: token, platform: "iOS")
+        return unless notifier.respond_to?(:cleanup_device_token)
+        notifier.send(:cleanup_device_token, token: token, platform: "iOS")
       end
 
       def connection_pool
@@ -100,7 +100,7 @@ module Noticed
         when String
           option
         when Symbol
-          notification.send(option)
+          notifier.send(option)
         else
           Rails.application.credentials.dig(:ios, :bundle_identifier)
         end
@@ -112,7 +112,7 @@ module Noticed
         when String
           option
         when Symbol
-          notification.send(option)
+          notifier.send(option)
         else
           Rails.root.join("config/certs/ios/apns.p8")
         end
@@ -124,7 +124,7 @@ module Noticed
         when String
           option
         when Symbol
-          notification.send(option)
+          notifier.send(option)
         else
           Rails.application.credentials.dig(:ios, :key_id)
         end
@@ -136,7 +136,7 @@ module Noticed
         when String
           option
         when Symbol
-          notification.send(option)
+          notifier.send(option)
         else
           Rails.application.credentials.dig(:ios, :team_id)
         end
@@ -146,7 +146,7 @@ module Noticed
         option = options[:development]
         case option
         when Symbol
-          !!notification.send(option)
+          !!notifier.send(option)
         else
           !!option
         end

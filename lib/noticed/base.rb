@@ -114,10 +114,9 @@ module Noticed
         # If the queue is `nil`, ActiveJob will use a default queue name.
         queue = delivery_method.dig(:options, :queue)
 
-        # Always perfrom later if a delay is present
+        # Always perform later if a delay is present
         if (delay = delivery_method.dig(:options, :delay))
-          delay_duration = respond_to?(delay) ? send(delay) : delay
-          method.set(wait: delay_duration, queue: queue).perform_later(args)
+          method.set(wait: delay, queue: queue).perform_later(args)
         elsif enqueue
           method.set(queue: queue).perform_later(args)
         else

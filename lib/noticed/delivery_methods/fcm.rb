@@ -29,8 +29,8 @@ module Noticed
       end
 
       def cleanup_invalid_token(device_token)
-        return unless notification.respond_to?(:cleanup_device_token)
-        notification.send(:cleanup_device_token, token: device_token, platform: "fcm")
+        return unless notifier.respond_to?(:cleanup_device_token)
+        notifier.send(:cleanup_device_token, token: device_token, platform: "fcm")
       end
 
       def credentials
@@ -44,7 +44,7 @@ module Noticed
           when String
             load_json(Rails.root.join(option))
           when Symbol
-            notification.send(option)
+            notifier.send(option)
           else
             Rails.application.credentials.fcm
           end
@@ -74,12 +74,12 @@ module Noticed
       end
 
       def format(device_token)
-        notification.send(options[:format], device_token)
+        notifier.send(options[:format], device_token)
       end
 
       def device_tokens
-        if notification.respond_to?(:fcm_device_tokens)
-          Array.wrap(notification.fcm_device_tokens(recipient))
+        if notifier.respond_to?(:fcm_device_tokens)
+          Array.wrap(notifier.fcm_device_tokens(recipient))
         else
           raise NoMethodError, <<~MESSAGE
             You must implement `fcm_device_tokens` to send Firebase Cloud Messaging notifications

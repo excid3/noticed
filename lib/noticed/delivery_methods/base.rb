@@ -6,7 +6,7 @@ module Noticed
 
       class_attribute :option_names, instance_writer: false, default: []
 
-      attr_reader :notification, :options, :params, :recipient, :record
+      attr_reader :notifier, :options, :params, :recipient, :record
 
       class << self
         # Copy option names from parent
@@ -30,23 +30,23 @@ module Noticed
       end
 
       def assign_args(args)
-        @notification = args.fetch(:notification_class).constantize.new(args[:params])
+        @notifier = args.fetch(:notifier_class).constantize.new(args[:params])
         @options = args[:options] || {}
         @params = args[:params]
         @recipient = args[:recipient]
         @record = args[:record]
 
         # Make notification aware of database record and recipient during delivery
-        @notification.record = args[:record]
-        @notification.recipient = args[:recipient]
+        @notifier.record = args[:record]
+        @notifier.recipient = args[:recipient]
         self
       end
 
       def perform(args)
         assign_args(args)
 
-        return if (condition = @options[:if]) && !@notification.send(condition)
-        return if (condition = @options[:unless]) && @notification.send(condition)
+        return if (condition = @options[:if]) && !@notifier.send(condition)
+        return if (condition = @options[:unless]) && @notifier.send(condition)
 
         run_callbacks :deliver do
           deliver

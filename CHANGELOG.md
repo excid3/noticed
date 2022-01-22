@@ -1,5 +1,43 @@
 ### Unreleased
 
+### 1.5.7
+
+* Cleanup device token on 404 (Unregistered) error only and raise on all other error codes - @cjilbert504
+
+### 1.5.6
+
+* Add Firebase Cloud Messaging (FCM) delivery method - @cjilbert504 @excid3
+
+### 1.5.5
+
+* Support `File` and `StringIO` objects for iOS `cert_path` - @erbunao
+
+### 1.5.4
+
+* Fix `recipient` assignment - @clinejj
+
+### 1.5.3
+
+* Add symbol support for `development` option for iOS deliveries - @joemasilotti
+
+### 1.5.2
+
+* Rescue from database connection errors when loading Noticed::Model #121 - @adriancb
+
+### 1.5.1
+
+* Fix `record` assignment - @leighhalliday
+
+### 1.5.0
+
+* Add iOS Apple Push Notifications - @excid3 @joemasilotti
+* Customizable stream name for ActionCable deliveries - @excid3
+* Set recipient when rehydrating notification objects from the database - @RolandStuder
+* Support postgis database in model generator - @bmorrall @csutter
+* Allow string, symbol, or class for `mailer` option with email delivery - @excid3
+* Parameterless notification helpers - @SirRawlins
+* Add enqueue option to email delivery method - @coder2000
+
 ### 1.4.1
 
 * Fix early db access by moving constant lookup into the method. Fixes the situation of compiling assets needing database access. - @excid3

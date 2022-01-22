@@ -14,6 +14,14 @@ class UnlessExample < Noticed::Base
   end
 end
 
+class RecipientExample < Noticed::Base
+  deliver_by :database
+
+  def message
+    recipient.id
+  end
+end
+
 class IfRecipientExample < Noticed::Base
   deliver_by :test, if: :falsey
   def falsey
@@ -41,12 +49,26 @@ class CallbackExample < Noticed::Base
 
   deliver_by :database
 
-  after_deliver do
-    self.class.callbacks << :everything
+  before_database do
+    raise ArgumentError unless recipient
+
+    self.class.callbacks << :before_database
+  end
+
+  around_database do
+    raise ArgumentError unless recipient
+
+    self.class.callbacks << :around_database
   end
 
   after_database do
-    self.class.callbacks << :database
+    raise ArgumentError unless recipient
+
+    self.class.callbacks << :after_database
+  end
+
+  after_deliver do
+    self.class.callbacks << :after_everything
   end
 end
 
@@ -79,46 +101,51 @@ end
 
 class Noticed::Test < ActiveSupport::TestCase
   test "stores data in params" do
-    notification = make_notifier(foo: :bar, user: user)
+    notification = make_notification(foo: :bar, user: user)
     assert_equal :bar, notification.params[:foo]
     assert_equal user, notification.params[:user]
   end
 
   test "can deliver a notification" do
-    assert make_notifier(foo: :bar).deliver(user)
+    assert make_notification(foo: :bar).deliver(user)
   end
 
   test "enqueues notification jobs (skipping database)" do
-    assert_enqueued_jobs CommentNotifier.delivery_methods.length - 1 do
-      CommentNotifier.new.deliver_later(user)
+    assert_enqueued_jobs CommentNotification.delivery_methods.length - 1 do
+      CommentNotification.deliver_later(user)
     end
   end
 
   test "cancels delivery when if clause is falsey" do
-    IfExample.new.deliver(user)
+    IfExample.deliver(user)
     assert_empty Noticed::DeliveryMethods::Test.delivered
   end
 
   test "cancels delivery when unless clause is truthy" do
-    UnlessExample.new.deliver(user)
+    UnlessExample.deliver(user)
     assert_empty Noticed::DeliveryMethods::Test.delivered
   end
 
   test "has access to recipient in if clause" do
     assert_nothing_raised do
-      IfRecipientExample.new.deliver(user)
+      IfRecipientExample.deliver(user)
     end
   end
 
   test "has access to recipient in unless clause" do
     assert_nothing_raised do
-      UnlessRecipientExample.new.deliver(user)
+      UnlessRecipientExample.deliver(user)
     end
+  end
+
+  test "has access to recipient in notification instance" do
+    RecipientExample.deliver(user)
+    assert_equal user.id, Notification.last.to_notification.message
   end
 
   test "validates attributes for params" do
     assert_raises Noticed::ValidationError do
-      AttributeExample.new.deliver(users(:one))
+      AttributeExample.deliver(users(:one))
     end
   end
 
@@ -127,56 +154,58 @@ class Noticed::Test < ActiveSupport::TestCase
   end
 
   test "runs callbacks on notifications" do
-    CallbackExample.new.deliver(user)
-    assert_equal [:database, :everything], CallbackExample.callbacks
+    CallbackExample.deliver(user)
+    assert_equal [:before_database, :around_database, :after_database, :after_everything], CallbackExample.callbacks
   end
 
   test "runs callbacks on delivery methods" do
     assert_difference "Noticed::DeliveryMethods::Test.callbacks.count" do
-      make_notifier(foo: :bar).deliver(user)
+      make_notification(foo: :bar).deliver(user)
     end
   end
 
   test "can send notifications to multiple recipients" do
     assert User.count >= 2
     assert_difference "Notification.count", User.count do
-      make_notifier(foo: :bar).deliver(User.all)
+      make_notification(foo: :bar).deliver(User.all)
     end
   end
 
   test "assigns record to notification when delivering" do
-    make_notifier(foo: :bar).deliver(user)
+    notification = make_notification(foo: :bar)
+    notification.deliver(user)
     assert_equal Notification.last, Noticed::DeliveryMethods::Test.delivered.last.record
+    assert_equal notification.record, Noticed::DeliveryMethods::Test.delivered.last.record
   end
 
   test "assigns recipient to notification when delivering" do
-    make_notifier(foo: :bar).deliver(user)
+    make_notification(foo: :bar).deliver(user)
     assert_equal user, Noticed::DeliveryMethods::Test.delivered.last.recipient
   end
 
   test "validates options of delivery methods when options are valid" do
     assert_nothing_raised do
-      NotificationWithValidOptions.new.deliver(user)
+      NotificationWithValidOptions.deliver(user)
     end
   end
 
   test "validates options of delivery methods when options are invalid" do
     assert_raises Noticed::ValidationError do
-      NotificationWithoutValidOptions.new.deliver(user)
+      NotificationWithoutValidOptions.deliver(user)
     end
   end
 
   test "asserts delivery is delayed" do
     freeze_time do
       assert_enqueued_with(at: 5.minutes.from_now) do
-        With5MinutesDelay.new.deliver(user)
+        With5MinutesDelay.deliver(user)
       end
     end
   end
 
   test "asserts delivery is queued with different queue" do
     assert_enqueued_with(queue: "custom") do
-      WithCustomQueue.new.deliver_later(user)
+      WithCustomQueue.deliver_later(user)
     end
   end
 

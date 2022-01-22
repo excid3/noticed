@@ -21,7 +21,7 @@ module Noticed
       end
 
       # Copy delivery methods from parent
-      def inherited(base) #:nodoc:
+      def inherited(base) # :nodoc:
         base.delivery_methods = delivery_methods.dup
         base.param_names = param_names.dup
         super
@@ -29,6 +29,16 @@ module Noticed
 
       def with(params)
         new(params)
+      end
+
+      # Shortcut for delivering without params
+      def deliver(recipients)
+        new.deliver(recipients)
+      end
+
+      # Shortcut for delivering later without params
+      def deliver_later(recipients)
+        new.deliver_later(recipients)
       end
 
       def params(*names)
@@ -71,10 +81,12 @@ module Noticed
     def run_delivery(recipient, enqueue: true)
       delivery_methods = self.class.delivery_methods.dup
 
+      self.recipient = recipient
+
       # Run database delivery inline first if it exists so other methods have access to the record
       if (index = delivery_methods.find_index { |m| m[:name] == :database })
         delivery_method = delivery_methods.delete_at(index)
-        record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false, record: nil)
+        self.record = run_delivery_method(delivery_method, recipient: recipient, enqueue: false, record: nil)
       end
 
       delivery_methods.each do |delivery_method|

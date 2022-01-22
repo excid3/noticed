@@ -43,7 +43,7 @@ module Noticed
 
       def params_column
         case current_adapter
-        when "postgresql"
+        when "postgresql", "postgis"
           "params:jsonb"
         else
           # MySQL and SQLite both support json

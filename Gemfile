@@ -13,4 +13,11 @@ gemspec
 
 # To use a debugger
 gem "byebug", group: [:development, :test]
-gem "appraisal", github: "excid3/appraisal", branch: "fix-bundle-env"
+gem "appraisal"
+gem "net-smtp"
+
+# iOS notifications
+gem "apnotic", "~> 1.7"
+
+# firebase notifications
+gem "googleauth", "~> 1.1"

@@ -6,11 +6,11 @@ module Noticed
 
       class_attribute :option_names, instance_writer: false, default: []
 
-      attr_reader :notifier, :options, :params, :recipient, :record
+      attr_reader :notification, :options, :params, :recipient, :record
 
       class << self
         # Copy option names from parent
-        def inherited(base) #:nodoc:
+        def inherited(base) # :nodoc:
           base.option_names = option_names.dup
           super
         end
@@ -29,19 +29,24 @@ module Noticed
         end
       end
 
-      def perform(args)
-        @notifier = args[:notifier_class].constantize.new(args[:params])
-        @options = args[:options]
+      def assign_args(args)
+        @notification = args.fetch(:notification_class).constantize.new(args[:params])
+        @options = args[:options] || {}
         @params = args[:params]
         @recipient = args[:recipient]
         @record = args[:record]
 
-        # Make notifier aware of database record and recipient during delivery
-        @notifier.record = args[:record]
-        @notifier.recipient = args[:recipient]
+        # Make notification aware of database record and recipient during delivery
+        @notification.record = args[:record]
+        @notification.recipient = args[:recipient]
+        self
+      end
 
-        return if (condition = @options[:if]) && !@notifier.send(condition)
-        return if (condition = @options[:unless]) && @notifier.send(condition)
+      def perform(args)
+        assign_args(args)
+
+        return if (condition = @options[:if]) && !@notification.send(condition)
+        return if (condition = @options[:unless]) && @notification.send(condition)
 
         run_callbacks :deliver do
           deliver
@@ -57,16 +62,16 @@ module Noticed
       # Helper method for making POST requests from delivery methods
       #
       # Usage:
-      #   post("http://example.com", basic_auth: {user:, pass:}, json: {}, form: {})
+      #   post("http://example.com", basic_auth: {user:, pass:}, headers: {}, json: {}, form: {})
       #
       def post(url, args = {})
+        options ||= {}
         basic_auth = args.delete(:basic_auth)
+        headers = args.delete(:headers)
 
-        request = if basic_auth
-          HTTP.basic_auth(user: basic_auth[:user], pass: basic_auth[:pass])
-        else
-          HTTP
-        end
+        request = HTTP
+        request = request.basic_auth(user: basic_auth[:user], pass: basic_auth[:pass]) if basic_auth
+        request = request.headers(headers) if headers
 
         response = request.post(url, args)
 
@@ -76,6 +81,8 @@ module Noticed
         end
 
         if !options[:ignore_failure] && !response.status.success?
+          puts response.status
+          puts response.body
           raise ResponseUnsuccessful.new(response)
         end
 

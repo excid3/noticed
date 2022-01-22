@@ -4,6 +4,10 @@ class EmailDeliveryWithoutMailer < Noticed::Base
   deliver_by :email
 end
 
+class EmailDeliveryWithActiveJob < Noticed::Base
+  deliver_by :email, mailer: "UserMailer", enqueue: true, method: "comment_notification"
+end
+
 class EmailTest < ActiveSupport::TestCase
   setup do
     @user = users(:one)
@@ -33,5 +37,10 @@ class EmailTest < ActiveSupport::TestCase
     email = Noticed::DeliveryMethods::Email.new.perform(args)
 
     assert_kind_of Mail::Message, email
+  end
+
+  test "delivery spawns an ActiveJob for email" do
+    EmailDeliveryWithActiveJob.new.deliver(user)
+    assert_enqueued_emails 1
   end
 end

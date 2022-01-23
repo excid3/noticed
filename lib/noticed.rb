@@ -1,5 +1,5 @@
 require "active_job/arguments"
-require "http"
+require "faraday"
 require "noticed/engine"
 
 module Noticed

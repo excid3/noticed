@@ -19,7 +19,7 @@ class SlackTest < ActiveSupport::TestCase
     e = assert_raises(::Noticed::ResponseUnsuccessful) {
       SlackExample.new.deliver(user)
     }
-    assert_equal HTTP::Response, e.response.class
+    assert_equal Faraday::Response, e.response.class
   end
 
   test "deliver returns an http response" do
@@ -32,6 +32,6 @@ class SlackTest < ActiveSupport::TestCase
     }
     response = Noticed::DeliveryMethods::Slack.new.perform(args)
 
-    assert_kind_of HTTP::Response, response
+    assert_kind_of Faraday::Response, response
   end
 end

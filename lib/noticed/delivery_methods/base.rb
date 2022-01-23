@@ -59,6 +59,19 @@ module Noticed
 
       private
 
+      def build_default_connection(args)
+        basic_auth = args.delete(:basic_auth)
+        headers = Faraday::Utils::Headers.new(args.delete(:headers) || {})
+        Faraday.new do |connection|
+          connection.headers["Content-Type"] = "application/json" if args[:json]
+          connection.headers["Content-Type"] = "application/x-www-form-urlencoded" if args[:form]
+          headers.each do |header, value|
+            connection.headers[header] = value
+          end
+          connection.request :basic_auth, basic_auth[:user], basic_auth[:pass] if basic_auth
+        end
+      end
+
       # Helper method for making POST requests from delivery methods
       #
       # Usage:
@@ -66,21 +79,23 @@ module Noticed
       #
       def post(url, args = {})
         options ||= {}
-        basic_auth = args.delete(:basic_auth)
-        headers = args.delete(:headers)
-
-        request = HTTP
-        request = request.basic_auth(user: basic_auth[:user], pass: basic_auth[:pass]) if basic_auth
-        request = request.headers(headers) if headers
-
-        response = request.post(url, args)
+        connection = respond_to?(:build_connection) ? connection(args) : build_default_connection(args)
+        response = connection.post(url) do |request|
+          request.body = if args[:json]
+            args[:json].to_json
+          elsif args[:form]
+            URI.encode_www_form(args[:form])
+          else
+            ""
+          end
+        end
 
         if options[:debug]
           Rails.logger.debug("POST #{url}")
-          Rails.logger.debug("Response: #{response.code}: #{response}")
+          Rails.logger.debug("Response: #{response.status}: #{response.body}")
         end
 
-        if !options[:ignore_failure] && !response.status.success?
+        if !options[:ignore_failure] && !response.success?
           puts response.status
           puts response.body
           raise ResponseUnsuccessful.new(response)

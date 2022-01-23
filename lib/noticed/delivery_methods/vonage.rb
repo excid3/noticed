@@ -3,7 +3,7 @@ module Noticed
     class Vonage < Base
       def deliver
         response = post("https://rest.nexmo.com/sms/json", json: format)
-        status = response.parse.dig("messages", 0, "status")
+        status = JSON.parse(response.body).dig("messages", 0, "status")
         if !options[:ignore_failure] && status != "0"
           raise ResponseUnsuccessful.new(response)
         end

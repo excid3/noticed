@@ -63,6 +63,21 @@ class IosTest < ActiveSupport::TestCase
     assert_match "Could not find APN cert at", exception.message
   end
 
+  test "accepts cert as StringIO" do
+    # Assert no error
+    result = Noticed::DeliveryMethods::Ios.new.perform(
+      notification_class: "IosExample",
+      options: {
+        bundle_identifier: "test",
+        key_id: "test",
+        team_id: "test",
+        cert_path: StringIO.new("p8 file content as string")
+      }
+    )
+
+    assert_equal [], result
+  end
+
   test "raises error when ios_device_tokens method is missing" do
     assert_raises NoMethodError do
       File.stub :exist?, true do

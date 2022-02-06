@@ -114,7 +114,13 @@ module Noticed
         when Symbol
           notification.send(option)
         else
-          Rails.root.join("config/certs/ios/apns.p8")
+          if option.respond_to?(:read)
+            # e.g. StringIO, File.open
+            # See Apnotic::Connection#certificate
+            option
+          else
+            Rails.root.join("config/certs/ios/apns.p8").to_s
+          end
         end
       end
 
@@ -152,13 +158,10 @@ module Noticed
         end
       end
 
+      # Compare Apnotic::Connection#initialize
       def valid_cert_path?
-        case cert_path
-        when File, StringIO
-          cert_path.size > 0
-        else
-          File.exist?(cert_path)
-        end
+        cert_path = self.cert_path
+        cert_path && (cert_path.respond_to?(:read) || File.exist?(cert_path))
       end
 
       def pool_options

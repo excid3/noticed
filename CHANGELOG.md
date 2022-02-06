@@ -1,5 +1,7 @@
 ### Unreleased
 
+* iOS `cert_path`: Fix `File` and `StringIO` support and allow any object accepted by Apnotic - @chagar
+
 ### 1.5.9
 
 * Add dynamic delay option support - @excid3

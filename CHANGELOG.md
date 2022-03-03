@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.5.8
+
+* Check FCM response code correctly - @HeshamMagdy97
+
 ### 1.5.7
 
 * Cleanup device token on 404 (Unregistered) error only and raise on all other error codes - @cjilbert504

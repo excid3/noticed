@@ -106,9 +106,10 @@ end
 
 **Shared Options**
 
-* `if: :method_name`  - Calls `method_name`and cancels delivery method if `false` is returned
-* `unless: :method_name`  - Calls `method_name`and cancels delivery method if `true` is returned
+* `if: :method_name`  - Calls `method_name` and cancels delivery method if `false` is returned
+* `unless: :method_name`  - Calls `method_name` and cancels delivery method if `true` is returned
 * `delay: ActiveSupport::Duration` - Delays the delivery for the given duration of time
+* `delay: :method_name` - Calls `method_name which should return an `ActiveSupport::Duration` and delays the delivery for the given duration of time
 
 ##### Helper Methods
 
@@ -198,11 +199,11 @@ A common use case is to trigger a notification when a record is created. For exa
 ```ruby
 class Message < ApplicationRecord
   belongs_to :recipient, class_name: "User"
-  
+
   after_create_commit :notify_recipient
-  
+
   private
-  
+
   def notify_recipient
     NewMessageNotification.with(message: self).deliver_later(recipient)
   end

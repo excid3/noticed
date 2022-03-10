@@ -112,6 +112,13 @@ module Noticed
 
         # Always perfrom later if a delay is present
         if (delay = delivery_method.dig(:options, :delay))
+          # Dynamic delays with metho calls or
+          if delay.is_a? Symbol
+            delay = send(delay)
+          elsif delay.respond_to?(:call)
+            delay.call
+          end
+
           method.set(wait: delay, queue: queue).perform_later(args)
         elsif enqueue
           method.set(queue: queue).perform_later(args)

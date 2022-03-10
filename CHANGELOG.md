@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Add dynamic delay option support - @excid3
+
 ### 1.5.8
 
 * Check FCM response code correctly - @HeshamMagdy97

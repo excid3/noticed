@@ -95,6 +95,14 @@ class With5MinutesDelay < Noticed::Base
   deliver_by :test, delay: 5.minutes
 end
 
+class WithDynamicDelay < Noticed::Base
+  deliver_by :test, delay: :dynamic_delay
+
+  def dynamic_delay
+    recipient.email == "first@example.com" ? 1.minute : 2.minutes
+  end
+end
+
 class WithCustomQueue < Noticed::Base
   deliver_by :test, queue: "custom"
 end
@@ -199,6 +207,18 @@ class Noticed::Test < ActiveSupport::TestCase
     freeze_time do
       assert_enqueued_with(at: 5.minutes.from_now) do
         With5MinutesDelay.deliver(user)
+      end
+    end
+  end
+
+  test "asserts dynamic delay" do
+    freeze_time do
+      assert_enqueued_with(at: 1.minutes.from_now) do
+        WithDynamicDelay.deliver(users(:one))
+      end
+
+      assert_enqueued_with(at: 2.minutes.from_now) do
+        WithDynamicDelay.deliver(users(:two))
       end
     end
   end

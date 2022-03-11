@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 1.5.9
+
 * Add dynamic delay option support - @excid3
 
 ### 1.5.8

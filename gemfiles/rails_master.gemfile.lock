@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: a2217aede9009de5f7c1cd2d02bc2d0039bab8bf
+  revision: 1bca3cc406c0c7aa06e48a9f060096cf95ced721
   branch: main
   specs:
     actioncable (7.1.0.alpha)
@@ -8,6 +8,7 @@ GIT
       activesupport (= 7.1.0.alpha)
       nio4r (~> 2.0)
       websocket-driver (>= 0.6.1)
+      zeitwerk (~> 2.5)
     actionmailbox (7.1.0.alpha)
       actionpack (= 7.1.0.alpha)
       activejob (= 7.1.0.alpha)
@@ -93,7 +94,7 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (1.5.8)
+    noticed (1.5.9)
       http (>= 4.0.0)
       rails (>= 5.2.0)
 
@@ -195,7 +196,7 @@ GEM
     parallel (1.21.0)
     parser (3.1.1.0)
       ast (~> 2.4.1)
-    pg (1.3.3)
+    pg (1.3.4)
     public_suffix (4.0.6)
     racc (1.6.0)
     rack (2.2.3)

@@ -8,6 +8,12 @@ class EmailDeliveryWithActiveJob < Noticed::Base
   deliver_by :email, mailer: "UserMailer", enqueue: true, method: "comment_notification"
 end
 
+module MyScope
+  class EmailDeliveryWithoutProvidedMethod < Noticed::Base
+    deliver_by :email, mailer: "UserMailer"
+  end
+end
+
 class EmailTest < ActiveSupport::TestCase
   setup do
     @user = users(:one)
@@ -42,5 +48,17 @@ class EmailTest < ActiveSupport::TestCase
   test "delivery spawns an ActiveJob for email" do
     EmailDeliveryWithActiveJob.new.deliver(user)
     assert_enqueued_emails 1
+  end
+
+  test "use demodulized class name as mailer method" do
+    mailer_instance = Minitest::Mock.new
+    mailer_message = Minitest::Mock.new
+    def mailer_message.deliver_now
+    end
+
+    UserMailer.stub(:with, mailer_instance) do
+      mailer_instance.expect(:email_delivery_without_provided_method, mailer_message)
+      MyScope::EmailDeliveryWithoutProvidedMethod.new.deliver(user)
+    end
   end
 end

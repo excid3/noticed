@@ -38,7 +38,7 @@ module Noticed
         if method_name.present?
           notification.respond_to?(method_name) ? notification.send(method_name) : method_name
         else
-          notification.class.name.underscore
+          notification.class.name.demodulize.underscore
         end
       end
 

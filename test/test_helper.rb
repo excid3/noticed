@@ -21,6 +21,7 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
 end
 
 require "minitest/unit"
+require "minitest/mock"
 require "webmock/minitest"
 
 class ExampleNotification < Noticed::Base

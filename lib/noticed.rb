@@ -30,7 +30,7 @@ module Noticed
       notification.notify(recipient)
     end
 
-    clear_recipient(notification)
+    notification.clear_recipient
   end
 
   mattr_accessor :parent_class
@@ -45,11 +45,5 @@ module Noticed
     def initialize(response)
       @response = response
     end
-  end
-
-  private
-
-  def clear_recipient(notification)
-    notification.recipient = nil
   end
 end

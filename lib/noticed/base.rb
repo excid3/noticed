@@ -74,6 +74,10 @@ module Noticed
     def params
       @params || {}
     end
+ 
+    def clear_recipient
+      self.recipient = nil
+    end
 
     private
 

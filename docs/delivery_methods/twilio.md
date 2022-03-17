@@ -6,6 +6,14 @@ Sends an SMS notification via Twilio.
 
 ##### Options
 
+* `message` - *Required*
+
+  Message is required and needs to be passed in as part of the params:
+
+  ```ruby
+  SmsNotification.with(message: "Howdy!")
+  ```
+
 * `credentials: :get_twilio_credentials` - *Optional*
 
   Use a custom method to retrieve the credentials for Twilio. Method should return a Hash with `:account_sid`, `:auth_token` and `:phone_number` keys.
@@ -26,18 +34,8 @@ Sends an SMS notification via Twilio.
 
   ```ruby
   {
-    Body: notification.params[:message],
-    From: twilio_credentials[:number],
+    Body: params[:message], # From notification.params
+    From: Rails.application.credentials.twilio[:phone_number],
     To: recipient.phone_number
   }
   ```
-
-* `message` - *Required*
-
-  Message is required and needs to be passed in as part of the params:
-
-  ```
-  SmsNotification.with(message: "Howdy!")
-  ```
-
-

@@ -30,8 +30,7 @@ module Noticed
       notification.notify(recipient)
     end
 
-    # Clear the recipient after sending to the group
-    notification.recipient = nil
+    notification.clear_recipient
   end
 
   mattr_accessor :parent_class

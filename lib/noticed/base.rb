@@ -75,6 +75,10 @@ module Noticed
       @params || {}
     end
 
+    def clear_recipient
+      self.recipient = nil
+    end
+
     private
 
     # Runs all delivery methods for a notification

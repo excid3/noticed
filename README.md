@@ -31,7 +31,7 @@ And you can easily add new notification types for any other delivery methods.
 Run the following command to add Noticed to your Gemfile
 
 ```ruby
-bundle add "noticed"
+bundle add noticed
 ```
 
 To save notifications to your database, use the following command to generate a Notification model.

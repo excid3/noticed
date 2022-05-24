@@ -351,22 +351,6 @@ class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
 end
 ```
 
-#### Limitations
-
-Rails 6.1+ can serialize Class and Module objects as arguments to ActiveJob. The following syntax should work for Rails 6.1+:
-
-```ruby
-  deliver_by DeliveryMethods::Discord
-```
-
-For Rails 5.2 and 6.0, you must pass strings of the class names in the `deliver_by` options.
-
-```ruby
-  deliver_by :discord, class: "DeliveryMethods::Discord"
-```
-
-We recommend using a string in order to prevent confusion.
-
 ### 📦 Database Model
 
 The Notification database model includes several helpful features to make working with database notifications easier.

@@ -194,6 +194,8 @@ deliver_by :slack, debug: true
 
 ## ✅ Best Practices
 
+### Creating a notification from an Active Record callback
+
 A common use case is to trigger a notification when a record is created. For example,
 
 ```ruby
@@ -216,6 +218,23 @@ Using `after_create` might cause the notification delivery methods to fail. This
 A common symptom of this problem is undelivered notifications and the following error in your logs.
 
 > `Discarded Noticed::DeliveryMethods::Email due to a ActiveJob::DeserializationError.`
+
+### Renaming notifications
+
+If you rename the class of a notifcation object your existing queries can break. This is because Noticed serializes the class name and sets it to the `type` column on the `Notification` record.
+
+You can catch these errors at runtime by using `YourNotificationClassName.name` instead of hardcoding the string when performing a query.
+
+```ruby
+Notification.where(type: YourNotificationClassName.name) # good
+Notification.where(type: "YourNotificationClassName") # bad
+```
+
+When renaming a notification class you will need to backfill existing notifications to reference the new name.
+
+```ruby
+Notification.where(type: "OldNotificationClassName").update_all(type: NewNotificationClassName.name)
+```
 
 ## 🚛 Delivery Methods
 

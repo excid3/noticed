@@ -55,9 +55,7 @@ module Noticed
       validate!
 
       run_callbacks :deliver do
-        Array.wrap(recipients).uniq.each do |recipient|
-          run_delivery(recipient, enqueue: false)
-        end
+        _deliver_to(recipients, enqueue: false)
       end
     end
 
@@ -65,9 +63,7 @@ module Noticed
       validate!
 
       run_callbacks :deliver do
-        Array.wrap(recipients).uniq.each do |recipient|
-          run_delivery(recipient, enqueue: true)
-        end
+        _deliver_to(recipients)
       end
     end
 
@@ -80,6 +76,13 @@ module Noticed
     end
 
     private
+
+    # Forward each recipient off to the delivery runner
+    def _deliver_to(recipients, enqueue: true)
+      Array.wrap(recipients).uniq.each do |recipient|
+        run_delivery(recipient, enqueue: enqueue)
+      end
+    end
 
     # Runs all delivery methods for a notification
     def run_delivery(recipient, enqueue: true)

@@ -23,6 +23,7 @@ module Noticed
     autoload :Test, "noticed/delivery_methods/test"
     autoload :Twilio, "noticed/delivery_methods/twilio"
     autoload :Vonage, "noticed/delivery_methods/vonage"
+    autoload :Webhook, "noticed/delivery_methods/webhook"
   end
 
   mattr_accessor :parent_class

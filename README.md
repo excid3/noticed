@@ -221,7 +221,7 @@ A common symptom of this problem is undelivered notifications and the following 
 
 ### Renaming notifications
 
-If you rename the class of a notifcation object your existing queries can break. This is because Noticed serializes the class name and sets it to the `type` column on the `Notification` record.
+If you rename the class of a notification object your existing queries can break. This is because Noticed serializes the class name and sets it to the `type` column on the `Notification` record.
 
 You can catch these errors at runtime by using `YourNotificationClassName.name` instead of hardcoding the string when performing a query.
 

@@ -3,6 +3,8 @@ module Noticed
     def self.load(data)
       return if data.nil?
       ActiveJob::Arguments.send(:deserialize_argument, data)
+    rescue ActiveRecord::RecordNotFound => error
+      { noticed_error: error.message, original_params: data }
     end
 
     def self.dump(data)

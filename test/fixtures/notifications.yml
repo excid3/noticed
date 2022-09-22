@@ -8,3 +8,14 @@ one:
     _aj_symbol_keys:
     - account
   read_at: <%= Time.current %>
+
+missing_account:
+  type: CommentNotification
+  recipient: one (User)
+  params:
+    foo: bar
+    account:
+      _aj_globalid: gid://dummy/Account/100000
+    _aj_symbol_keys:
+    - account
+  read_at: <%= Time.current %>

@@ -25,6 +25,14 @@ class ModelTest < ActiveSupport::TestCase
     end
   end
 
+  test "safely handles missing GlobalID records in params" do
+    notification = notifications(:missing_account)
+    assert_nothing_raised do
+      notification.params
+      assert notification.deserialize_error?
+    end
+  end
+
   def make_notification(read: false)
     CommentNotification.with(foo: :bar).deliver(users(:one))
     notification = Notification.last

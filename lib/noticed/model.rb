@@ -72,5 +72,10 @@ module Noticed
     def read?
       read_at?
     end
+
+    # If a GlobalID record in params is no longer found, the params will default with a noticed_error key
+    def deserialize_error?
+      !!params[:noticed_error]
+    end
   end
 end

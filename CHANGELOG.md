@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 1.6.0
+
 * Catch deserialization errors. Instead of raising an ActiveRecord::RecordNotFound error, Noticed will replace params with information about the error.
 ```ruby
 {:noticed_error=>"Couldn't find Account with 'id'=100000", :original_params=>{"foo"=>"bar", "account"=>{"_aj_globalid"=>"gid://dummy/Account/100000"}, "_aj_symbol_keys"=>["account"]}}

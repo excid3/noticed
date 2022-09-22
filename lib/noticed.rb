@@ -16,22 +16,13 @@ module Noticed
     autoload :Base, "noticed/delivery_methods/base"
     autoload :Database, "noticed/delivery_methods/database"
     autoload :Email, "noticed/delivery_methods/email"
+    autoload :Fcm, "noticed/delivery_methods/fcm"
     autoload :Ios, "noticed/delivery_methods/ios"
     autoload :MicrosoftTeams, "noticed/delivery_methods/microsoft_teams"
     autoload :Slack, "noticed/delivery_methods/slack"
     autoload :Test, "noticed/delivery_methods/test"
     autoload :Twilio, "noticed/delivery_methods/twilio"
     autoload :Vonage, "noticed/delivery_methods/vonage"
-    autoload :Fcm, "noticed/delivery_methods/fcm"
-  end
-
-  def self.notify(recipients:, notification:)
-    recipients.each do |recipient|
-      notification.notify(recipient)
-    end
-
-    # Clear the recipient after sending to the group
-    notification.recipient = nil
   end
 
   mattr_accessor :parent_class

@@ -3,6 +3,7 @@ PATH
   specs:
     noticed (1.6.3)
       http (>= 4.0.0)
+      minitest-stub_any_instance
       rails (>= 5.2.0)
 
 GEM
@@ -142,6 +143,7 @@ GEM
     method_source (1.0.0)
     mini_mime (1.1.2)
     minitest (5.17.0)
+    minitest-stub_any_instance (1.0.3)
     multi_json (1.15.0)
     mysql2 (0.5.5)
     net-http2 (0.18.4)
@@ -156,6 +158,8 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.5.8)
+    nokogiri (1.14.1-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.14.1-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.14.1-x86_64-linux)
@@ -222,6 +226,7 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
+    sqlite3 (1.6.0-arm64-darwin)
     sqlite3 (1.6.0-x86_64-darwin)
     sqlite3 (1.6.0-x86_64-linux)
     standard (1.24.2)
@@ -246,6 +251,7 @@ GEM
     zeitwerk (2.6.7)
 
 PLATFORMS
+  arm64-darwin-22
   x86_64-darwin-22
   x86_64-linux
 

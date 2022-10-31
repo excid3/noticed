@@ -16,6 +16,13 @@ module Noticed
 
     class << self
       def deliver_by(name, options = {})
+        if name == :slack && options[:class].blank?
+          msg = "Noticed WARNING: :slack delivery method is deprecated and will be removed. Use :slack_webhook instead."
+          warn msg
+
+          name = :slack_webhook
+        end
+
         delivery_methods.push(name: name, options: options)
         define_model_callbacks(name)
       end

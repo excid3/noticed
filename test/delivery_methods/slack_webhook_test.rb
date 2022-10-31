@@ -1,8 +1,8 @@
 require "test_helper"
 
-class SlackTest < ActiveSupport::TestCase
+class SlackWebhookTest < ActiveSupport::TestCase
   class SlackExample < Noticed::Base
-    deliver_by :slack, debug: true, url: :slack_url
+    deliver_by :slack_webhook, debug: true, url: :slack_url
 
     def slack_url
       "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
@@ -26,11 +26,11 @@ class SlackTest < ActiveSupport::TestCase
     stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
 
     args = {
-      notification_class: "::SlackTest::SlackExample",
+      notification_class: "::SlackWebhookTest::SlackExample",
       recipient: user,
       options: {url: :slack_url}
     }
-    response = Noticed::DeliveryMethods::Slack.new.perform(args)
+    response = Noticed::DeliveryMethods::SlackWebhook.new.perform(args)
 
     assert_kind_of HTTP::Response, response
   end

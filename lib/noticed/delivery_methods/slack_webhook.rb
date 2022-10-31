@@ -1,6 +1,6 @@
 module Noticed
   module DeliveryMethods
-    class Slack < Base
+    class SlackWebhook < Base
       def deliver
         post(url, json: format)
       end

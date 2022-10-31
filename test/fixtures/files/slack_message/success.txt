@@ -1,0 +1,32 @@
+HTTP/1.1 200
+date: Mon, 09 Nov 2020 12:14:30 GMT
+server: Apache
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-slack-backend: r
+access-control-allow-origin: *
+x-frame-options: SAMEORIGIN
+referrer-policy: no-referrer
+vary: Accept-Encoding
+content-type: text/html
+x-via: haproxy-www-2n6w,haproxy-edge-fra-9k3b
+
+{
+    "ok": true,
+    "channel": "C1H9RESGL",
+    "ts": "1503435956.000247",
+    "message": {
+        "text": "Here's a message for you",
+        "username": "ecto1",
+        "bot_id": "B19LU7CSY",
+        "attachments": [
+            {
+                "text": "This is an attachment",
+                "id": 1,
+                "fallback": "This is an attachment's fallback"
+            }
+        ],
+        "type": "message",
+        "subtype": "bot_message",
+        "ts": "1503435956.000247"
+    }
+}

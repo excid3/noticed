@@ -3,6 +3,7 @@ PATH
   specs:
     noticed (1.6.0)
       http (>= 4.0.0)
+      minitest-stub_any_instance
       rails (>= 5.2.0)
 
 GEM
@@ -139,6 +140,7 @@ GEM
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
     minitest (5.16.3)
+    minitest-stub_any_instance (1.0.3)
     multi_json (1.15.0)
     mysql2 (0.5.4)
     net-http2 (0.18.4)

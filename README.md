@@ -463,6 +463,29 @@ class ApplicationJob < ActiveJob::Base
 end
 ```
 
+## 🖥️ Web Interface
+
+Noticed Web UI is a Sinatra application that you can mount to your `routes.rb` file.
+
+```ruby
+bundle add "sinatra"
+```
+
+``` ruby
+# config/routes.rb
+
+require 'noticed/web'
+
+Rails.application.routes.draw do
+  # ...
+
+  mount Noticed::Web, at: '/noticed'
+
+  # ...
+end
+```
+
+
 ## 🙏 Contributing
 
 This project uses [Standard](https://github.com/testdouble/standard) for formatting Ruby code. Please make sure to run `standardrb` before submitting pull requests.

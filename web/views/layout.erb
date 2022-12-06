@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <title><%= environment_title_prefix %> Noticed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="<%= root_path %>stylesheets/application.css" media="screen" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.10.3/dist/cdn.min.js" defer=""></script>
+    <meta name="google" content="notranslate" />
+  </head>
+  <body class="bg-gray-100 min-h-full">
+    <div>
+      <%= erb :_nav %>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <%= yield %>
+      </div>
+    </div>
+  </body>
+</html>

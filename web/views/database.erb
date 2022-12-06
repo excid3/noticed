@@ -1,0 +1,58 @@
+<div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          #
+        </th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Recipient
+        </th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Type
+        </th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Params
+        </th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Read
+        </th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Created
+        </th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200" x-max="1">
+      <% @notifications.each do |notification| %>
+        <tr>
+          <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+            <%= notification.id %>
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+            <code><%= notification.recipient_type %>#<%= notification.recipient_id %></code>
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+            <code><%= notification.type %></code>
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+            <% if notification.params %>
+              <ul>
+                <% list_params(notification.params).each do |key, value| %>
+                  <li><code><%= key %>: <%= value %></code></li>
+                <% end %>
+              </ul>
+            <% end %>
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+            <%= notification.read_at %>
+          </td>
+          <td class="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+            <%= notification.created_at %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= erb :_pagination, locals: { url: "#{root_path}database", paginator: @paginator } %>
+</div>

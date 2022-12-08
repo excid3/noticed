@@ -158,7 +158,7 @@ GEM
       net-protocol
       timeout
     nio4r (2.5.8)
-    nokogiri (1.13.8)
+    nokogiri (1.13.10)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     os (1.1.4)
@@ -167,7 +167,7 @@ GEM
       ast (~> 2.4.1)
     pg (1.4.3)
     public_suffix (5.0.0)
-    racc (1.6.0)
+    racc (1.6.1)
     rack (2.2.4)
     rack-test (2.0.2)
       rack (>= 1.3)

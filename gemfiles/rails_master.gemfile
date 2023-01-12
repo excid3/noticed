@@ -2,6 +2,11 @@
 
 source "https://rubygems.org"
 
+gem "standard"
+gem "webmock"
+gem "pg"
+gem "mysql2"
+gem "sqlite3", "~> 1.6.0.rc2"
 gem "byebug", group: [:development, :test]
 gem "appraisal"
 gem "net-smtp"

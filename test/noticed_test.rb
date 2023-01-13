@@ -99,7 +99,7 @@ class WithDynamicDelay < Noticed::Base
   deliver_by :test, delay: :dynamic_delay
 
   def dynamic_delay
-    recipient.email == "first@example.com" ? 1.minute : 2.minutes
+    (recipient.email == "first@example.com") ? 1.minute : 2.minutes
   end
 end
 

@@ -5,7 +5,7 @@ module ActionCable
   module Server
     class Configuration
       def pubsub_adapter
-        cable["adapter"] == "test" ? ActionCable::SubscriptionAdapter::Test : super
+        (cable["adapter"] == "test") ? ActionCable::SubscriptionAdapter::Test : super
       end
     end
   end

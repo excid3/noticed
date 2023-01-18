@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: bef58144b6398d34e93b873a8418391270f2c0db
+  revision: 6d4f9a8fbdf5aa4ce601e8061d345da6436384c4
   branch: main
   specs:
     actioncable (7.1.0.alpha)
@@ -122,7 +122,7 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.12.0)
-    faraday (2.7.2)
+    faraday (2.7.3)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.2)
@@ -130,7 +130,7 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    globalid (1.0.0)
+    globalid (1.0.1)
       activesupport (>= 5.0)
     googleauth (1.3.0)
       faraday (>= 0.17.3, < 3.a)
@@ -196,7 +196,7 @@ GEM
     pg (1.4.5)
     public_suffix (5.0.1)
     racc (1.6.2)
-    rack (2.2.5)
+    rack (2.2.6.2)
     rack-test (2.0.2)
       rack (>= 1.3)
     rails-dom-testing (2.0.3)
@@ -230,10 +230,10 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    sqlite3 (1.6.0.rc2-arm64-darwin)
-    sqlite3 (1.6.0.rc2-x86_64-darwin)
-    sqlite3 (1.6.0.rc2-x86_64-linux)
-    standard (1.21.1)
+    sqlite3 (1.6.0-arm64-darwin)
+    sqlite3 (1.6.0-x86_64-darwin)
+    sqlite3 (1.6.0-x86_64-linux)
+    standard (1.22.0)
       language_server-protocol (~> 3.17.0.2)
       rubocop (= 1.42.0)
       rubocop-performance (= 1.15.2)

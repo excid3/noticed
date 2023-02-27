@@ -13,7 +13,11 @@ module Noticed
     included do
       self.inheritance_column = nil
 
-      serialize :params, noticed_coder
+      if respond_to?(:default_column_serializer) # Rails 7.1+
+        serialize :params, coder: noticed_coder
+      else
+        serialize :params, noticed_coder
+      end
 
       belongs_to :recipient, polymorphic: true
 

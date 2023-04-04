@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Fix overridden `Object#method` in `Noticed::DeliveryMethods::Email` - @quadule
+
 ### 1.6.0
 
 * Catch deserialization errors. Instead of raising an ActiveRecord::RecordNotFound error, Noticed will replace params with information about the error.

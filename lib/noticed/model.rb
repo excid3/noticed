@@ -13,7 +13,7 @@ module Noticed
     included do
       self.inheritance_column = nil
 
-      serialize :params, noticed_coder
+      serialize :params, coder: noticed_coder
 
       belongs_to :recipient, polymorphic: true
 

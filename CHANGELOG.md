@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 1.6.2
+
+* Improve deprecation fix to include Rails 7.1.0.alpha and higher
+
 ### 1.6.1
 
 * Fix overridden `Object#method` in `Noticed::DeliveryMethods::Email` - @quadule

@@ -13,7 +13,7 @@ module Noticed
     included do
       self.inheritance_column = nil
 
-      if Rails.gem_version >= Gem::Version("7.1")
+      if Rails.gem_version >= Gem::Version.new("7.1")
         serialize :params, coder: noticed_coder
       else
         serialize :params, noticed_coder

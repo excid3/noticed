@@ -18,7 +18,7 @@ jobs:
           - rails_6
           - rails_6_1
           - rails_7
-          - rails_master
+          - rails_main
         exclude:
           - ruby: '3.0'
             gemfile: 'rails_5_2'
@@ -65,7 +65,7 @@ jobs:
           - rails_6
           - rails_6_1
           - rails_7
-          - rails_master
+          - rails_main
         exclude:
           - ruby: '3.0'
             gemfile: 'rails_5_2'
@@ -121,7 +121,7 @@ jobs:
           - rails_6
           - rails_6_1
           - rails_7
-          - rails_master
+          - rails_main
         exclude:
           - ruby: '3.0'
             gemfile: 'rails_5_2'

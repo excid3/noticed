@@ -113,6 +113,7 @@ module Noticed
 
         # If the queue is `nil`, ActiveJob will use a default queue name.
         queue = delivery_method.dig(:options, :queue)
+        queue = send(queue) if queue.is_a? Symbol
 
         # Always perfrom later if a delay is present
         if (delay = delivery_method.dig(:options, :delay))

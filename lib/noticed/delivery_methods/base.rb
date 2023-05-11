@@ -6,7 +6,7 @@ module Noticed
 
       class_attribute :option_names, instance_writer: false, default: []
 
-      attr_reader :notification, :options, :params, :recipient, :record
+      attr_reader :notification, :options, :params, :recipient, :record, :logger
 
       class << self
         # Copy option names from parent
@@ -35,6 +35,9 @@ module Noticed
         @params = args[:params]
         @recipient = args[:recipient]
         @record = args[:record]
+
+        # Set the default logger
+        @logger = @options.fetch(:logger, Rails.logger)
 
         # Make notification aware of database record and recipient during delivery
         @notification.record = args[:record]
@@ -75,8 +78,8 @@ module Noticed
         response = request.post(url, args)
 
         if options[:debug]
-          Rails.logger.debug("POST #{url}")
-          Rails.logger.debug("Response: #{response.code}: #{response}")
+          logger.debug("POST #{url}")
+          logger.debug("Response: #{response.code}: #{response}")
         end
 
         if !options[:ignore_failure] && !response.status.success?

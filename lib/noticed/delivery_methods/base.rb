@@ -65,7 +65,6 @@ module Noticed
       #   post("http://example.com", basic_auth: {user:, pass:}, headers: {}, json: {}, form: {})
       #
       def post(url, args = {})
-        options ||= {}
         basic_auth = args.delete(:basic_auth)
         headers = args.delete(:headers)
 

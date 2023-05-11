@@ -34,4 +34,22 @@ class SlackTest < ActiveSupport::TestCase
 
     assert_kind_of HTTP::Response, response
   end
+
+  test "logs verbosely in debug mode" do
+    class ActiveSupport::Logger
+      attr_reader :logging_log
+      def debug(msg)
+        @logging_log ||= []
+        @logging_log << msg
+      end
+    end
+    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
+
+    SlackExample.new.deliver(user)
+
+    assert_equal Rails.logger.logging_log[-2..], [
+      "POST https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
+      "Response: 200: ok\r\n",
+    ]
+  end
 end

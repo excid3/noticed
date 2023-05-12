@@ -113,7 +113,12 @@ module Noticed
 
         # If the queue is `nil`, ActiveJob will use a default queue name.
         queue = delivery_method.dig(:options, :queue)
-        queue = send(queue) if queue.is_a? Symbol
+
+        # if the queue is a proc or lambda, call it with the notification instance
+        if queue.respond_to?(:call)
+          # set the local queue variable and the option in args we are passing to the job
+          args[:options][:queue] = queue = queue.call(self)
+        end
 
         # Always perfrom later if a delay is present
         if (delay = delivery_method.dig(:options, :delay))

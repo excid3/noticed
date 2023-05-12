@@ -107,6 +107,20 @@ class WithCustomQueue < Noticed::Base
   deliver_by :test, queue: "custom"
 end
 
+class WithCustomQueueSymbol < Noticed::Base
+  delivery_by :test, queue: :custom
+end
+
+class WithCustomQueueDynamic < Noticed::Base
+  delivery_by :test, queue: ->(instance) { instance.dyanamic_queue_name }
+
+  private
+
+  def dynamic_queue_name
+    "dynamic"
+  end
+end
+
 class Noticed::Test < ActiveSupport::TestCase
   test "stores data in params" do
     notification = make_notification(foo: :bar, user: user)
@@ -226,6 +240,18 @@ class Noticed::Test < ActiveSupport::TestCase
   test "asserts delivery is queued with different queue" do
     assert_enqueued_with(queue: "custom") do
       WithCustomQueue.deliver_later(user)
+    end
+  end
+
+  test "asserts delivery is queued with different queue when queue is a symbol" do
+    assert_enqueued_with(queue: "custom") do
+      WithCustomQueueSymbol.deliver_later(user)
+    end
+  end
+
+  test "asserts delivery is queued with dynamic queue" do
+    assert_enqueued_with(queue: "dynamic") do
+      WithCustomQueuDynamic.deliver_later(user)
     end
   end
 

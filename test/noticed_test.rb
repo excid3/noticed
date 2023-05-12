@@ -251,7 +251,7 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test "asserts delivery is queued with dynamic queue" do
     assert_enqueued_with(queue: "dynamic") do
-      WithCustomQueuDynamic.deliver_later(user)
+      WithCustomQueueDynamic.deliver_later(user)
     end
   end
 

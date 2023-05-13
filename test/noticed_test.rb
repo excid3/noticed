@@ -108,11 +108,11 @@ class WithCustomQueue < Noticed::Base
 end
 
 class WithCustomQueueSymbol < Noticed::Base
-  delivery_by :test, queue: :custom
+  deliver_by :test, queue: :custom
 end
 
 class WithCustomQueueDynamic < Noticed::Base
-  delivery_by :test, queue: ->(instance) { instance.dyanamic_queue_name }
+  deliver_by :test, queue: ->(instance) { instance.dyanamic_queue_name }
 
   private
 

@@ -114,8 +114,6 @@ end
 class WithCustomQueueDynamic < Noticed::Base
   deliver_by :test, queue: ->(instance) { instance.dyanamic_queue_name }
 
-  private
-
   def dynamic_queue_name
     "dynamic"
   end

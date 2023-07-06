@@ -12,10 +12,10 @@ self.addEventListener('push', event => {
 
 self.addEventListener("notificationclick", event => {
     event.notification.close()
-    console.log(`opening event.notification.data.redirect`)
+    console.log(`opening event.notification.data.url`)
 
     event.waitUntil(
-        self.clients.openWindow(event.notification.data.redirect)
+        self.clients.openWindow(event.notification.data.url)
     )
 })
 

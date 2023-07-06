@@ -7,6 +7,9 @@ module Noticed
         rescue ::WebPush::ExpiredSubscription
           Rails.logger.info "Removing expired WebPush subscription"
           subscription.destroy
+        rescue ::WebPush::Unauthorized
+          Rails.logger.info "Removing unauthorized WebPush subscription"
+          subscription.destroy
         end
       end
     end

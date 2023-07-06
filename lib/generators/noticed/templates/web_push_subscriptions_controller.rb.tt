@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+class WebPushSubscriptionsController < ApplicationController
+    skip_before_action :verify_authenticity_token
+    before_action :require_login
+
+    def create
+        WebPushSubscription.find_or_create_by!(user: current_user, endpoint: params[:endpoint], auth_key: params[:keys][:auth], p256dh_key: params[:keys][:p256dh])
+
+        head :ok
+    end
+end

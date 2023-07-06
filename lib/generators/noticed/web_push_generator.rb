@@ -15,7 +15,8 @@ module Noticed
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
 
       def add_web_push
-        # gem "web-push", "~> 3.0"
+        gem "web-push", "~> 3.0"
+        run "bundle install" # needed in generate_vapid_keys
       end
 
       def generate_web_push_subscription_model

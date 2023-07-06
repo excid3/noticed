@@ -51,16 +51,6 @@ module Noticed
         route "resources :web_push_subscriptions, only: :create"
       end
 
-      def generate_vapid_keys
-        puts <<~KEYS
-        Add the following to your credentials (rails credentials:edit):"
-        
-        web_push:
-          public_key: "#{vapid_key.public_key}"
-          private_key: "#{vapid_key.private_key}"
-        KEYS
-      end
-
       def add_layout_header
         inject_into_file File.join("app", "views", "layouts", "application.html.erb"), before: "</head>" do
           "\n    <meta name=\"web_push_public\" content=\"<%= Base64.urlsafe_decode64(Rails.application.credentials.dig(:web_push, :public_key)).bytes %>\" />\n  "
@@ -78,6 +68,7 @@ module Noticed
 
       def done
         readme "WEB_PUSH_README" if behavior == :invoke
+        generate "noticed:web_push_vapid_keys" # shelling out so that it's loaded
       end
 
       private
@@ -85,11 +76,6 @@ module Noticed
       def model_path
         @model_path ||= File.join("app", "models", "#{file_path}.rb")
       end
-
-      def vapid_key
-        @vapid_key ||= WebPush.generate_key
-      end
-
     end
   end
 end

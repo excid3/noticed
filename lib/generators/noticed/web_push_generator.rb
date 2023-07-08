@@ -11,8 +11,9 @@ module Noticed
 
       desc "Generates a Notification model for storing notifications."
 
-      argument :name, type: :string, default: "WebPushSubscription", banner: "Asdfasd"
+      argument :name, type: :string, default: "WebPushSubscription"
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
+      class_option :'encrypt-keys', type: :boolean, default: true, description: "use Active Record Encryption on key fields"
 
       def add_web_push
         gem "web-push", "~> 3.0"
@@ -25,21 +26,30 @@ module Noticed
         inject_into_file File.join("app", "models", "web_push_subscription.rb"), after: "belongs_to :user" do
           <<~PUBLISH
 
-          
-              def publish(data)
-                WebPush.payload_send(
-                  message: data.to_json,
-                  endpoint: endpoint,
-                  p256dh: p256dh_key,
-                  auth: auth_key,
-                  vapid: {
-                    private_key: Rails.application.credentials.dig(:web_push, :private_key),
-                    public_key: Rails.application.credentials.dig(:web_push, :public_key)
-                  }
-                )
-              end
+
+            def publish(data)
+              WebPush.payload_send(
+                message: data.to_json,
+                endpoint: endpoint,
+                p256dh: p256dh_key,
+                auth: auth_key,
+                vapid: {
+                  private_key: Rails.application.credentials.dig(:web_push, :private_key),
+                  public_key: Rails.application.credentials.dig(:web_push, :public_key)
+                }
+              )
+            end
           PUBLISH
         end
+
+        inject_into_file File.join("app", "models", "web_push_subscription.rb"), after: "belongs_to :user" do
+          <<~ENCRYPT_KEYS
+
+            encrypts :endpoint, deterministic: true
+            encrypts :auth_key, deterministic: true
+            encrypts :p256dh_key, deterministic: true
+          ENCRYPT_KEYS
+        end if options[:'encrypt-keys']
       end
 
       def add_to_user

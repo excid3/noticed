@@ -1,5 +1,7 @@
 ### Unreleased
 
+* WebPush delivery method
+
 ### 1.6.3
 
 * Fix `debug` and `ignore_failure` options in `post` requests. #284 - @mike-burns

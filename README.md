@@ -17,6 +17,7 @@ Currently, we support these notification delivery methods out of the box:
 * Vonage / Nexmo (SMS)
 * iOS Apple Push Notifications
 * Firebase Cloud Messaging (Android and more)
+* WebPush
 
 And you can easily add new notification types for any other delivery methods.
 
@@ -252,6 +253,7 @@ For example, emails will require a subject, body, and email address while an SMS
 * [Twilio](docs/delivery_methods/twilio.md)
 * [Vonage](docs/delivery_methods/vonage.md)
 * [Firebase Cloud Messaging](docs/delivery_methods/fcm.md)
+* [WebPush](docs/delivery_methods/web_push.md)
 
 ### Fallback Notifications
 

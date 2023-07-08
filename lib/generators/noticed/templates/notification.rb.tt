@@ -9,12 +9,22 @@ class <%= class_name %> < Noticed::Base
   # deliver_by :database
   # deliver_by :email, mailer: "UserMailer"
   # deliver_by :slack
-  # deliver_by :web_push
+  # deliver_by :web_push, data_method: :web_push_data
   # deliver_by :custom, class: "MyDeliveryMethod"
 
   # Add required params
   #
   # param :post
+
+  # Add WebPush data
+  #
+  # def web_push_data
+  #   {
+  #     title: "<%= class_name.titleize %>",
+  #     body: "",
+  #     url: url,
+  #   }
+  # end
 
   # Define helper methods to make rendering easier.
   #

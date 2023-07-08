@@ -13,7 +13,7 @@ module Noticed
 
       argument :name, type: :string, default: "WebPushSubscription"
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
-      class_option :'encrypt-keys', type: :boolean, default: true, description: "use Active Record Encryption on key fields"
+      class_option :"encrypt-keys", type: :boolean, default: true, description: "use Active Record Encryption on key fields"
 
       def add_web_push
         gem "web-push", "~> 3.0"
@@ -42,14 +42,16 @@ module Noticed
           PUBLISH
         end
 
-        inject_into_file File.join("app", "models", "web_push_subscription.rb"), after: "belongs_to :user" do
-          <<~ENCRYPT_KEYS
+        if options[:"encrypt-keys"]
+          inject_into_file File.join("app", "models", "web_push_subscription.rb"), after: "belongs_to :user" do
+            <<~ENCRYPT_KEYS
 
-            encrypts :endpoint, deterministic: true
-            encrypts :auth_key, deterministic: true
-            encrypts :p256dh_key, deterministic: true
-          ENCRYPT_KEYS
-        end if options[:'encrypt-keys']
+              encrypts :endpoint, deterministic: true
+              encrypts :auth_key, deterministic: true
+              encrypts :p256dh_key, deterministic: true
+            ENCRYPT_KEYS
+          end
+        end
       end
 
       def add_to_user
@@ -89,4 +91,3 @@ module Noticed
     end
   end
 end
-

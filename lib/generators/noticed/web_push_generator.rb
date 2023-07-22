@@ -15,6 +15,16 @@ module Noticed
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
       class_option :"encrypt-keys", type: :boolean, default: true, description: "use Active Record Encryption on key fields"
 
+      def add_manifest
+        inject_into_file File.join("app", "assets", "config", "manifest.js"), "\n//= link_tree ../webmanifests\n"
+        inject_into_file File.join("app", "views", "layouts", "application.html.erb"), before: "</head>" do
+          <<~LINK.chomp
+          \t<%= tag.link rel: "manifest", href: asset_path("app.webmanifest"), "data-turbo-track": "reload" %>\n\t
+          LINK
+        end
+        template "app.webmanifest.tt", "app/assets/webmanifests/app.webmanifest"
+      end
+
       def add_web_push
         gem "web-push", "~> 3.0"
         run "bundle install" # needed in generate_vapid_keys

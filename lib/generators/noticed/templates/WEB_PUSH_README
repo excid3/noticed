@@ -1,3 +1,4 @@
-Add a trigger to prompt for push notifications:
+Next Steps:
 
-`<button id="enable_notifications" style="display: none">Enable Notifications</button>`
+1. Add a trigger to prompt for push notifications: `<button id="enable_notifications" style="display: none">Enable Notifications</button>`
+2. Customize `app/assets/webmanifests/app.webmanifest` for your your application

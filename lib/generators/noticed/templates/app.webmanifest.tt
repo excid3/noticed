@@ -1,0 +1,13 @@
+{
+  "name": "FULL NAME",
+  "short_name": "HOME SCREEN LABEL",
+  "start_url": "/sign_in",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "LOGO.PNG",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

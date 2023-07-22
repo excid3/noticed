@@ -2,3 +2,7 @@ Next Steps:
 
 1. Add a trigger to prompt for push notifications: `<button id="enable_notifications" style="display: none">Enable Notifications</button>`
 2. Customize `app/assets/webmanifests/app.webmanifest` for your your application
+3. Install certificate on mobile device
+  1. Download and add localhost.crt onto your mobile device
+  2. Install and trust [iOS](https://support.apple.com/en-us/HT204477) [Android](https://proxyman.io/posts/2020-09-29-Install-And-Trust-Self-Signed-Certificate-On-Android-11)
+  3. Skipping this will cause the notification prompt to always be denied

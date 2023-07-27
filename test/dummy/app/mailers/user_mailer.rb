@@ -3,7 +3,7 @@ class UserMailer < ApplicationMailer
     mail(body: "")
   end
 
-  def comment_notification_for(_user)
+  def comment_notification_for(user)
     mail(body: "")
   end
 end

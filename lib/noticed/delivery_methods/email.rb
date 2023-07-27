@@ -5,9 +5,9 @@ module Noticed
 
       def deliver
         if options[:enqueue]
-          mailer.with(format).send(mailer_method.to_sym).deliver_later
+          composed_mailer.deliver_later
         else
-          mailer.with(format).send(mailer_method.to_sym).deliver_now
+          composed_mailer.deliver_now
         end
       end
 
@@ -49,6 +49,20 @@ module Noticed
           notification.params
         end
         params.merge(recipient: recipient, record: record)
+      end
+
+      def args
+        return unless (option = options[:arguments])
+
+        notification.send(option)
+      end
+
+      def composed_mailer
+        if options[:arguments]
+          mailer.with(params).public_send(mailer_method.to_sym, args)
+        else
+          mailer.with(params).public_send(mailer_method.to_sym)
+        end
       end
     end
   end

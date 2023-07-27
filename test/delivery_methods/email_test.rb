@@ -8,6 +8,14 @@ class EmailDeliveryWithActiveJob < Noticed::Base
   deliver_by :email, mailer: "UserMailer", enqueue: true, method: "comment_notification"
 end
 
+class EmailDeliveryWithArguments < Noticed::Base
+  deliver_by :email, mailer: "UserMailer", method: :comment_notification_for, arguments: :email_arguments
+
+  def email_arguments
+    params[:recipient]
+  end
+end
+
 class EmailTest < ActiveSupport::TestCase
   setup do
     @user = users(:one)
@@ -42,5 +50,11 @@ class EmailTest < ActiveSupport::TestCase
   test "delivery spawns an ActiveJob for email" do
     EmailDeliveryWithActiveJob.new.deliver(user)
     assert_enqueued_emails 1
+  end
+
+  test "delivers an email when passing in arguments" do
+    assert_emails 1 do
+      EmailDeliveryWithArguments.new.deliver(user)
+    end
   end
 end

@@ -42,7 +42,7 @@ module Noticed
         end
       end
 
-      def format
+      def params
         params = if (method = options[:format])
           notification.send(method)
         else

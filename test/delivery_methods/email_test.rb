@@ -52,7 +52,7 @@ class EmailTest < ActiveSupport::TestCase
     assert_enqueued_emails 1
   end
 
-  test "delivers an email when passing in arguments" do
+  test "delivers an email when passing an argument" do
     assert_emails 1 do
       EmailDeliveryWithArguments.new.deliver(user)
     end

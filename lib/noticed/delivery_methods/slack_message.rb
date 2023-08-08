@@ -1,13 +1,13 @@
-require 'minitest/mock'
-require 'minitest/stub_any_instance'
-
 module Noticed
   module DeliveryMethods
     class SlackMessage < Base
       URL = "https://slack.com/api/chat.postMessage"
 
       def self.stub_success_response(&block)
-        response = MiniTest::Mock.new
+        require 'minitest/mock'
+        require 'minitest/stub_any_instance'
+
+        response = Minitest::Mock.new
         response.expect :body, '{"ok": true}'
 
         SlackMessage.stub_any_instance :post, response do

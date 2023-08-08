@@ -18,4 +18,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rails", ">= 5.2.0"
   spec.add_dependency "http", ">= 4.0.0"
+  spec.add_dependency "minitest-stub_any_instance"
 end

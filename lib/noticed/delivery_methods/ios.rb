@@ -4,6 +4,7 @@ module Noticed
   module DeliveryMethods
     class Ios < Base
       cattr_accessor :connection_pool
+      cattr_accessor :development_connection_pool
 
       def deliver
         raise ArgumentError, "bundle_identifier is missing" if bundle_identifier.blank?
@@ -13,6 +14,23 @@ module Noticed
 
         device_tokens.each do |device_token|
           connection_pool.with do |connection|
+            apn = Apnotic::Notification.new(device_token)
+            format_notification(apn)
+
+            response = connection.push(apn)
+            raise "Timeout sending iOS push notification" unless response
+
+            if bad_token?(response)
+              # Allow notification to cleanup invalid iOS device tokens
+              cleanup_invalid_token(device_token)
+            elsif !response.ok?
+              raise "Request failed #{response.body}"
+            end
+          end
+        end
+
+        development_device_tokens.each do |device_token|
+          development_connection_pool.with do |connection|
             apn = Apnotic::Notification.new(device_token)
             format_notification(apn)
 
@@ -58,6 +76,25 @@ module Noticed
         end
       end
 
+      def development_device_tokens
+        if notification.respond_to?(:ios_development_device_tokens)
+          Array.wrap(notification.ios_development_device_tokens(recipient))
+        elsif development?
+          raise NoMethodError, <<~MESSAGE
+            You must implement `ios_development_device_tokens` to send iOS notifications
+            to sandbox devices (XCode, Simulator, etc.). The current Rails enivronment
+            is unrelated to to the environment the push token was generated in.
+
+            # This must return an Array of iOS device tokens
+            def ios_development_device_tokens(recipient)
+              recipient.ios_device_tokens.pluck(:token)
+            end
+          MESSAGE
+        else
+          []
+        end
+      end
+
       def bad_token?(response)
         response.status == "410" || (response.status == "400" && response.body["reason"] == "BadDeviceToken")
       end
@@ -71,6 +108,10 @@ module Noticed
         self.class.connection_pool ||= new_connection_pool
       end
 
+      def development_connection_pool
+        self.class.development_connection_pool ||= new_development_connection_pool
+      end
+
       def new_connection_pool
         handler = proc do |connection|
           connection.on(:error) do |exception|
@@ -78,11 +119,17 @@ module Noticed
           end
         end
 
-        if development?
-          Apnotic::ConnectionPool.development(connection_pool_options, pool_options, &handler)
-        else
-          Apnotic::ConnectionPool.new(connection_pool_options, pool_options, &handler)
+        Apnotic::ConnectionPool.new(connection_pool_options, pool_options, &handler)
+      end
+
+      def new_development_connection_pool
+        handler = proc do |connection|
+          connection.on(:error) do |exception|
+            Rails.logger.info "Apnotic exception raised: #{exception}"
+          end
         end
+
+        Apnotic::ConnectionPool.development(connection_pool_options, pool_options, &handler)
       end
 
       def connection_pool_options
@@ -142,6 +189,11 @@ module Noticed
         end
       end
 
+      # Do you want to support sending APNs to sandbox devices
+      # (XCode, Simulator, etc.)?  For example, a staging rails environment,
+      # with a com.app.staging bundle identifier, would POST development device tokens
+      # from an XCode build, and production tokens from TestFlight. When receiving
+      # a token from the client, it's up to the client to indicate if it's a sandboxed token.
       def development?
         option = options[:development]
         case option

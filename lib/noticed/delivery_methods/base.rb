@@ -83,8 +83,8 @@ module Noticed
         end
 
         if !options[:ignore_failure] && !response.status.success?
-          puts response.status
-          puts response.body
+          logger.warn("failed POST status: #{response.status}")
+          logger.warn("failed POST response body: #{response.body}")
           raise ResponseUnsuccessful.new(response, args)
         end
 

@@ -33,9 +33,11 @@ module Noticed
 
   class ResponseUnsuccessful < StandardError
     attr_reader :response
+    attr_reader :args
 
-    def initialize(response)
+    def initialize(response, args = {})
       @response = response
+      @args = args
     end
   end
 end

@@ -85,7 +85,7 @@ module Noticed
         if !options[:ignore_failure] && !response.status.success?
           puts response.status
           puts response.body
-          raise ResponseUnsuccessful.new(response)
+          raise ResponseUnsuccessful.new(response, args)
         end
 
         response

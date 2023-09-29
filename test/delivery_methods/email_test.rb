@@ -9,10 +9,18 @@ class EmailDeliveryWithActiveJob < Noticed::Base
 end
 
 class EmailDeliveryWithArguments < Noticed::Base
-  deliver_by :email, mailer: "UserMailer", method: :comment_notification_for, arguments: :email_arguments
+  deliver_by :email, mailer: "UserMailer", method: :comment_notification_for, args: :email_args
 
-  def email_arguments
-    params[:recipient]
+  def email_args
+    recipient
+  end
+end
+
+class EmailDeliveryWithNamedArguments < Noticed::Base
+  deliver_by :email, mailer: "UserMailer", method: :comment_notification_with, named_args: :email_named_args
+
+  def email_named_args
+    {user: recipient}
   end
 end
 
@@ -55,6 +63,12 @@ class EmailTest < ActiveSupport::TestCase
   test "delivers an email when passing an argument" do
     assert_emails 1 do
       EmailDeliveryWithArguments.new.deliver(user)
+    end
+  end
+
+  test "delivers an email when passing a named argument" do
+    assert_emails 1 do
+      EmailDeliveryWithNamedArguments.new.deliver(user)
     end
   end
 end

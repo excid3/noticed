@@ -52,14 +52,22 @@ module Noticed
       end
 
       def args
-        return unless (option = options[:arguments])
+        return unless (option = options[:args])
+
+        notification.send(option)
+      end
+
+      def named_args
+        return unless (option = options[:named_args])
 
         notification.send(option)
       end
 
       def composed_mailer
-        if options[:arguments]
+        if options[:args]
           mailer.with(params).public_send(mailer_method.to_sym, args)
+        elsif options[:named_args]
+          mailer.with(params).public_send(mailer_method.to_sym, **named_args)
         else
           mailer.with(params).public_send(mailer_method.to_sym)
         end

@@ -6,4 +6,8 @@ class UserMailer < ApplicationMailer
   def comment_notification_for(user)
     mail(body: "")
   end
+
+  def comment_notification_with(user:)
+    mail(body: "")
+  end
 end

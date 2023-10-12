@@ -1,3 +1,5 @@
+require "active_support/html_safe_translation"
+
 module Noticed
   module Translation
     extend ActiveSupport::Concern

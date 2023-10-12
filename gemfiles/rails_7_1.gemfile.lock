@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    noticed (1.6.0)
+    noticed (1.6.3)
       http (>= 4.0.0)
       rails (>= 5.2.0)
 
@@ -286,11 +286,8 @@ GEM
     zeitwerk (2.6.12)
 
 PLATFORMS
-  arm64-darwin-21
   arm64-darwin-22
-  x86_64-darwin-19
-  x86_64-darwin-20
-  x86_64-darwin-21
+  x86_64-darwin-22
   x86_64-linux
 
 DEPENDENCIES
@@ -303,7 +300,7 @@ DEPENDENCIES
   noticed!
   pg
   rails (~> 7.1.0)
-  sqlite3
+  sqlite3 (~> 1.6.0.rc2)
   standard
   webmock
 

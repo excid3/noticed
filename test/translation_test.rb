@@ -5,6 +5,10 @@ class TranslationTest < ActiveSupport::TestCase
     def message
       t("hello")
     end
+
+    def html_message
+      t("message_html")
+    end
   end
 
   class Noticed::I18nExample < Noticed::Base
@@ -36,5 +40,11 @@ class TranslationTest < ActiveSupport::TestCase
   test "I18n supports custom scopes" do
     assert_equal "noticed.scoped_i18n_example.message", ScopedI18nExample.new.send(:scope_translation_key, ".message")
     assert_equal "This is a custom scoped translation", ScopedI18nExample.new.message
+  end
+
+  test "I18n supports html safe translations" do
+    message = I18nExample.new.html_message
+    assert_equal "<p>Hello world</p>", message
+    assert message.html_safe?
   end
 end

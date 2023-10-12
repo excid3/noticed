@@ -12,17 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.7', '3.0', '3.1']
+        ruby: ['2.7', '3.0', '3.1', '3.2']
         gemfile:
           - rails_5_2
           - rails_6
           - rails_6_1
           - rails_7
+          - rails_7_1
           - rails_master
         exclude:
           - ruby: '3.0'
             gemfile: 'rails_5_2'
           - ruby: '3.1'
+            gemfile: 'rails_5_2'
+          - ruby: '3.2'
             gemfile: 'rails_5_2'
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
@@ -53,17 +56,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.7', '3.0', '3.1']
+        ruby: ['2.7', '3.0', '3.1', '3.2']
         gemfile:
           - rails_5_2
           - rails_6
           - rails_6_1
           - rails_7
+          - rails_7_1
           - rails_master
         exclude:
           - ruby: '3.0'
             gemfile: 'rails_5_2'
           - ruby: '3.1'
+            gemfile: 'rails_5_2'
+          - ruby: '3.2'
             gemfile: 'rails_5_2'
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
@@ -103,17 +109,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.7', '3.0', '3.1']
+        ruby: ['2.7', '3.0', '3.1', '3.2']
         gemfile:
           - rails_5_2
           - rails_6
           - rails_6_1
           - rails_7
+          - rails_7_1
           - rails_master
         exclude:
           - ruby: '3.0'
             gemfile: 'rails_5_2'
           - ruby: '3.1'
+            gemfile: 'rails_5_2'
+          - ruby: '3.2'
             gemfile: 'rails_5_2'
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile

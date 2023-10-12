@@ -20,6 +20,7 @@ module Noticed
       end
 
       belongs_to :recipient, polymorphic: true
+      belongs_to :record, polymorphic: true
 
       scope :newest_first, -> { order(created_at: :desc) }
       scope :unread, -> { where(read_at: nil) }

@@ -2,6 +2,8 @@ module Noticed
   module Translation
     extend ActiveSupport::Concern
 
+    include ActiveSupport::HtmlSafeTranslation if defined?(ActiveSupport::HtmlSafeTranslation)
+
     # Returns the +i18n_scope+ for the class. Overwrite if you want custom lookup.
     def i18n_scope
       :notifications
@@ -12,7 +14,11 @@ module Noticed
     end
 
     def translate(key, **options)
-      I18n.translate(scope_translation_key(key), **options)
+      if defined?(super)
+        super scope_translation_key(key), **options
+      else
+        I18n.translate scope_translation_key(key), **options
+      end
     end
     alias_method :t, :translate
 

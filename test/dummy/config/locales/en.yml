@@ -31,6 +31,7 @@
 
 en:
   hello: "Hello world"
+  message_html: "<p>Hello world</p>"
   notifications:
     noticed:
       i18n_example:

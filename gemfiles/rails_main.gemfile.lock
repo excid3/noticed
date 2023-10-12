@@ -1,6 +1,10 @@
 GIT
   remote: https://github.com/rails/rails.git
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
   revision: 90a6f3663b937cf90a7f642a10dfb36f8710ce6d
+=======
+  revision: cc359c077fadc619dd4d098a3639b6eab22d6a06
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
   branch: main
   specs:
     actioncable (7.2.0.alpha)
@@ -28,10 +32,17 @@ GIT
       net-imap
       net-pop
       net-smtp
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
       rails-dom-testing (~> 2.2)
     actionpack (7.2.0.alpha)
       actionview (= 7.2.0.alpha)
       activesupport (= 7.2.0.alpha)
+=======
+      rails-dom-testing (~> 2.0)
+    actionpack (7.1.0.alpha)
+      actionview (= 7.1.0.alpha)
+      activesupport (= 7.1.0.alpha)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
       nokogiri (>= 1.8.5)
       rack (>= 2.2.4)
       rack-session (>= 1.0.1)
@@ -66,9 +77,13 @@ GIT
       activerecord (= 7.2.0.alpha)
       activesupport (= 7.2.0.alpha)
       marcel (~> 1.0)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     activesupport (7.2.0.alpha)
       base64
       bigdecimal
+=======
+    activesupport (7.1.0.alpha)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
       concurrent-ruby (~> 1.0, >= 1.0.2)
       connection_pool (>= 2.2.5)
       drb
@@ -89,10 +104,17 @@ GIT
       activestorage (= 7.2.0.alpha)
       activesupport (= 7.2.0.alpha)
       bundler (>= 1.15.0)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
       railties (= 7.2.0.alpha)
     railties (7.2.0.alpha)
       actionpack (= 7.2.0.alpha)
       activesupport (= 7.2.0.alpha)
+=======
+      railties (= 7.1.0.alpha)
+    railties (7.1.0.alpha)
+      actionpack (= 7.1.0.alpha)
+      activesupport (= 7.1.0.alpha)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
       irb
       rackup (>= 1.0.0)
       rake (>= 12.2)
@@ -102,14 +124,18 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (1.6.0)
+    noticed (1.6.3)
       http (>= 4.0.0)
       rails (>= 5.2.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     addressable (2.8.5)
+=======
+    addressable (2.8.4)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
       public_suffix (>= 2.0.2, < 6.0)
     apnotic (1.7.1)
       connection_pool (~> 2)
@@ -124,13 +150,18 @@ GEM
     builder (3.2.4)
     byebug (11.1.3)
     concurrent-ruby (1.2.2)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     connection_pool (2.4.1)
+=======
+    connection_pool (2.4.0)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
     crack (0.4.5)
       rexml
     crass (1.0.6)
     date (3.3.3)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     drb (2.1.1)
       ruby2_keywords
     erubi (1.12.0)
@@ -146,6 +177,20 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     googleauth (1.8.1)
+=======
+    erubi (1.12.0)
+    faraday (2.7.4)
+      faraday-net_http (>= 2.0, < 3.1)
+      ruby2_keywords (>= 0.0.4)
+    faraday-net_http (3.0.2)
+    ffi (1.15.5)
+    ffi-compiler (1.0.1)
+      ffi (>= 1.0.0)
+      rake
+    globalid (1.1.0)
+      activesupport (>= 5.0)
+    googleauth (1.5.2)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
       faraday (>= 0.17.3, < 3.a)
       jwt (>= 1.4, < 3.0)
       multi_json (~> 1.11)
@@ -161,6 +206,7 @@ GEM
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     io-console (0.6.0)
@@ -177,12 +223,30 @@ GEM
     loofah (2.21.4)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
+=======
+    i18n (1.13.0)
+      concurrent-ruby (~> 1.0)
+    io-console (0.6.0)
+    irb (1.6.4)
+      reline (>= 0.3.0)
+    json (2.6.3)
+    jwt (2.7.0)
+    language_server-protocol (3.17.0.3)
+    lint_roller (1.0.0)
+    llhttp-ffi (0.4.0)
+      ffi-compiler (~> 1.0)
+      rake (~> 13.0)
+    loofah (2.20.0)
+      crass (~> 1.0.2)
+      nokogiri (>= 1.5.9)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
       net-pop
       net-smtp
     marcel (1.0.2)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     mini_mime (1.1.5)
     minitest (5.20.0)
     multi_json (1.15.0)
@@ -191,12 +255,23 @@ GEM
     net-http2 (0.18.5)
       http-2 (~> 0.11)
     net-imap (0.4.1)
+=======
+    memoist (0.16.2)
+    mini_mime (1.1.2)
+    minitest (5.18.0)
+    multi_json (1.15.0)
+    mysql2 (0.5.5)
+    net-http2 (0.18.5)
+      http-2 (~> 0.11)
+    net-imap (0.3.4)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.1)
       timeout
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     net-smtp (0.4.0)
       net-protocol
     nio4r (2.5.9)
@@ -217,6 +292,23 @@ GEM
     public_suffix (5.0.3)
     racc (1.7.1)
     rack (3.0.8)
+=======
+    net-smtp (0.3.3)
+      net-protocol
+    nio4r (2.5.9)
+    nokogiri (1.14.3-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.14.3-x86_64-linux)
+      racc (~> 1.4)
+    os (1.1.4)
+    parallel (1.23.0)
+    parser (3.2.2.1)
+      ast (~> 2.4.1)
+    pg (1.5.3)
+    public_suffix (5.0.1)
+    racc (1.6.2)
+    rack (3.0.7)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -224,6 +316,7 @@ GEM
     rackup (2.1.0)
       rack (>= 3)
       webrick (~> 1.8)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     rails-dom-testing (2.2.0)
       activesupport (>= 5.0.0)
       minitest
@@ -241,9 +334,24 @@ GEM
     rexml (3.2.6)
     rubocop (1.56.4)
       base64 (~> 0.1.1)
+=======
+    rails-dom-testing (2.0.3)
+      activesupport (>= 4.2.0)
+      nokogiri (>= 1.6)
+    rails-html-sanitizer (1.5.0)
+      loofah (~> 2.19, >= 2.19.1)
+    rainbow (3.1.1)
+    rake (13.0.6)
+    regexp_parser (2.8.0)
+    reline (0.3.3)
+      io-console (~> 0.5)
+    rexml (3.2.5)
+    rubocop (1.50.2)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
       parser (>= 3.2.2.3)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
@@ -254,6 +362,18 @@ GEM
     rubocop-ast (1.29.0)
       parser (>= 3.2.1.0)
     rubocop-performance (1.19.1)
+=======
+      parser (>= 3.2.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.28.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.28.0)
+      parser (>= 3.2.1.0)
+    rubocop-performance (1.16.0)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     ruby-progressbar (1.13.0)
@@ -263,6 +383,7 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     sqlite3 (1.6.7-arm64-darwin)
     sqlite3 (1.6.7-x86_64-darwin)
     sqlite3 (1.6.7-x86_64-linux)
@@ -281,17 +402,40 @@ GEM
     stringio (3.0.8)
     thor (1.2.2)
     timeout (0.4.0)
+=======
+    sqlite3 (1.6.2-x86_64-darwin)
+    sqlite3 (1.6.2-x86_64-linux)
+    standard (1.28.0)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.0)
+      rubocop (~> 1.50.2)
+      standard-custom (~> 1.0.0)
+      standard-performance (~> 1.0.1)
+    standard-custom (1.0.0)
+      lint_roller (~> 1.0)
+    standard-performance (1.0.1)
+      lint_roller (~> 1.0)
+      rubocop-performance (~> 1.16.0)
+    thor (1.2.1)
+    timeout (0.3.2)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     unicode-display_width (2.5.0)
     webmock (3.19.1)
+=======
+    unicode-display_width (2.4.2)
+    webmock (3.18.1)
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.8.1)
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -303,6 +447,15 @@ PLATFORMS
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-darwin-21
+=======
+    websocket-driver (0.7.5)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.5)
+    zeitwerk (2.6.8)
+
+PLATFORMS
+  x86_64-darwin-22
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock
   x86_64-linux
 
 DEPENDENCIES
@@ -315,9 +468,13 @@ DEPENDENCIES
   noticed!
   pg
   rails!
-  sqlite3
+  sqlite3 (~> 1.6.0.rc2)
   standard
   webmock
 
 BUNDLED WITH
+<<<<<<< HEAD:gemfiles/rails_master.gemfile.lock
    2.4.20
+=======
+   2.4.12
+>>>>>>> c4b364ea0521aa26b1ff79bbd7bf139e915e8555:gemfiles/rails_main.gemfile.lock

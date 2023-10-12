@@ -5,9 +5,9 @@ module Noticed
 
       def deliver
         if options[:enqueue]
-          mailer.with(format).send(method.to_sym).deliver_later
+          mailer.with(format).send(mailer_method.to_sym).deliver_later
         else
-          mailer.with(format).send(method.to_sym).deliver_now
+          mailer.with(format).send(mailer_method.to_sym).deliver_now
         end
       end
 
@@ -33,7 +33,7 @@ module Noticed
       # If notification responds to symbol, call that method and use return value
       # If notification does not respond to symbol, use the symbol for the mailer method
       # Otherwise, use the underscored notification class name as the mailer method
-      def method
+      def mailer_method
         method_name = options[:method]&.to_sym
         if method_name.present?
           notification.respond_to?(method_name) ? notification.send(method_name) : method_name

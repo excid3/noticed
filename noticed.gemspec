@@ -18,10 +18,4 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rails", ">= 5.2.0"
   spec.add_dependency "http", ">= 4.0.0"
-
-  spec.add_development_dependency "pg"
-  spec.add_development_dependency "standard"
-  spec.add_development_dependency "webmock"
-  spec.add_development_dependency "mysql2"
-  spec.add_development_dependency "sqlite3"
 end

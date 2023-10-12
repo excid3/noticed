@@ -1,5 +1,19 @@
 ### Unreleased
 
+### 1.6.3
+
+* Fix `debug` and `ignore_failure` options in `post` requests. #284 - @mike-burns
+* Add `logger` option to delivery methods to allow overriding the logger (defaults to `Rails.logger`) - @excid3
+
+### 1.6.2
+
+* Improve deprecation fix to include Rails 7.1.0.alpha and higher
+
+### 1.6.1
+
+* Fix overridden `Object#method` in `Noticed::DeliveryMethods::Email` - @quadule
+* Fix Rails 7.1 deprecation warning #281 - @excid3
+
 ### 1.6.0
 
 * Catch deserialization errors. Instead of raising an ActiveRecord::RecordNotFound error, Noticed will replace params with information about the error.

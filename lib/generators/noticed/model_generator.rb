@@ -15,7 +15,7 @@ module Noticed
       argument :attributes, type: :array, default: [], banner: "field:type field:type"
 
       def generate_notification
-        generate :model, name, "recipient:references{polymorphic}", "type", params_column, "read_at:datetime:index", *attributes
+        generate :model, name, "recipient:references{polymorphic}", "type", "params:json", "read_at:datetime:index", *attributes
       end
 
       def add_noticed_model
@@ -39,24 +39,6 @@ module Noticed
 
       def model_path
         @model_path ||= File.join("app", "models", "#{file_path}.rb")
-      end
-
-      def params_column
-        case current_adapter
-        when "postgresql", "postgis"
-          "params:jsonb"
-        else
-          # MySQL and SQLite both support json
-          "params:json"
-        end
-      end
-
-      def current_adapter
-        if ActiveRecord::Base.respond_to?(:connection_db_config)
-          ActiveRecord::Base.connection_db_config.adapter
-        else
-          ActiveRecord::Base.connection_config[:adapter]
-        end
       end
     end
   end

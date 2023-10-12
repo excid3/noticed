@@ -1,13 +1,8 @@
-begin
-  require "active_support/html_safe_translation"
-rescue LoadError
-end
-
 module Noticed
   module Translation
     extend ActiveSupport::Concern
 
-    include ActiveSupport::HtmlSafeTranslation
+    include ActiveSupport::HtmlSafeTranslation if defined?(ActiveSupport::HtmlSafeTranslation)
 
     # Returns the +i18n_scope+ for the class. Overwrite if you want custom lookup.
     def i18n_scope

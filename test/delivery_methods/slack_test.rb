@@ -1,8 +1,17 @@
 require "test_helper"
 
 class SlackTest < ActiveSupport::TestCase
+  class TestLogger
+    attr_reader :logs
+
+    def debug(msg)
+      @logs ||= []
+      @logs << msg
+    end
+  end
+
   class SlackExample < Noticed::Base
-    deliver_by :slack, debug: true, url: :slack_url
+    deliver_by :slack, debug: true, url: :slack_url, logger: TestLogger.new
 
     def slack_url
       "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
@@ -33,5 +42,17 @@ class SlackTest < ActiveSupport::TestCase
     response = Noticed::DeliveryMethods::Slack.new.perform(args)
 
     assert_kind_of HTTP::Response, response
+  end
+
+  test "logs verbosely in debug mode" do
+    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
+
+    SlackExample.new.deliver(user)
+
+    logger = SlackExample.delivery_methods.find { |m| m[:name] == :slack }.dig(:options, :logger)
+    assert_equal logger.logs[-2..], [
+      "POST https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
+      "Response: 200: ok\r\n"
+    ]
   end
 end

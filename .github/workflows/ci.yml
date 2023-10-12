@@ -12,24 +12,29 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.7', '3.0', '3.1']
+        ruby: ['2.7', '3.0', '3.1', '3.2']
         gemfile:
           - rails_5_2
           - rails_6
           - rails_6_1
           - rails_7
-          - rails_master
+          - rails_7_1
+          - rails_main
         exclude:
           - ruby: '3.0'
             gemfile: 'rails_5_2'
           - ruby: '3.1'
             gemfile: 'rails_5_2'
+          - ruby: '3.2'
+            gemfile: 'rails_5_2'
+          - ruby: '3.2'
+            gemfile: 'rails_6'
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
       BUNDLE_PATH_RELATIVE_TO_CWD: true
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -37,6 +42,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler: default
           bundler-cache: true
+          rubygems: latest
 
       - name: StandardRb check
         run: bundle exec standardrb
@@ -53,18 +59,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.7', '3.0', '3.1']
+        ruby: ['2.7', '3.0', '3.1', '3.2']
         gemfile:
           - rails_5_2
           - rails_6
           - rails_6_1
           - rails_7
-          - rails_master
+          - rails_7_1
+          - rails_main
         exclude:
           - ruby: '3.0'
             gemfile: 'rails_5_2'
           - ruby: '3.1'
             gemfile: 'rails_5_2'
+          - ruby: '3.2'
+            gemfile: 'rails_5_2'
+          - ruby: '3.2'
+            gemfile: 'rails_6'
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
       BUNDLE_PATH_RELATIVE_TO_CWD: true
@@ -79,7 +90,7 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -87,6 +98,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler: default
           bundler-cache: true
+          rubygems: latest
 
       - name: StandardRb check
         run: bundle exec standardrb
@@ -103,18 +115,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['2.7', '3.0', '3.1']
+        ruby: ['2.7', '3.0', '3.1', '3.2']
         gemfile:
           - rails_5_2
           - rails_6
           - rails_6_1
           - rails_7
-          - rails_master
+          - rails_7_1
+          - rails_main
         exclude:
           - ruby: '3.0'
             gemfile: 'rails_5_2'
           - ruby: '3.1'
             gemfile: 'rails_5_2'
+          - ruby: '3.2'
+            gemfile: 'rails_5_2'
+          - ruby: '3.2'
+            gemfile: 'rails_6'
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
       BUNDLE_PATH_RELATIVE_TO_CWD: true
@@ -129,7 +146,7 @@ jobs:
         ports: ['5432:5432']
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -137,6 +154,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler: default
           bundler-cache: true
+          rubygems: latest
 
       - name: StandardRb check
         run: bundle exec standardrb

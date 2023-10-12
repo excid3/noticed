@@ -109,7 +109,7 @@ end
 * `if: :method_name`  - Calls `method_name` and cancels delivery method if `false` is returned
 * `unless: :method_name`  - Calls `method_name` and cancels delivery method if `true` is returned
 * `delay: ActiveSupport::Duration` - Delays the delivery for the given duration of time
-* `delay: :method_name` - Calls `method_name which should return an `ActiveSupport::Duration` and delays the delivery for the given duration of time
+* `delay: :method_name` - Calls `method_name` which should return an `ActiveSupport::Duration` and delays the delivery for the given duration of time
 
 ##### Helper Methods
 

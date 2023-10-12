@@ -42,9 +42,11 @@ class TranslationTest < ActiveSupport::TestCase
     assert_equal "This is a custom scoped translation", ScopedI18nExample.new.message
   end
 
-  test "I18n supports html safe translations" do
-    message = I18nExample.new.html_message
-    assert_equal "<p>Hello world</p>", message
-    assert message.html_safe?
+  if Rails.gem_version >= Gem::Version.new("7.0")
+    test "I18n supports html safe translations" do
+      message = I18nExample.new.html_message
+      assert_equal "<p>Hello world</p>", message
+      assert message.html_safe?
+    end
   end
 end

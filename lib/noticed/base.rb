@@ -16,7 +16,9 @@ module Noticed
 
     class << self
       def deliver_by(name, options = {})
-        delivery_methods.push(name: name, options: options)
+        config = ActiveSupport::OrderedOptions.new.merge(options)
+        yield config if block_given?
+        delivery_methods.push(name: name, options: config)
         define_model_callbacks(name)
       end
 
@@ -129,7 +131,7 @@ module Noticed
     end
 
     def delivery_method_for(name, options)
-      if options[:class]
+      if options.has_key? :class
         options[:class].constantize
       else
         "Noticed::DeliveryMethods::#{name.to_s.camelize}".constantize

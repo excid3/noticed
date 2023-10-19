@@ -1,16 +1,21 @@
 class CommentNotification < Noticed::Base
-  deliver_by :database, format: :attributes_for_database
-  deliver_by :action_cable
-  deliver_by :email, mailer: "UserMailer"
-  deliver_by :discord, class: "DiscordNotification"
-
-  def attributes_for_database
-    {
-      account_id: 1,
-      type: self.class.name,
-      params: params
-    }
+  deliver_by :database do |config|
+    config.format = proc do
+      {
+        account_id: 1,
+        type: self.class.name,
+        params: params
+      }
+    end
   end
+
+  deliver_by :action_cable
+
+  deliver_by :email do |config|
+    config.mailer = "UserMailer"
+  end
+
+  deliver_by :discord, class: "DiscordNotification"
 
   def url
     root_url

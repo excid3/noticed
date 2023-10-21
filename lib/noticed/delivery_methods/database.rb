@@ -21,7 +21,11 @@ module Noticed
 
       def attributes
         if (method = options[:format])
-          notification.send(method)
+          if method.respond_to? :call
+            notification.instance_eval(&method)
+          else
+            notification.send(method)
+          end
         else
           {
             type: notification.class.name,

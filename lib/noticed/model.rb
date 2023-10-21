@@ -54,7 +54,7 @@ module Noticed
 
     # Rehydrate the database notification into the Notification object for rendering
     def to_notifier
-      @_notifier||= begin
+      @_notifier ||= begin
         instance = type.constantize.with(params)
         instance.record = self
         instance.recipient = recipient

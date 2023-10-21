@@ -5,9 +5,5 @@ module Noticed
         include Noticed::HasNotifications
       end
     end
-
-    initializer "noticed.rails_5_2_support" do
-      require "rails_6_polyfills/base" if Rails::VERSION::MAJOR < 6
-    end
   end
 end

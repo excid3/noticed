@@ -148,7 +148,7 @@ class Noticed::Test < ActiveSupport::TestCase
 
   test "has access to recipient in notification instance" do
     RecipientExample.deliver(user)
-    assert_equal user.id, Notification.last.to_notification.message
+    assert_equal user.id, Notification.last.to_notifier.message
   end
 
   test "validates attributes for params" do

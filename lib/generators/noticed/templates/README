@@ -4,4 +4,5 @@
 Next steps:
 1. Run "rails db:migrate"
 2. Add "has_many :notifications, as: :recipient, dependent: :destroy" to your User model(s).
-3. Generate notifications with "rails g noticed:notification"
+2. Add "has_many :notifications, as: :record, dependent: :destroy" to your model(s) that notifications are about.
+3. Generate notifiers with "rails g noticed:notifier"

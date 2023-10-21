@@ -47,38 +47,38 @@ This will generate a Notification model and instructions for associating User mo
 
 To generate a notification object, simply run:
 
-`rails generate noticed:notification CommentNotification`
+`rails generate noticed:notifier CommentNotifier`
 
 #### Sending Notifications
 
 To send a notification to a user:
 
 ```ruby
-# Instantiate a new notification
-notification = CommentNotification.with(comment: @comment)
+# Instantiate a new notifier
+notifier = CommentNotifier.with(record: @comment)
 
 # Deliver notification in background job
-notification.deliver_later(@comment.post.author)
+notifier.deliver_later(@comment.post.author)
 
 # Deliver notification immediately
-notification.deliver(@comment.post.author)
+notifier.deliver(@comment.post.author)
 
 # Deliver notification to multiple recipients
-notification.deliver_later(User.all)
+notifier.deliver_later(User.all)
 ```
 
-This will instantiate a new notification with the `comment` stored in the notification's params.
+This will instantiate a new notifier with the `comment` stored in the notification's params.
 
 Each delivery method is able to transform this metadata that's best for the format. For example, the database may simply store the comment so it can be linked when rendering in the navbar. The websocket mechanism may transform this into a browser notification or insert it into the navbar.
 
-#### Notification Objects
+#### Notifier Objects
 
-Notifications inherit from `Noticed::Base`. This provides all their functionality and allows them to be delivered.
+Notifiers inherit from `Noticed::Base`. This provides all their functionality and allows them to be delivered.
 
 To add delivery methods, simply `include` the module for the delivery methods you would like to use.
 
 ```ruby
-class CommentNotification < Noticed::Base
+class CommentNotifier < Noticed::Base
   deliver_by :database
   deliver_by :action_cable
   deliver_by :email, mailer: 'CommentMailer', if: :email_notifications?
@@ -113,7 +113,7 @@ end
 
 ##### Helper Methods
 
-You can define helper methods inside your Notification object to make it easier to render.
+You can define helper methods inside your Notifier object to make it easier to render.
 
 ##### URL Helpers
 
@@ -130,7 +130,7 @@ Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 Like ActiveRecord, notifications have several different types of callbacks.
 
 ```ruby
-class CommentNotification < Noticed::Base
+class CommentNotifier < Noticed::Base
   deliver_by :database
   deliver_by :email, mailer: 'CommentMailer'
 
@@ -173,7 +173,7 @@ You can use the `if:` and `unless: ` options on your delivery methods to check t
 For example:
 
 ```ruby
-class CommentNotification < Noticed::Base
+class CommentNotifier < Noticed::Base
   deliver_by :email, mailer: 'CommentMailer', if: :email_notifications?
 
   def email_notifications?
@@ -207,7 +207,7 @@ class Message < ApplicationRecord
   private
 
   def notify_recipient
-    NewMessageNotification.with(message: self).deliver_later(recipient)
+    NewMessageNotifier.with(message: self).deliver_later(recipient)
   end
 ```
 
@@ -223,24 +223,24 @@ A common symptom of this problem is undelivered notifications and the following 
 
 If you rename the class of a notification object your existing queries can break. This is because Noticed serializes the class name and sets it to the `type` column on the `Notification` record.
 
-You can catch these errors at runtime by using `YourNotificationClassName.name` instead of hardcoding the string when performing a query.
+You can catch these errors at runtime by using `YourNotifierClassName.name` instead of hardcoding the string when performing a query.
 
 ```ruby
-Notification.where(type: YourNotificationClassName.name) # good
-Notification.where(type: "YourNotificationClassName") # bad
+Notification.where(type: YourNotifierClassName.name) # good
+Notification.where(type: "YourNotifierClassName") # bad
 ```
 
 When renaming a notification class you will need to backfill existing notifications to reference the new name.
 
 ```ruby
-Notification.where(type: "OldNotificationClassName").update_all(type: NewNotificationClassName.name)
+Notification.where(type: "OldNotifierClassName").update_all(type: NewNotifierClassName.name)
 ```
 
 ## 🚛 Delivery Methods
 
 The delivery methods are designed to be modular so you can customize the way each type gets delivered.
 
-For example, emails will require a subject, body, and email address while an SMS requires a phone number and simple message. You can define the formats for each of these in your Notification and the delivery method will handle the processing of it.
+For example, emails will require a subject, body, and email address while an SMS requires a phone number and simple message. You can define the formats for each of these in your Notifier and the delivery method will handle the processing of it.
 
 * [Database](docs/delivery_methods/database.md)
 * [Email](docs/delivery_methods/email.md)
@@ -258,7 +258,7 @@ For example, emails will require a subject, body, and email address while an SMS
 A common pattern is to deliver a notification via the database and then, after some time has passed, email the user if they have not yet read the notification. You can implement this functionality by combining multiple delivery methods, the `delay` option, and the conditional `if` / `unless` option.
 
 ```ruby
-class CommentNotification < Noticed::Base
+class CommentNotifier< Noticed::Base
   deliver_by :database
   deliver_by :email, mailer: 'CommentMailer', delay: 15.minutes, unless: :read?
 end
@@ -269,7 +269,7 @@ Here a notification will be created immediately in the database (for display dir
 You can also configure multiple fallback options:
 
 ```ruby
-class CriticalSystemNotification < Noticed::Base
+class CriticalSystemNotifier < Noticed::Base
   deliver_by :database
   deliver_by :slack
   deliver_by :email, mailer: 'CriticalSystemMailer', delay: 10.minutes, if: :unread?
@@ -307,7 +307,7 @@ end
 You can use the custom delivery method thus created by adding a `deliver_by` line with a unique name and `class` option in your notification class.
 
 ```ruby
-class MyNotification < Noticed::Base
+class MyNotifier < Noticed::Base
   deliver_by :discord, class: "DeliveryMethods::Discord"
 end
 ```
@@ -343,7 +343,7 @@ class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
   end
 end
 
-class CommentNotification < Noticed::Base
+class CommentNotifier < Noticed::Base
   deliver_by :discord, class: 'DeliveryMethods::Discord'
 end
 ```
@@ -353,7 +353,7 @@ Now it will raise an error because a required argument is missing.
 To fix the error, the argument has to be passed correctly. For example:
 
 ```ruby
-class CommentNotification < Noticed::Base
+class CommentNotifier < Noticed::Base
   deliver_by :discord, class: 'DeliveryMethods::Discord', username: User.admin.username
 end
 ```
@@ -399,10 +399,10 @@ user.notifications.mark_as_unread!
 
 #### Instance methods
 
-Convert back into a Noticed notification object:
+Convert back into a Noticed notifier object:
 
 ```ruby
-@notification.to_notification
+@notification.to_notifier
 ```
 
 Mark notification as read / unread:
@@ -445,11 +445,11 @@ class Post < ApplicationRecord
 end
 
 # Create a CommentNotification with a post param
-CommentNotification.with(post: @post).deliver(user)
+CommentNotifier.with(post: @post).deliver(user)
 # Lookup Notifications where params: {post: @post}
 @post.notifications_as_post
 
-CommentNotification.with(parent: @post).deliver(user)
+CommentNotifier.with(parent: @post).deliver(user)
 @post.notifications_as_parent
 ```
 

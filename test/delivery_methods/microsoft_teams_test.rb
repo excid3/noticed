@@ -42,7 +42,7 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
       MicrosoftTeamsExample.new.deliver(user)
     }
 
-    assert_equal HTTP::Response, e.response.class
+    assert_equal Net::HTTPForbidden, e.response.class
   end
 
   test "deliver returns an http response" do
@@ -55,6 +55,6 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
     }
     response = Noticed::DeliveryMethods::MicrosoftTeams.new.perform(args)
 
-    assert_kind_of HTTP::Response, response
+    assert_kind_of Net::HTTPResponse, response
   end
 end

@@ -26,7 +26,7 @@ class VonageTest < ActiveSupport::TestCase
     e = assert_raises(::Noticed::ResponseUnsuccessful) {
       VonageExample.new.deliver(user)
     }
-    assert_equal HTTP::Response, e.response.class
+    assert_equal Net::HTTPForbidden, e.response.class
   end
 
   test "deliver returns an http response" do
@@ -39,6 +39,6 @@ class VonageTest < ActiveSupport::TestCase
     }
     response = Noticed::DeliveryMethods::Vonage.new.perform(args)
 
-    assert_kind_of HTTP::Response, response
+    assert_kind_of Net::HTTPResponse, response
   end
 end

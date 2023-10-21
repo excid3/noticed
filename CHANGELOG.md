@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Support html safe translations for Rails 7+
+
 ### 1.6.3
 
 * Fix `debug` and `ignore_failure` options in `post` requests. #284 - @mike-burns

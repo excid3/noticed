@@ -1,5 +1,5 @@
 PATH
-  remote: .
+  remote: ..
   specs:
     noticed (1.6.3)
       rails (>= 6.1.0)
@@ -284,6 +284,7 @@ DEPENDENCIES
   net-smtp
   noticed!
   pg
+  rails (~> 7.1.0)
   sqlite3 (~> 1.6.0.rc2)
   standard
   webmock

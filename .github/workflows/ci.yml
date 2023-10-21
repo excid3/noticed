@@ -17,6 +17,7 @@ jobs:
         gemfile:
           - rails_6_1
           - rails_7
+          - rails_7_1
           - rails_main
 
     env:
@@ -53,6 +54,7 @@ jobs:
         gemfile:
           - rails_6_1
           - rails_7
+          - rails_7_1
           - rails_main
 
     env:
@@ -98,6 +100,7 @@ jobs:
         gemfile:
           - rails_6_1
           - rails_7
+          - rails_7_1
           - rails_main
 
     env:

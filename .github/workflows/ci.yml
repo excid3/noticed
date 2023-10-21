@@ -6,7 +6,8 @@ on:
       - '*'
   push:
     branches:
-      - master
+      - main
+
 jobs:
   sqlite:
     runs-on: ubuntu-latest

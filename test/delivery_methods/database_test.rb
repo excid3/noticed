@@ -9,6 +9,14 @@ class DatabaseTest < ActiveSupport::TestCase
     deliver_by :database, delay: 5.minutes
   end
 
+  class WithCustomDatabaseAttributes < Noticed::Base
+    deliver_by :database do |config|
+      config.attributes = ->(notification) {
+        {created_at: 1.year.from_now}
+      }
+    end
+  end
+
   test "writes to database" do
     notification = CommentNotification.with(foo: :bar)
 
@@ -62,5 +70,19 @@ class DatabaseTest < ActiveSupport::TestCase
     assert_raises ArgumentError do
       WithDelayedDatabaseDelivery.new.deliver(user)
     end
+  end
+
+  test "with custom database attributes" do
+    freeze_time
+    WithCustomDatabaseAttributes.deliver(user)
+    assert_equal 1.year.from_now, user.notifications.last.created_at
+  end
+
+  test "record param is saved to the record polymorphic association and removed from params" do
+    account = accounts(:primary)
+    CommentNotification.with(record: account).deliver(user)
+    notification = Notification.last
+    assert_equal account, notification.record
+    assert_not_includes notification.params.keys, :record
   end
 end

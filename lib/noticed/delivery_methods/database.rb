@@ -3,6 +3,7 @@ module Noticed
     class Database < Base
       # Must return the database record
       def deliver
+        association_name = options.fetch(:association, :notifications)
         recipient.send(association_name).create!(attributes)
       end
 
@@ -15,23 +16,20 @@ module Noticed
 
       private
 
-      def association_name
-        options[:association] || :notifications
+      def attributes
+        record = notification.params.delete(:record)
+        {
+          params: notification.params,
+          record: record,
+          type: notification.class.name
+        }.merge(custom_attributes)
       end
 
-      def attributes
-        if (method = options[:format])
-          if method.respond_to? :call
-            notification.instance_eval(&method)
-          else
-            notification.send(method)
-          end
-        else
-          {
-            type: notification.class.name,
-            params: notification.params
-          }
-        end
+      def custom_attributes
+        method = (options[:attributes] || options[:format])
+        return {} unless method.present?
+
+        method.respond_to?(:call) ? notification.instance_eval(&method) : notification.send(method)
       end
     end
   end

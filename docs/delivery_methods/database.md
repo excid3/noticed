@@ -12,8 +12,24 @@ Writes notification to the database.
 
   The name of the database association to use. Defaults to `:notifications`
 
-* `format: :format_for_database` - *Optional*
+* `attributes:` - *Optional*
 
-  Use a custom method to define the attributes saved to the database
+  Pass a symbol or callable object to define custom attributes to save to the database record.
 
+##### Examples
 
+```ruby
+class CommentNotification
+  deliver_by :database do |config|
+    config.association = :notifications
+
+    config.attributes = ->{
+      { column: value }
+    }
+  end
+end
+```
+
+```ruby
+CommentNotification.with(record: @post).deliver(user)
+```

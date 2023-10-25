@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 2020_08_03_191250) do
     t.integer "account_id"
     t.string "recipient_type", null: false
     t.bigint "recipient_id", null: false
+    t.string "record_type"
+    t.bigint "record_id"
     t.string "type"
     if t.respond_to? :jsonb
       t.jsonb "params"

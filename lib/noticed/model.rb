@@ -51,6 +51,12 @@ module Noticed
       end
     end
 
+    delegate_missing_to :instance
+
+    def instance
+      to_notification
+    end
+
     # Rehydrate the database notification into the Notification object for rendering
     def to_notification
       @_notification ||= begin

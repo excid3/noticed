@@ -151,6 +151,11 @@ class Noticed::Test < ActiveSupport::TestCase
     assert_equal user.id, Notification.last.to_notification.message
   end
 
+  test "has access to recipient via delegation" do
+    RecipientExample.deliver(user)
+    assert_equal user.id, Notification.last.message
+  end
+
   test "validates attributes for params" do
     assert_raises Noticed::ValidationError do
       AttributeExample.deliver(users(:one))

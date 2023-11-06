@@ -48,7 +48,7 @@ class IosTest < ActiveSupport::TestCase
     assert_equal "team_id is missing", exception.message
   end
 
-  test "raises error when cert missing" do
+  test "raises error when apns_key is missing" do
     exception = assert_raises ArgumentError do
       Noticed::DeliveryMethods::Ios.new.perform(
         notification_class: "IosExample",
@@ -60,7 +60,7 @@ class IosTest < ActiveSupport::TestCase
       )
     end
 
-    assert_match "Could not find APN cert at", exception.message
+    assert_match "apns_key is missing", exception.message
   end
 
   test "raises error when ios_device_tokens method is missing" do

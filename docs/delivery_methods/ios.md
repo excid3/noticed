@@ -6,9 +6,9 @@ Send Apple Push Notifications with HTTP2 using the `apnotic` gem. The benefit of
 bundle add "apnotic"
 ```
 
-## Apple Push Notification Service (APNS) Authentication
+## Apple Push Notification Service (APNs) Authentication
 
-Token-based authentication is used for APNS.
+Token-based authentication is used for APNs.
 * A single key can be used for every app in your developer account.
 * Token authentication never expires, unlike certificate authentication which must be renewed annually.
 
@@ -28,7 +28,7 @@ With custom configuration:
 
 ```ruby
 class CommentNotification
-  deliver_by :ios, format: :ios_format, cert_path: :ios_cert_path, key_id: :ios_key_id, team_id: :ios_team_id, pool_size: 5
+  deliver_by :ios, format: :ios_format, development: :development?, pool_size: 5
 
   # Customize notification
   # See https://github.com/ostinelli/apnotic#apnoticnotification
@@ -37,16 +37,8 @@ class CommentNotification
     apn.custom_payload = { url: root_url }
   end
 
-  def ios_cert_path
-    Rails.root.join("config/certs/ios/apns.p8")
-  end
-
-  def ios_key_id
-    Rails.application.credentials.dig(:ios, :key_id)
-  end
-
-  def ios_team_id
-    Rails.application.credentials.dig(:ios, :team_id)
+  def development?
+    Rails.env.local?
   end
 end
 ```
@@ -63,15 +55,23 @@ end
 
   The APN bundle identifier
 
-* `cert_path: Rails.root.join("config/certs/ios/apns.p8")` - *Optional*
+* `apns_key: Rails.application.credentials.dig(:ios, :apns_key)` - *Optional*
 
-  The location of your APNs p8 certificate.
-  This can also accept a StringIO object `StringIO.new("p8 file content as string")`.
-  As well as a File object `File.open("path/to/p8.file")`.
+  Your APNs p8 certificate
+
+  Copy paste the contents of your private key (.p8 file) in your credentials, like so.
+
+  ```text
+  ios:
+    apns_key: |-
+      -----BEGIN PRIVATE KEY-----
+      YOUR_PRIVATE_KEY_CONTENTS_GO_HERE
+      -----END PRIVATE KEY-----
+  ```
 
 * `key_id: Rails.application.credentials.dig(:ios, :key_id)` - *Optional*
 
-  Your APN Key ID
+  Your APNs Key ID
 
   If nothing passed, we'll default to `Rails.application.credentials.dig(:ios, :key_id)`
   If a String is passed, we'll use that as the key ID.
@@ -79,7 +79,7 @@ end
 
 * `team_id: Rails.application.credentials.dig(:ios, :team_id)` - *Optional*
 
-  Your APN Team ID
+  Your APNs Team ID
 
   If nothing passed, we'll default to `Rails.application.credentials.dig(:ios, :team_id)`
   If a String is passed, we'll use that as the team ID.
@@ -91,7 +91,7 @@ end
 
 * `development: false` - *Optional*
 
-  Set this to true to use the APNS sandbox environment for sending notifications. This is required when running the app to your device via Xcode. Running the app via TestFlight or the App Store should not use development.
+  Set this to true to use the APNs sandbox environment for sending notifications. This is required when running the app to your device via Xcode. Running the app via TestFlight or the App Store should not use development.
 
 ## Gathering Notification Tokens
 

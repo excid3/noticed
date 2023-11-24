@@ -7,6 +7,14 @@ class FcmExample < Noticed::Base
     {project_id: "api-12345"}
   end
 
+  def fcm_credentials_as_pathname
+    Rails.root.join("config/credentials/fcm.json")
+  end
+
+  def fcm_credentials_as_string
+    "config/credentials/fcm.json"
+  end
+
   def format_notification(device_token)
     {
       token: device_token,
@@ -44,9 +52,19 @@ class FcmTest < ActiveSupport::TestCase
     assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: "config/credentials/fcm.json"}).credentials
   end
 
-  test "when credentials option is a symbol, it returns the return value of the method" do
+  test "when credentials option is a symbol and return value of a method is a hash, it returns the hash" do
     credentials_hash = {project_id: "api-12345"}
     assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: :fcm_credentials}).credentials
+  end
+
+  test "when credentials option is a symbol and return value of a method is a Pathname object, it returns the file contents" do
+    credentials_hash = {project_id: "api-12345"}
+    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: :fcm_credentials_as_pathname}).credentials
+  end
+
+  test "when credentials option is a symbol and return value of a method is a string, it returns the file contents" do
+    credentials_hash = {project_id: "api-12345"}
+    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: :fcm_credentials_as_string}).credentials
   end
 
   test "project_id returns the project id value from the credentials" do

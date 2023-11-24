@@ -36,15 +36,14 @@ module Noticed
       def credentials
         @credentials ||= begin
           option = options[:credentials]
-          credentials_hash = case option
+          credentials_to_parse = option.is_a?(Symbol) ? notification.send(option) : option
+          credentials_hash = case credentials_to_parse
           when Hash
-            option
+            credentials_to_parse
           when Pathname
-            load_json(option)
+            load_json(credentials_to_parse)
           when String
-            load_json(Rails.root.join(option))
-          when Symbol
-            notification.send(option)
+            load_json(Rails.root.join(credentials_to_parse))
           else
             Rails.application.credentials.fcm
           end

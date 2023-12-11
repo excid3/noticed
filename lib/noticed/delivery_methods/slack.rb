@@ -2,7 +2,7 @@ module Noticed
   module DeliveryMethods
     class Slack < Base
       def deliver
-        post(url, json: format)
+        post(url, json: format, headers: headers)
       end
 
       private
@@ -12,6 +12,12 @@ module Noticed
           notification.send(method)
         else
           notification.params
+        end
+      end
+
+      def headers
+        if (method = options[:headers])
+          notification.send(method)
         end
       end
 

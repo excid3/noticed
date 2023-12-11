@@ -52,7 +52,11 @@ class ActiveSupport::TestCase
     ExampleNotification.with(params)
   end
 
-  def stub_delivery_method_request(delivery_method:, matcher:, method: :post, type: :success)
-    stub_request(method, matcher).to_return(File.new(file_fixture("#{delivery_method}/#{type}.txt")))
+  def stub_delivery_method_request(delivery_method:, matcher:, method: :post, type: :success, headers: nil)
+    stubbed_request = stub_request(method, matcher).to_return(File.new(file_fixture("#{delivery_method}/#{type}.txt")))
+
+    return stubbed_request unless headers
+
+    stubbed_request.with(headers: headers)
   end
 end

@@ -18,9 +18,26 @@ class SlackTest < ActiveSupport::TestCase
     end
   end
 
+  class SlackApiExample < Noticed::Base
+    deliver_by :slack, url: :slack_url, headers: :slack_headers
+
+    def slack_headers
+      {"Authorization" => "Bearer xoxb-xxxxxxxxx-xxxxxxxxxx"}
+    end
+
+    def slack_url
+      "https://slack.com/api/chat.postMessage"
+    end
+  end
+
   test "sends a POST to Slack" do
     stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
     SlackExample.new.deliver(user)
+  end
+
+  test "sends post to Slack API" do
+    stub_delivery_method_request(delivery_method: :slack, matcher: /slack.com/, headers: SlackApiExample.new.slack_headers)
+    SlackApiExample.new.deliver(user)
   end
 
   test "raises an error when http request fails" do

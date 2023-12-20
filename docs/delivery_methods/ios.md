@@ -28,7 +28,7 @@ With custom configuration:
 
 ```ruby
 class CommentNotification
-  deliver_by :ios, format: :ios_format, development: :development?, pool_size: 5
+  deliver_by :ios, format: :ios_format, development: Rails.env.local?, pool_size: 5
 
   # Customize notification
   # See https://github.com/ostinelli/apnotic#apnoticnotification

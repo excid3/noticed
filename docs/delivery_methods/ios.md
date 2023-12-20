@@ -36,10 +36,6 @@ class CommentNotification
     apn.alert = "Hello world"
     apn.custom_payload = { url: root_url }
   end
-
-  def development?
-    Rails.env.local?
-  end
 end
 ```
 

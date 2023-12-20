@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Support html safe translations for Rails 7+
+* iOS notifications now default to retrieving the APNS .p8 key from Rails credentials.
 
 ### 1.6.3
 

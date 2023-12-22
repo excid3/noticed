@@ -16,7 +16,7 @@ module Noticed
 
       def validate!
         constant.required_option_names.each do |option|
-          raise ValidationError, "option `#{option}` must be set for `deliver_by :#{name}`" unless config.has_key?(option)
+          raise ValidationError, "option `#{option}` must be set for `deliver_by :#{name}`" unless config[option].present?
         end
       end
 
@@ -108,7 +108,7 @@ module Noticed
 
     def validate_params!
       required_param_names.each do |param_name|
-        raise ValidationError, "Param `#{param_name}` is required for #{self.class.name}." unless params.has_key?(param_name.to_s)
+        raise ValidationError, "Param `#{param_name}` is required for #{self.class.name}." unless params[param_name.to_s].present?
       end
     end
 

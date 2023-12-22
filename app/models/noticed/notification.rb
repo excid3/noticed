@@ -1,7 +1,8 @@
 module Noticed
   class Notification < ApplicationRecord
-    include Translation
     include Rails.application.routes.url_helpers
+    include Readable
+    include Translation
 
     belongs_to :event
     belongs_to :recipient, polymorphic: true

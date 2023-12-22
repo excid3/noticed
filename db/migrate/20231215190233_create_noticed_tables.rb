@@ -1,4 +1,4 @@
-class CreateNoticedTables < ActiveRecord::Migration[7.1]
+class CreateNoticedTables < ActiveRecord::Migration[6.1]
   def change
     create_table :noticed_events do |t|
       t.string :type

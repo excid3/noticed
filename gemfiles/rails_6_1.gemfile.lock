@@ -138,6 +138,8 @@ GEM
     nio4r (2.7.0)
     nokogiri (1.15.5-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.15.5-x86_64-darwin)
+      racc (~> 1.4)
     os (1.1.4)
     parallel (1.24.0)
     parser (3.2.2.4)
@@ -212,6 +214,7 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     sqlite3 (1.6.9-arm64-darwin)
+    sqlite3 (1.6.9-x86_64-darwin)
     standard (1.32.1)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -241,7 +244,6 @@ GEM
 PLATFORMS
   arm64-darwin-22
   x86_64-darwin-22
-  x86_64-linux
 
 DEPENDENCIES
   apnotic (~> 1.7)

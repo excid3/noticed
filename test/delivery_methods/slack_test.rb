@@ -1,58 +1,26 @@
 require "test_helper"
 
 class SlackTest < ActiveSupport::TestCase
-  class TestLogger
-    attr_reader :logs
+  setup do
+    @delivery_method = Noticed::DeliveryMethods::Slack.new
+    set_config(json: {foo: :bar})
+  end
 
-    def debug(msg)
-      @logs ||= []
-      @logs << msg
+  test "sends a slack message" do
+    stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}")
+    @delivery_method.deliver
+  end
+
+  test "raises error on failure" do
+    stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).to_return(status: 422)
+    assert_raises Noticed::ResponseUnsuccessful do
+      @delivery_method.deliver
     end
   end
 
-  class SlackExample < Noticed::Base
-    deliver_by :slack, debug: true, url: :slack_url, logger: TestLogger.new
+  private
 
-    def slack_url
-      "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX"
-    end
-  end
-
-  test "sends a POST to Slack" do
-    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
-    SlackExample.new.deliver(user)
-  end
-
-  test "raises an error when http request fails" do
-    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/, type: :failure)
-    e = assert_raises(::Noticed::ResponseUnsuccessful) {
-      SlackExample.new.deliver(user)
-    }
-    assert_equal Net::HTTPForbidden, e.response.class
-  end
-
-  test "deliver returns an http response" do
-    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
-
-    args = {
-      notification_class: "::SlackTest::SlackExample",
-      recipient: user,
-      options: {url: :slack_url}
-    }
-    response = Noticed::DeliveryMethods::Slack.new.perform(args)
-
-    assert_kind_of Net::HTTPResponse, response
-  end
-
-  test "logs verbosely in debug mode" do
-    stub_delivery_method_request(delivery_method: :slack, matcher: /hooks.slack.com/)
-
-    SlackExample.new.deliver(user)
-
-    logger = SlackExample.delivery_methods.find { |m| m[:name] == :slack }.dig(:options, :logger)
-    assert_equal logger.logs[-2..], [
-      "POST https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
-      "Response: 200: ok\r\n"
-    ]
+  def set_config(config)
+    @delivery_method.instance_variable_set :@config, ActiveSupport::HashWithIndifferentAccess.new(config)
   end
 end

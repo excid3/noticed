@@ -1,80 +1,83 @@
 require "test_helper"
 
-class IosExample < Noticed::Base
-  deliver_by :ios
-
-  def ios_device_tokens(recipient)
-    []
-  end
-end
-
-class IosExampleWithoutDeviceTokens < Noticed::Base
-  deliver_by :ios
-end
-
 class IosTest < ActiveSupport::TestCase
-  test "raises error when bundle_identifier missing" do
-    exception = assert_raises ArgumentError do
-      Noticed::DeliveryMethods::Ios.new.perform(notification_class: "IosExample")
+  class FakeConnectionPool
+    class_attribute :invalid_tokens, default: []
+    attr_reader :deliveries
+
+    def initialize(response)
+      @response = response
+      @deliveries = []
     end
 
-    assert_equal "bundle_identifier is missing", exception.message
+    def with
+      yield self
+    end
+
+    def push(apn)
+      @deliveries.push(apn)
+      @response
+    end
   end
 
-  test "raises error when key_id missing" do
-    exception = assert_raises ArgumentError do
-      Noticed::DeliveryMethods::Ios.new.perform(
-        notification_class: "IosExample",
-        options: {
-          bundle_identifier: "test"
-        }
-      )
+  class FakeResponse
+    attr_reader :status
+
+    def initialize(status, body = {})
+      @status = status
     end
 
-    assert_equal "key_id is missing", exception.message
+    def ok?
+      status.start_with?("20")
+    end
   end
 
-  test "raises error when team_id missing" do
-    exception = assert_raises ArgumentError do
-      Noticed::DeliveryMethods::Ios.new.perform(
-        notification_class: "IosExample",
-        options: {
-          bundle_identifier: "test",
-          key_id: "test"
-        }
-      )
-    end
+  setup do
+    FakeConnectionPool.invalid_tokens = []
 
-    assert_equal "team_id is missing", exception.message
+    @delivery_method = Noticed::DeliveryMethods::Ios.new
+    @delivery_method.instance_variable_set :@notification, noticed_notifications(:one)
+    set_config(
+      bundle_identifier: "bundle_id",
+      key_id: "key_id",
+      team_id: "team_id",
+      apns_key: "apns_key",
+      device_tokens: [:a, :b],
+      format: ->(apn) {
+        apn.alert = "Hello world"
+        apn.custom_payload = {url: root_url(host: "example.org")}
+      },
+      invalid_token: ->(device_token) {
+        FakeConnectionPool.invalid_tokens << device_token
+      }
+    )
   end
 
-  test "raises error when cert missing" do
-    exception = assert_raises ArgumentError do
-      Noticed::DeliveryMethods::Ios.new.perform(
-        notification_class: "IosExample",
-        options: {
-          bundle_identifier: "test",
-          key_id: "test",
-          team_id: "test"
-        }
-      )
+  test "notifies each device token" do
+    connection_pool = FakeConnectionPool.new(FakeResponse.new("200"))
+    @delivery_method.stub(:connection_pool, connection_pool) do
+      @delivery_method.deliver
     end
 
-    assert_match "Could not find APN cert at", exception.message
+    assert_equal 2, connection_pool.deliveries.count
+    assert_equal 0, FakeConnectionPool.invalid_tokens.count
   end
 
-  test "raises error when ios_device_tokens method is missing" do
-    assert_raises NoMethodError do
-      File.stub :exist?, true do
-        Noticed::DeliveryMethods::Ios.new.perform(
-          notification_class: "IosExampleWithoutDeviceTokens",
-          options: {
-            bundle_identifier: "test",
-            key_id: "test",
-            team_id: "test"
-          }
-        )
-      end
+  test "notifies of invalid tokens for cleanup" do
+    connection_pool = FakeConnectionPool.new(FakeResponse.new("410"))
+    @delivery_method.stub(:connection_pool, connection_pool) do
+      @delivery_method.deliver
     end
+
+    # Our fake connection pool doesn't understand these wouldn't be delivered in the real world
+    assert_equal 2, connection_pool.deliveries.count
+
+    assert_equal 2, FakeConnectionPool.invalid_tokens.count
+  end
+
+  private
+
+  def set_config(config)
+    @delivery_method.instance_variable_set :@config, ActiveSupport::HashWithIndifferentAccess.new(config)
   end
 end

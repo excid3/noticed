@@ -2,26 +2,23 @@ require "apnotic"
 
 module Noticed
   module DeliveryMethods
-    class Ios < Base
+    class Ios < DeliveryMethod
       cattr_accessor :connection_pool
 
+      required_options :bundle_identifier, :key_id, :team_id, :apns_key, :device_tokens
+
       def deliver
-        raise ArgumentError, "bundle_identifier is missing" if bundle_identifier.blank?
-        raise ArgumentError, "key_id is missing" if key_id.blank?
-        raise ArgumentError, "team_id is missing" if team_id.blank?
-        raise ArgumentError, "Could not find APN cert at '#{cert_path}'" unless valid_cert_path?
+        evaluate_option(:device_tokens).each do |device_token|
+          apn = Apnotic::Notification.new(device_token)
+          format_notification(apn)
 
-        device_tokens.each do |device_token|
           connection_pool.with do |connection|
-            apn = Apnotic::Notification.new(device_token)
-            format_notification(apn)
-
             response = connection.push(apn)
             raise "Timeout sending iOS push notification" unless response
 
-            if bad_token?(response)
+            if bad_token?(response) && config[:invalid_token]
               # Allow notification to cleanup invalid iOS device tokens
-              cleanup_invalid_token(device_token)
+              notification.instance_exec(device_token, &config[:invalid_token])
             elsif !response.ok?
               raise "Request failed #{response.body}"
             end
@@ -32,39 +29,19 @@ module Noticed
       private
 
       def format_notification(apn)
-        apn.topic = bundle_identifier
+        apn.topic = evaluate_option(:bundle_identifier)
 
-        if (method = options[:format])
-          notification.send(method, apn)
-        elsif params[:message].present?
-          apn.alert = params[:message]
+        if (method = config[:format])
+          notification.instance_exec(apn, &method)
+        elsif notification.params.try(:has_key?, :message)
+          apn.alert = notification.params[:message]
         else
           raise ArgumentError, "No message for iOS delivery. Either include message in params or add the 'format' option in 'deliver_by :ios'."
         end
       end
 
-      def device_tokens
-        if notification.respond_to?(:ios_device_tokens)
-          Array.wrap(notification.ios_device_tokens(recipient))
-        else
-          raise NoMethodError, <<~MESSAGE
-            You must implement `ios_device_tokens` to send iOS notifications
-
-            # This must return an Array of iOS device tokens
-            def ios_device_tokens(recipient)
-              recipient.ios_device_tokens.pluck(:token)
-            end
-          MESSAGE
-        end
-      end
-
       def bad_token?(response)
         response.status == "410" || (response.status == "400" && response.body["reason"] == "BadDeviceToken")
-      end
-
-      def cleanup_invalid_token(token)
-        return unless notification.respond_to?(:cleanup_device_token)
-        notification.send(:cleanup_device_token, token: token, platform: "iOS")
       end
 
       def connection_pool
@@ -88,83 +65,18 @@ module Noticed
       def connection_pool_options
         {
           auth_method: :token,
-          cert_path: cert_path,
-          key_id: key_id,
-          team_id: team_id
+          cert_path: StringIO.new(config.fetch(:apns_key)),
+          key_id: config.fetch(:key_id),
+          team_id: config.fetch(:team_id)
         }
-      end
-
-      def bundle_identifier
-        option = options[:bundle_identifier]
-        case option
-        when String
-          option
-        when Symbol
-          notification.send(option)
-        else
-          Rails.application.credentials.dig(:ios, :bundle_identifier)
-        end
-      end
-
-      def cert_path
-        option = options[:cert_path]
-        case option
-        when String
-          option
-        when Symbol
-          notification.send(option)
-        else
-          Rails.root.join("config/certs/ios/apns.p8")
-        end
-      end
-
-      def key_id
-        option = options[:key_id]
-        case option
-        when String
-          option
-        when Symbol
-          notification.send(option)
-        else
-          Rails.application.credentials.dig(:ios, :key_id)
-        end
-      end
-
-      def team_id
-        option = options[:team_id]
-        case option
-        when String
-          option
-        when Symbol
-          notification.send(option)
-        else
-          Rails.application.credentials.dig(:ios, :team_id)
-        end
       end
 
       def development?
-        option = options[:development]
-        case option
-        when Symbol
-          !!notification.send(option)
-        else
-          !!option
-        end
-      end
-
-      def valid_cert_path?
-        case cert_path
-        when File, StringIO
-          cert_path.size > 0
-        else
-          File.exist?(cert_path)
-        end
+        !!evaluate_option(:development)
       end
 
       def pool_options
-        {
-          size: options.fetch(:pool_size, 5)
-        }
+        {size: evaluate_option(:pool_size) || 5}
       end
     end
   end

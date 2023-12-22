@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  event: one
+  recipient: one (User)
+  read_at: 2023-12-15 13:03:19
+  seen_at: 2023-12-15 13:03:19
+
+two:
+  event: two
+  recipient: two (User)
+  read_at: 2023-12-15 13:03:19
+  seen_at: 2023-12-15 13:03:19
+
+three:
+  event: three
+  recipient: one (Account)
+  read_at: 2023-12-15 13:03:19
+  seen_at: 2023-12-15 13:03:19
+
+two:
+  event: three
+  recipient: two (Account)
+  read_at: 2023-12-15 13:03:19
+  seen_at: 2023-12-15 13:03:19

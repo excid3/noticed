@@ -1,46 +1,40 @@
 require "test_helper"
 
-class EmailDeliveryWithoutMailer < Noticed::Base
-  deliver_by :email
-end
-
-class EmailDeliveryWithActiveJob < Noticed::Base
-  deliver_by :email, mailer: "UserMailer", enqueue: true, method: "comment_notification"
-end
-
 class EmailTest < ActiveSupport::TestCase
+  include ActionMailer::TestHelper
+
   setup do
-    @user = users(:one)
+    @delivery_method = Noticed::DeliveryMethods::Email.new
   end
 
   test "sends email" do
-    assert_emails 1 do
-      CommentNotification.new.deliver(user)
+    set_config(
+      mailer: "UserMailer",
+      method: "new_comment",
+      params: -> { {foo: :bar} },
+      args: -> { ["hey"] }
+    )
+
+    assert_emails(1) do
+      @delivery_method.deliver
     end
   end
 
-  test "validates `mailer` is specified for email delivery method" do
-    assert_raises Noticed::ValidationError do
-      EmailDeliveryWithoutMailer.new.deliver(user)
+  test "enqueues email" do
+    set_config(
+      mailer: "UserMailer",
+      method: "receipt",
+      enqueue: true
+    )
+
+    assert_enqueued_emails(1) do
+      @delivery_method.deliver
     end
   end
 
-  test "deliver returns the email object" do
-    args = {
-      notification_class: "Noticed::Base",
-      recipient: user,
-      options: {
-        mailer: "UserMailer",
-        method: "comment_notification"
-      }
-    }
-    email = Noticed::DeliveryMethods::Email.new.perform(args)
+  private
 
-    assert_kind_of Mail::Message, email
-  end
-
-  test "delivery spawns an ActiveJob for email" do
-    EmailDeliveryWithActiveJob.new.deliver(user)
-    assert_enqueued_emails 1
+  def set_config(config)
+    @delivery_method.instance_variable_set :@config, ActiveSupport::HashWithIndifferentAccess.new(config)
   end
 end

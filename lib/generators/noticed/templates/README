@@ -1,8 +1,8 @@
 
-🚚 Your notifications database model has been generated!
+🚚 You're ready to start sending notifications!
 
 Next steps:
-1. Run "rails db:migrate"
-2. Add "has_many :notifications, as: :recipient, dependent: :destroy" to your User model(s).
-2. Add "has_many :notifications, as: :record, dependent: :destroy" to your model(s) that notifications are about.
+1. Run `rails db:migrate`
+2. Add `has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"` to your User model(s).
+2. Add `has_many :notifications, as: :record, dependent: :destroy, class_name: "Noticed::Event"` to your model(s) that notifications reference.
 3. Generate notifiers with "rails g noticed:notifier"

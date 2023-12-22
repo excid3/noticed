@@ -1,46 +1,14 @@
 module Noticed
   module DeliveryMethods
-    class ActionCable < Base
+    class ActionCable < DeliveryMethod
+      required_options :channel, :stream, :message
+
       def deliver
-        channel.broadcast_to stream, format
-      end
+        channel = fetch_constant(:channel)
+        stream = evaluate_option(:stream)
+        message = evaluate_option(:message)
 
-      private
-
-      def format
-        if (method = options[:format])
-          notification.send(method)
-        else
-          notification.params
-        end
-      end
-
-      def channel
-        @channel ||= begin
-          value = options[:channel]
-          case value
-          when String
-            value.constantize
-          when Symbol
-            notification.send(value)
-          when Class
-            value
-          else
-            Noticed::NotificationChannel
-          end
-        end
-      end
-
-      def stream
-        value = options[:stream]
-        case value
-        when String
-          value
-        when Symbol
-          notification.send(value)
-        else
-          recipient
-        end
+        channel.broadcast_to stream, message
       end
     end
   end

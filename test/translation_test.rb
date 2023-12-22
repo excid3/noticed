@@ -1,7 +1,11 @@
 require "test_helper"
 
 class TranslationTest < ActiveSupport::TestCase
-  class I18nExample < Noticed::Base
+  class I18nExample < Noticed::Event
+    deliver_by :test do |config|
+      config.message = -> { t("hello") }
+    end
+
     def message
       t("hello")
     end
@@ -11,13 +15,13 @@ class TranslationTest < ActiveSupport::TestCase
     end
   end
 
-  class Noticed::I18nExample < Noticed::Base
+  class Noticed::I18nExample < Noticed::Event
     def message
       t(".message")
     end
   end
 
-  class ::ScopedI18nExample < Noticed::Base
+  class ::ScopedI18nExample < Noticed::Event
     def i18n_scope
       :noticed
     end
@@ -33,7 +37,7 @@ class TranslationTest < ActiveSupport::TestCase
   end
 
   test "I18n supports namespaces" do
-    assert_equal "notifications.noticed.i18n_example.message", Noticed::I18nExample.new.send(:scope_translation_key, ".message")
+    assert_equal "notifiers.noticed.i18n_example.message", Noticed::I18nExample.new.send(:scope_translation_key, ".message")
     assert_equal "This is a notification", Noticed::I18nExample.new.message
   end
 
@@ -48,5 +52,10 @@ class TranslationTest < ActiveSupport::TestCase
       assert_equal "<p>Hello world</p>", message
       assert message.html_safe?
     end
+  end
+
+  test "delivery method blocks can use translations" do
+    block = I18nExample.delivery_methods[:test].config[:message]
+    assert_equal "Hello world", noticed_notifications(:one).instance_exec(&block)
   end
 end

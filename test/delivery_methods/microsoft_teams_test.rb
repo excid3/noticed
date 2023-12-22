@@ -1,60 +1,29 @@
 require "test_helper"
 
 class MicrosoftTeamsTest < ActiveSupport::TestCase
-  class MicrosoftTeamsExample < Noticed::Base
-    deliver_by :microsoft_teams, debug: true, url: :teams_url, format: :to_teams
+  setup do
+    @delivery_method = Noticed::DeliveryMethods::MicrosoftTeams.new
+    set_config(
+      json: {foo: :bar},
+      url: "https://teams.microsoft.com"
+    )
+  end
 
-    def teams_url
-      "https://outlook.office.com/webhooks/00000-00000/IncomingWebhook/00000-00000"
-    end
+  test "sends a message" do
+    stub_request(:post, "https://teams.microsoft.com").with(body: "{\"foo\":\"bar\"}")
+    @delivery_method.deliver
+  end
 
-    def to_teams
-      {
-        title: "This is the title",
-        text: "this is the text",
-        section: sections,
-        potentialAction: actions
-      }
-    end
-
-    def sections
-      [{activityTitle: "Section Title", activityText: "Section Text"}]
-    end
-
-    def actions
-      [{
-        "@type": "OpenUri",
-        name: "View on Foo.Com",
-        targets: [{os: "default", uri: "https://foo.example.com"}]
-      }]
+  test "raises error on failure" do
+    stub_request(:post, "https://teams.microsoft.com").to_return(status: 422)
+    assert_raises Noticed::ResponseUnsuccessful do
+      @delivery_method.deliver
     end
   end
 
-  test "sends a POST to Teams" do
-    stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/)
-    MicrosoftTeamsExample.new.deliver(user)
-  end
+  private
 
-  test "raises an error when http request fails" do
-    stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/, type: :failure)
-
-    e = assert_raises(::Noticed::ResponseUnsuccessful) {
-      MicrosoftTeamsExample.new.deliver(user)
-    }
-
-    assert_equal Net::HTTPForbidden, e.response.class
-  end
-
-  test "deliver returns an http response" do
-    stub_delivery_method_request(delivery_method: :microsoft_teams, matcher: /outlook.office.com/)
-
-    args = {
-      notification_class: "::MicrosoftTeamsTest::MicrosoftTeamsExample",
-      recipient: user,
-      options: {url: :teams_url, format: :to_teams}
-    }
-    response = Noticed::DeliveryMethods::MicrosoftTeams.new.perform(args)
-
-    assert_kind_of Net::HTTPResponse, response
+  def set_config(config)
+    @delivery_method.instance_variable_set :@config, ActiveSupport::HashWithIndifferentAccess.new(config)
   end
 end

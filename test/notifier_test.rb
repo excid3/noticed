@@ -76,7 +76,7 @@ class NotifierTest < ActiveSupport::TestCase
 
   test "queue delivery method option" do
     event = QueueNotifier.deliver(User.first)
-    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last], queue: :example_queue) do
+    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last], queue: "example_queue") do
       perform_enqueued_jobs
     end
   end

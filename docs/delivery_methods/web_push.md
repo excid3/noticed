@@ -18,7 +18,7 @@ Sends a browser based notification via WebPush.
 
 Service workers can only be used in the path they are located at and subpaths ie serving `assets/service_worker.js` will only work within the `assets` folder. Not ideal!
 
-There are header you can set to avoid this, but to keep things simple, I've just included it into the public folder. It is likely you want to handle this differently, but this is a simple starting place.
+There is a header you can set to avoid this, but it isn't supported everywhere. To keep it simple, I've just included it into the public folder. It is likely you want to handle this differently, but this is a simple starting place.
 
 ## Handling Failures
 

@@ -1,6 +1,7 @@
 ### Unreleased
 
 * WebPush delivery method
+* Support html safe translations for Rails 7+
 
 ### 1.6.3
 

@@ -12,7 +12,11 @@ module Noticed
     end
 
     def translate(key, **options)
-      I18n.translate(scope_translation_key(key), **options)
+      if defined?(::ActiveSupport::HtmlSafeTranslation)
+        ActiveSupport::HtmlSafeTranslation.translate scope_translation_key(key), **options
+      else
+        I18n.translate scope_translation_key(key), **options
+      end
     end
     alias_method :t, :translate
 

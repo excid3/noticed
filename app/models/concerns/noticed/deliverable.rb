@@ -20,8 +20,25 @@ module Noticed
         end
       end
 
-      def perform_later(event)
-        constant.perform_later(name, event)
+      def perform_later(event_or_notification, options = {})
+        options[:wait] = evaluate_option(:wait, event_or_notification) if config.has_key?(:wait)
+        options[:wait_until] = evaluate_option(:wait_until, event_or_notification) if config.has_key?(:wait_until)
+        options[:queue] = evaluate_option(:queue, event_or_notification) if config.has_key?(:queue)
+        options[:priority] = evaluate_option(:priority, event_or_notification) if config.has_key?(:priority)
+
+        constant.set(options).perform_later(name, event_or_notification)
+      end
+
+      def evaluate_option(name, context)
+        option = config[name]
+
+        if option&.respond_to?(:call)
+          context.instance_exec(&option)
+        elsif option.is_a?(Symbol) && context.respond_to?(option)
+          context.send(option)
+        else
+          option
+        end
       end
     end
 

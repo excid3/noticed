@@ -3,22 +3,6 @@ require "test_helper"
 class NotifierTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
-  class SimpleNotifier < Noticed::Event
-    deliver_by :test
-    required_params :message
-
-    def url
-      root_url(host: "example.org")
-    end
-  end
-
-  class InheritedNotifier < SimpleNotifier
-  end
-
-  class BulkNotifier < Noticed::Event
-    bulk_deliver_by :webhook, url: "https://example.org/bulk"
-  end
-
   test "includes Rails urls" do
     assert_equal "http://example.org/", SimpleNotifier.new.url
   end
@@ -71,6 +55,39 @@ class NotifierTest < ActiveSupport::TestCase
 
     assert_enqueued_jobs 1, only: Noticed::BulkDeliveryMethods::Webhook do
       perform_enqueued_jobs
+    end
+  end
+
+  test "wait delivery method option" do
+    freeze_time
+    event = WaitNotifier.deliver(User.first)
+    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last], at: 5.minutes.from_now) do
+      perform_enqueued_jobs
+    end
+  end
+
+  test "wait_until delivery method option" do
+    freeze_time
+    event = WaitUntilNotifier.deliver(User.first)
+    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last], at: 1.hour.from_now) do
+      perform_enqueued_jobs
+    end
+  end
+
+  test "queue delivery method option" do
+    event = QueueNotifier.deliver(User.first)
+    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last], queue: "example_queue") do
+      perform_enqueued_jobs
+    end
+  end
+
+  # assert_enqeued_with doesn't support priority before Rails 7
+  if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
+    test "priority delivery method option" do
+      event = PriorityNotifier.deliver(User.first)
+      assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last], priority: 2) do
+        perform_enqueued_jobs
+      end
     end
   end
 end

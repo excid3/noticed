@@ -48,7 +48,7 @@ module Noticed
     def initialize(response)
       @response = response
 
-      super "Request to returned #{response.code} response"
+      super("Request to returned #{response.code} response")
     end
   end
 end

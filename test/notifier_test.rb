@@ -11,6 +11,12 @@ class NotifierTest < ActiveSupport::TestCase
     assert_equal [:message], InheritedNotifier.required_params
   end
 
+  test "serializes globalid objects with text column" do
+    user = users(:one)
+    notification = Noticed::Event.create!(type: "SimpleNotifier", params: {user: user})
+    assert_equal({user: user}, notification.params)
+  end
+
   test "deliver creates an event" do
     assert_difference "Noticed::Event.count" do
       ReceiptNotifier.deliver(User.first)

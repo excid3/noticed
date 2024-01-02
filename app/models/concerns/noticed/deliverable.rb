@@ -99,7 +99,9 @@ module Noticed
       transaction do
         save!
 
-        recipients_attributes = Array.wrap(recipients).map(&:recipient_attributes_for)
+        recipients_attributes = Array.wrap(recipients).map do |recipient|
+          recipient_attributes_for(recipient)
+        end
 
         if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
           notifications.insert_all!(recipients_attributes, record_timestamps: true) if recipients_attributes.any?
@@ -133,7 +135,7 @@ module Noticed
 
     def validate_params!
       required_param_names.each do |param_name|
-        raise ValidationError, "Param `#{param_name}` is required for #{self.class.name}." unless params[param_name.to_s].present?
+        raise ValidationError, "Param `#{param_name}` is required for #{self.class.name}." unless params[param_name].present?
       end
     end
 

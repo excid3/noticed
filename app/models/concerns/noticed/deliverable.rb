@@ -46,6 +46,12 @@ module Noticed
       class_attribute :bulk_delivery_methods, instance_writer: false, default: {}
       class_attribute :delivery_methods, instance_writer: false, default: {}
       class_attribute :required_param_names, instance_writer: false, default: []
+
+      if Rails.gem_version >= Gem::Version.new("7.1.0.alpha")
+        serialize :params, coder: Coder
+      else
+        serialize :params, Coder
+      end
     end
 
     class_methods do
@@ -93,12 +99,7 @@ module Noticed
       transaction do
         save!
 
-        recipients_attributes = Array.wrap(recipients).map do |recipient|
-          {
-            recipient_type: recipient.class.name,
-            recipient_id: recipient.id
-          }
-        end
+        recipients_attributes = Array.wrap(recipients).map(&:recipient_attributes_for)
 
         if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
           notifications.insert_all!(recipients_attributes, record_timestamps: true) if recipients_attributes.any?
@@ -116,6 +117,13 @@ module Noticed
       EventJob.perform_later(self)
 
       self
+    end
+
+    def recipient_attributes_for(recipient)
+      {
+        recipient_type: recipient.class.name,
+        recipient_id: recipient.id
+      }
     end
 
     def validate!

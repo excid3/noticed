@@ -138,6 +138,7 @@ GEM
       net-smtp
     marcel (1.0.2)
     mini_mime (1.1.5)
+    mini_portile2 (2.8.5)
     minitest (5.20.0)
     multi_json (1.15.0)
     mutex_m (0.1.2)
@@ -154,11 +155,8 @@ GEM
     net-smtp (0.4.0)
       net-protocol
     nio4r (2.5.9)
-    nokogiri (1.15.4-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.15.4-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.15.4-x86_64-linux)
+    nokogiri (1.15.4)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     os (1.1.4)
     parallel (1.23.0)
@@ -239,9 +237,8 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    sqlite3 (1.6.7-arm64-darwin)
-    sqlite3 (1.6.7-x86_64-darwin)
-    sqlite3 (1.6.7-x86_64-linux)
+    sqlite3 (1.6.7)
+      mini_portile2 (~> 2.8.0)
     standard (1.31.2)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -273,6 +270,7 @@ GEM
 PLATFORMS
   arm64-darwin-22
   x86_64-darwin-22
+  x86_64-darwin-23
   x86_64-linux
 
 DEPENDENCIES

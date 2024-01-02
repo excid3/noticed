@@ -27,6 +27,22 @@ module Noticed
       end
     end
 
+    def mark_as_read
+      update(read_at: Time.current)
+    end
+
+    def mark_as_unread
+      update(read_at: nil)
+    end
+
+    def mark_as_seen
+      update(seen_at: Time.current)
+    end
+
+    def mark_as_unseen
+      update(seen_at: nil)
+    end
+
     def read?
       read_at?
     end

@@ -12,6 +12,7 @@ module Noticed
 
   autoload :ApiClient, "noticed/api_client"
   autoload :BulkDeliveryMethod, "noticed/bulk_delivery_method"
+  autoload :Coder, "noticed/coder"
   autoload :DeliveryMethod, "noticed/delivery_method"
   autoload :RequiredOptions, "noticed/required_options"
   autoload :Translation, "noticed/translation"

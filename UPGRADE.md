@@ -19,13 +19,32 @@ To migrate your data to the new tables, loop through your existing notifications
 
 ```ruby
 Notification.find_each do |notification|
-  attributes = notification.attributes.slice(:id, :type, :params)
-  attributes[:recipients_attributes] = {recipient_type: notification.recipient_type, recipient_id: notification.recipient_id, read_at: notification.read_at)
-  Noticed::Notification.create(attributes)
+  attributes = notification.attributes.slice("id", "type", "params")
+  attributes[:notifications_attributes] = [{recipient_type: notification.recipient_type, recipient_id: notification.recipient_id, seen_at: notification.read_at, read_at: notification.interacted_at}]
+  Noticed::Event.create!(attributes)
 end
 ```
 
+class Notification < ActiveRecord::Base
+  self.inheritance_column = nil
+end
+
+Notification.find_each do |notification|
+  attributes = notification.attributes.slice("id", "type", "params")
+  attributes[:notifications_attributes] = [{recipient_type: notification.recipient_type, recipient_id: notification.recipient_id, seen_at: notification.read_at, read_at: notification.interacted_at}]
+  Noticed::Event.create!(attributes)
+end
+
 After migrating, you can drop the old notifications table and model.
+
+### Parent Class
+
+`Noticed::Base` has been deprecated in favor of `Noticed::Event`. This is an STI model that tracks all Notifier deliveries and recipients.
+
+```ruby
+class CommentNotifier < Noticed::Event
+end
+```
 
 ### Database Delivery Method
 
@@ -45,5 +64,55 @@ We recommend renaming your existing classes to match. You'll also need to update
 ```ruby
 Noticed::Notification.find_each do |notification|
   notification.update(type: notification.type.sub("Notification", "Notifier"))
+end
+```
+
+### Delivery Method Configuration
+
+Configuration for each delivery method can be contained within a block now. This improves organization but 
+
+```ruby
+class CommentNotifier < Noticed::Event
+  deliver_by :action_cable do |config|
+    config.channel = "NotificationChannel"
+    config.stream = ->{ recipient }
+    config.message = :to_websocket
+  end
+
+  def to_websocket
+    { foo: :bar }
+  end
+```
+
+### Required Params
+
+`param` and `params` have been renamed to `required_param(s)` to be more clear.
+
+```ruby
+class CommentNotifier < Noticed::Event
+  required_param :comment
+  required_params :account, :comment
+end
+```
+
+### Has Noticed Notifications
+
+`has_noticed_notifications` has been removed in favor of the `record` polymorphic relationship that can be directly queried with ActiveRecord. You can add the necessary json query to your model(s) to restore the json query if needed.
+
+We recommend backfilling the `record` association if your notification params has a primary related record and switching to a has_many association instead.
+
+```ruby
+class Comment < ApplicationRecord
+  has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
+end
+```
+
+### Receipient Notifications Association
+
+Recipients can be associated with notifications using the following. This is useful for displaying notifications in your UI.
+
+```ruby
+class User < ApplicationRecord
+  has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
 end
 ```

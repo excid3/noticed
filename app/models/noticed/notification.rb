@@ -7,6 +7,8 @@ module Noticed
     belongs_to :event
     belongs_to :recipient, polymorphic: true
 
+    scope :newest_first, -> { order(created_at: :desc) }
+
     delegate :params, :record, to: :event
 
     attribute :params, default: {}

@@ -1,5 +1,5 @@
 module Noticed
-  module BulkDeliveryMethods
+  module DeliveryMethods
     class Discord < BulkDeliveryMethod
       required_options :json, :url
 

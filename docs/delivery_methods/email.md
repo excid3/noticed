@@ -1,8 +1,19 @@
 ### Email Delivery Method
 
-Sends an email notification. Emails will always be sent with `deliver_later`
+Sends an email to each recipient.
 
-`deliver_by :email, mailer: "UserMailer"`
+```ruby
+deliver_by :email do |config|
+  config.mailer = "UserMailer"
+  config.method = :receipt
+  config.params = ->{ params }
+  config.args = ->{ [1, 2, 3] }
+
+  # Enqueues a separate job for sending the email using deliver_later.
+  # Deliveries already happen in jobs so this is typically unnecessary.
+  # config.enqueue = false
+end
+```
 
 ##### Options
 
@@ -14,9 +25,11 @@ Sends an email notification. Emails will always be sent with `deliver_later`
 
   Used to customize the method on the mailer that is called
 
-- `format: :format_for_email` - _Optional_
+- `params` - _Optional_
 
   Use a custom method to define the params sent to the mailer. `recipient` will be merged into the params.
+
+- `args` - _Optional_
 
 - `enqueue: false` - _Optional_
 

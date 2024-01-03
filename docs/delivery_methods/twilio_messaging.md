@@ -1,8 +1,8 @@
-### Twilio SMS Delivery Method
+### Twilio Messaaging Delivery Method
 
-Sends an SMS notification via Twilio.
+Sends an SMS or Whatsapp message via Twilio Messaging.
 
-`deliver_by :twilio`
+`deliver_by :twilio_messaging`
 
 ##### Options
 

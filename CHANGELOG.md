@@ -1,5 +1,29 @@
 ### Unreleased
 
+### 2.0.0
+
+* [Breaking] Noticed now provides its own models for managing notifications. Migrate existing model(s) to use the new Noticed tables.
+
+TODO - add migration example
+
+* [Breaking] Noticed::NotificationChannel has been removed. Use an ActionCable channel in your application instead.
+* [Breaking] Twilio has been renamed to `twilio_messaging` to provide support for other Twilio services in the future.
+* [Breaking] Vonage / Nexmo has been renamed to `vonage_sms` to provide support for other Vonage services in the future.
+
+```ruby
+class NotificationChannel < ApplicationCable::Channel
+  def subscribed
+    stream_for current_user
+  end
+
+  def unsubscribed
+    stop_all_streams
+  end
+end
+```
+
+* `Notifications` have now been renamed to `Notifiers` and now inherit from the
+* Email delivery method now supports args
 * Support html safe translations for Rails 7+
 
 ### 1.6.3

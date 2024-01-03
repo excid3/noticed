@@ -6,25 +6,33 @@
 
 [![Build Status](https://github.com/excid3/noticed/workflows/Tests/badge.svg)](https://github.com/excid3/noticed/actions) [![Gem Version](https://badge.fury.io/rb/noticed.svg)](https://badge.fury.io/rb/noticed)
 
-Currently, we support these notification delivery methods out of the box:
+Noticed allows you to send notifications to any number of recipients. You might want a Slack notification with 0 recipients to let your team know when something happens. A notification can also be sent to 1+ recipients
 
-* Database
-* Email
-* ActionCable channels
-* Slack
-* Microsoft Teams
-* Twilio (SMS)
-* Vonage / Nexmo (SMS)
-* iOS Apple Push Notifications
-* Firebase Cloud Messaging (Android and more)
+There are two types of delivery methods:
+1. Individual Deliveries - one notification to each recipient.
+2. Bulk Deliveries - one notification for all recipients. This is useful for sending a notification to your Slack team, for example.
 
-And you can easily add new notification types for any other delivery methods.
+Delivery methods we officially support:
+
+* [ActionCable](docs/delivery_methods/action_cable.md)
+* [Apple Push Notification Service](docs/delivery_methods/ios.md)
+* [Email](docs/delivery_methods/email.md)
+* [Firebase Cloud Messaging](docs/delivery_methods/fcm.md) (iOS, Android, and web clients)
+* [Microsoft Teams](docs/delivery_methods/microsoft_teams.md)
+* [Slack](docs/delivery_methods/slack.md)
+* [Twilio Messaging](docs/delivery_methods/twilio_messaging.md) - SMS, Whatsapp
+* [Vonage SMS](docs/delivery_methods/vonage_sms.md)
+* [Test](docs/delivery_methods/test.md)
+
+Bulk delivery methods we support:
+
+* [Discord](docs/bulk_delivery_methods/discord.md)
+* [Slack](docs/bulk_delivery_methods/slack.md)
+* [Webhook](docs/bulk_delivery_methods/webhook.md)
 
 ## 🎬 Screencast
 
-<div style="width:50%">
-  <a href="https://www.youtube.com/watch?v=Scffi4otlFc"><img src="https://i.imgur.com/UvVKWwD.png" title="How to add Notifications to Rails with Noticed" /></a>
-</div>
+<a href="https://www.youtube.com/watch?v=Scffi4otlFc"><img src="https://i.imgur.com/UvVKWwD.png" title="How to add Notifications to Rails with Noticed" width="50%" /></a>
 
 [Watch Screencast](https://www.youtube.com/watch?v=Scffi4otlFc)
 
@@ -35,13 +43,12 @@ Run the following command to add Noticed to your Gemfile
 bundle add "noticed"
 ```
 
-To save notifications to your database, use the following command to generate a Notification model.
+Add the migraitons
 
-```ruby
-rails generate noticed:model
+```bash
+rails noticed:install:migrations
+rails db:migrate
 ```
-
-This will generate a Notification model and instructions for associating User models with the notifications table.
 
 ## 📝 Usage
 
@@ -49,39 +56,51 @@ To generate a notification object, simply run:
 
 `rails generate noticed:notifier CommentNotifier`
 
+#### Add Delivery Methods
+Then add your delivery methods to the Notifier.
+
+```ruby
+# app/notifiers/comment_notifier.rb
+class CommentNotifier < Noticed::Event
+  bulk_deliver_by :webhook do |config|
+    config.url = "https://example.org..."
+    config.json = ->{ text: "New comment: #{record.body}" }
+  end
+
+  deliver_by :email do |config|
+    config.mailer = "UserMailer"
+    config.method = :new_comment
+  end
+end
+```
+
 #### Sending Notifications
 
-To send a notification to a user:
+To send a notification to user(s):
 
 ```ruby
 # Instantiate a new notifier
-notifier = CommentNotifier.with(record: @comment)
-
-# Deliver notification in background job
-notifier.deliver_later(@comment.post.author)
-
-# Deliver notification immediately
-notifier.deliver(@comment.post.author)
-
-# Deliver notification to multiple recipients
-notifier.deliver_later(User.all)
+CommentNotifier.with(record: @comment, foo: "bar").deliver_later(User.all)
 ```
 
-This will instantiate a new notifier with the `comment` stored in the notification's params.
+This instantiates a new `CommentNotifier` with params. Similar to ActiveJob, you can pass any params can be serialized.
 
-Each delivery method is able to transform this metadata that's best for the format. For example, the database may simply store the comment so it can be linked when rendering in the navbar. The websocket mechanism may transform this into a browser notification or insert it into the navbar.
+The `record:` param is a special param that gets assigned to the `record` polymorphic association in the database.
+
+This notification will be delivered to `User.all`. Delivering will create a Noticed::Event record and associated Noticed::Notification records for each recipient.
+
+After saving, a job will be enqueued for processing this notification and delivering it to all recipients.
+
+Each delivery method also spawns its own job. This allows you to skip email notifications if the user had already opened a push notification, for example.
 
 #### Notifier Objects
 
-Notifiers inherit from `Noticed::Base`. This provides all their functionality and allows them to be delivered.
-
-To add delivery methods, simply `include` the module for the delivery methods you would like to use.
+Notifiers inherit from `Noticed::Event`. This provides all their functionality and allows them to be delivered.
 
 ```ruby
-class CommentNotifier < Noticed::Base
-  deliver_by :database
+class CommentNotifier < Noticed::Event
   deliver_by :action_cable
-  deliver_by :email, mailer: 'CommentMailer', if: :email_notifications?
+  deliver_by :email, mailer: 'CommentMailer', if:  ->(recipient) { !!recipient.preferences[:email] }:email_notifications?
 
   # I18n helpers
   def message
@@ -93,20 +112,12 @@ class CommentNotifier < Noticed::Base
   def url
     post_path(params[:post])
   end
-
-  def email_notifications?
-    !!recipient.preferences[:email]
-  end
-
-  after_deliver do
-    # Anything you want
-  end
 end
 ```
 
 **Shared Options**
 
-* `if: :method_name`  - Calls `method_name` and cancels delivery method if `false` is returned
+* `if: :method_name`  - Calls `method_name` and cancels delivery method if `false` is returned. This can also be specified as a lambda.
 * `unless: :method_name`  - Calls `method_name` and cancels delivery method if `true` is returned
 * `delay: ActiveSupport::Duration` - Delays the delivery for the given duration of time
 * `delay: :method_name` - Calls `method_name` which should return an `ActiveSupport::Duration` and delays the delivery for the given duration of time
@@ -124,35 +135,6 @@ Don't forget, you'll need to configure `default_url_options` in order for Rails 
 ```ruby
 Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 ```
-
-**Callbacks**
-
-Like ActiveRecord, notifications have several different types of callbacks.
-
-```ruby
-class CommentNotifier < Noticed::Base
-  deliver_by :database
-  deliver_by :email, mailer: 'CommentMailer'
-
-  # Callbacks for the entire delivery
-  before_deliver :whatever
-  around_deliver :whatever
-  after_deliver :whatever
-
-  # Callbacks for each delivery method
-  before_database :whatever
-  around_database :whatever
-  after_database :whatever
-
-  before_email :whatever
-  around_email :whatever
-  after_email :whatever
-end
-```
-
-When using `deliver_later` callbacks will be run around queuing the delivery method jobs (not inside the jobs as they actually execute).
-
-Defining custom delivery methods allows you to add callbacks that run inside the background job as each individual delivery is executed. See the Custom Delivery Methods section for more information.
 
 ##### Translations
 
@@ -174,29 +156,19 @@ For example:
 
 ```ruby
 class CommentNotifier < Noticed::Base
-  deliver_by :email, mailer: 'CommentMailer', if: :email_notifications?
-
-  def email_notifications?
-    recipient.email_notifications?
+  deliver_by :email do |config|
+    config.mailer = 'CommentMailer'
+    config.method = :new_comment
+    config.if = ->{ recipient.email_notifications? }
   end
 end
-```
-
-## 🐞 Debugging
-
-In order to figure out what's up when you run in to errors, you can set the `debug` parameter to `true` in your notification, which will give you a more detailed error message about what went wrong.
-
-Example:
-
-```ruby
-deliver_by :slack, debug: true
 ```
 
 ## ✅ Best Practices
 
 ### Creating a notification from an Active Record callback
 
-A common use case is to trigger a notification when a record is created. For example,
+Always use `after_commit` hooks to send notifications from ActiveRecord callbacks. For example, to send a notification automatically after a message is created:
 
 ```ruby
 class Message < ApplicationRecord
@@ -210,8 +182,6 @@ class Message < ApplicationRecord
     NewMessageNotifier.with(message: self).deliver_later(recipient)
   end
 ```
-
-If you are creating the notification on a background job (i.e. via `#deliver_later`), make sure you use a `commit` hook such as `after_create_commit` or `after_commit`.
 
 Using `after_create` might cause the notification delivery methods to fail. This is because the job was enqueued while inside a database transaction, and the `Message` record might not yet be saved to the database.
 

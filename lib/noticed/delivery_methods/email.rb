@@ -6,7 +6,7 @@ module Noticed
       def deliver
         mailer = fetch_constant(:mailer)
         email = evaluate_option(:method)
-        params = evaluate_option(:params) || notification&.params&.merge(record: notification.record)
+        params = (evaluate_option(:params) || notification&.params || {}).merge(record: notification&.record)
         args = evaluate_option(:args)
 
         mail = mailer.with(params)

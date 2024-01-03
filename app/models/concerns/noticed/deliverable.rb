@@ -47,6 +47,8 @@ module Noticed
       class_attribute :delivery_methods, instance_writer: false, default: {}
       class_attribute :required_param_names, instance_writer: false, default: []
 
+      attribute :params, default: {}
+
       if Rails.gem_version >= Gem::Version.new("7.1.0.alpha")
         serialize :params, coder: Coder
       else

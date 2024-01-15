@@ -11,6 +11,9 @@ module Noticed
       @event = event
       @config = event.bulk_delivery_methods.fetch(delivery_method_name).config
 
+      return false if config.has_key?(:if) && !evaluate_option(:if)
+      return false if config.has_key?(:unless) && evaluate_option(:unless)
+
       deliver
     end
 

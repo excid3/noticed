@@ -19,21 +19,13 @@ To migrate your data to the new tables, loop through your existing notifications
 
 ```ruby
 Notification.find_each do |notification|
-  attributes = notification.attributes.slice("id", "type", "params")
+  attributes = notification.attributes.slice("id", "type")
+  attributes[:type] = attributes[:type].sub("Notification", "Notifier"))
+  attributes[:params] = Noticed::Coder.load(notification.params)
   attributes[:notifications_attributes] = [{recipient_type: notification.recipient_type, recipient_id: notification.recipient_id, seen_at: notification.read_at, read_at: notification.interacted_at}]
   Noticed::Event.create!(attributes)
 end
 ```
-
-class Notification < ActiveRecord::Base
-  self.inheritance_column = nil
-end
-
-Notification.find_each do |notification|
-  attributes = notification.attributes.slice("id", "type", "params")
-  attributes[:notifications_attributes] = [{recipient_type: notification.recipient_type, recipient_id: notification.recipient_id, seen_at: notification.read_at, read_at: notification.interacted_at}]
-  Noticed::Event.create!(attributes)
-end
 
 After migrating, you can drop the old notifications table and model.
 
@@ -69,7 +61,8 @@ end
 
 ### Delivery Method Configuration
 
-Configuration for each delivery method can be contained within a block now. This improves organization but 
+Configuration for each delivery method can be contained within a block now. This improves organization for delivery method options by defining them in the block.
+Procs/Lambdas will be evaluated when needed and symbols can be used to call a method.
 
 ```ruby
 class CommentNotifier < Noticed::Event
@@ -105,6 +98,25 @@ We recommend backfilling the `record` association if your notification params ha
 class Comment < ApplicationRecord
   has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
 end
+```
+
+If you would like to keep the JSON querying, you can implement a method for querying your model depending on the database you use:
+
+```ruby
+# Define the
+param_name = "user"
+
+# PostgreSQL
+model.where("params @> ?", Noticed::Coder.dump(param_name.to_sym => self).to_json)
+
+# MySQL
+model.where("JSON_CONTAINS(params, ?)", Noticed::Coder.dump(param_name.to_sym => self).to_json)
+
+# SQLite
+model.where("json_extract(params, ?) = ?", "$.#{param_name}", Noticed::Coder.dump(self).to_json)
+
+# Other
+model.where(params: {param_name.to_sym => self})
 ```
 
 ### Receipient Notifications Association

@@ -36,7 +36,7 @@ module Noticed
       response = http.request(request)
       logger.debug("Response: #{response.code}: #{response.body.inspect}")
 
-      raise ResponseUnsuccessful.new(response) unless response.code.start_with?("20")
+      raise ResponseUnsuccessful.new(request, response, http) unless response.code.start_with?("20")
 
       response
     end

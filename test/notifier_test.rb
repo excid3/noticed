@@ -73,7 +73,7 @@ class NotifierTest < ActiveSupport::TestCase
 
   test "deliver queue" do
     freeze_time
-    assert_enqueued_with job: Noticed::EventJob, queue: :low_priority do
+    assert_enqueued_with job: Noticed::EventJob, queue: "low_priority" do
       ReceiptNotifier.deliver(User.first, queue: :low_priority)
     end
   end

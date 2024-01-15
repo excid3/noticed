@@ -284,7 +284,7 @@ end
 
 Delivery methods have access to the following methods and attributes:
 
-* `notification` - The instance of the Notification. You can call methods on the notification to let the user easily override formatting and other functionality of the delivery method.
+* `record` - The instance of the Notification. You can call methods on the notification to let the user easily override formatting and other functionality of the delivery method.
 * `options` - Any configuration options on the `deliver_by` line.
 * `recipient` - The object who should receive the notification. This is typically a User, Account, or other ActiveRecord model.
 * `params` - The params passed into the notification. This is details about the event that happened. For example, a user commenting on a post would have params of `{ user: User.first }`

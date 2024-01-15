@@ -19,6 +19,9 @@ jobs:
           - rails_7
           - rails_7_1
           - rails_main
+        exclude:
+          - ruby: '3.0'
+            gemfile: 'rails_main'
 
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
@@ -56,6 +59,9 @@ jobs:
           - rails_7
           - rails_7_1
           - rails_main
+        exclude:
+          - ruby: '3.0'
+            gemfile: 'rails_main'
 
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
@@ -102,6 +108,9 @@ jobs:
           - rails_7
           - rails_7_1
           - rails_main
+        exclude:
+          - ruby: '3.0'
+            gemfile: 'rails_main'
 
     env:
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile

@@ -55,7 +55,7 @@ class IosTest < ActiveSupport::TestCase
 
   test "notifies each device token" do
     connection_pool = FakeConnectionPool.new(FakeResponse.new("200"))
-    @delivery_method.stub(:connection_pool, connection_pool) do
+    @delivery_method.stub(:production_pool, connection_pool) do
       @delivery_method.deliver
     end
 
@@ -65,13 +65,12 @@ class IosTest < ActiveSupport::TestCase
 
   test "notifies of invalid tokens for cleanup" do
     connection_pool = FakeConnectionPool.new(FakeResponse.new("410"))
-    @delivery_method.stub(:connection_pool, connection_pool) do
+    @delivery_method.stub(:production_pool, connection_pool) do
       @delivery_method.deliver
     end
 
     # Our fake connection pool doesn't understand these wouldn't be delivered in the real world
     assert_equal 2, connection_pool.deliveries.count
-
     assert_equal 2, FakeConnectionPool.invalid_tokens.count
   end
 

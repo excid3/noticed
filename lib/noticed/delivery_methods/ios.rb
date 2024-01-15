@@ -3,7 +3,7 @@ require "apnotic"
 module Noticed
   module DeliveryMethods
     class Ios < DeliveryMethod
-      cattr_accessor :connection_pool
+      cattr_accessor :development_connection_pool, :production_connection_pool
 
       required_options :bundle_identifier, :key_id, :team_id, :apns_key, :device_tokens
 
@@ -12,6 +12,7 @@ module Noticed
           apn = Apnotic::Notification.new(device_token)
           format_notification(apn)
 
+          connection_pool = !!evaluate_option(:development) ? development_pool : production_pool
           connection_pool.with do |connection|
             response = connection.push(apn)
             raise "Timeout sending iOS push notification" unless response
@@ -44,18 +45,22 @@ module Noticed
         response.status == "410" || (response.status == "400" && response.body["reason"] == "BadDeviceToken")
       end
 
-      def connection_pool
-        self.class.connection_pool ||= new_connection_pool
+      def development_pool
+        self.class.development_connection_pool ||= new_connection_pool(development: true)
       end
 
-      def new_connection_pool
+      def production_pool
+        self.class.production_connection_pool ||= new_connection_pool(development: false)
+      end
+
+      def new_connection_pool(development:)
         handler = proc do |connection|
           connection.on(:error) do |exception|
             Rails.logger.info "Apnotic exception raised: #{exception}"
           end
         end
 
-        if development?
+        if development
           Apnotic::ConnectionPool.development(connection_pool_options, pool_options, &handler)
         else
           Apnotic::ConnectionPool.new(connection_pool_options, pool_options, &handler)
@@ -69,10 +74,6 @@ module Noticed
           key_id: config.fetch(:key_id),
           team_id: config.fetch(:team_id)
         }
-      end
-
-      def development?
-        !!evaluate_option(:development)
       end
 
       def pool_options

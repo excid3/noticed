@@ -122,3 +122,16 @@ class CommentNotification
   end
 end
 ```
+
+## Delivering to Sandboxes and real devices
+
+```ruby
+deliver_by :ios do |config|
+ config.device_tokens = ->(recipient) { recipient.notification_tokens.where(environment: :production, platform: :iOS).pluck(:token) }
+end
+
+deliver_by :ios_development do |config|
+  config.development = true
+  config.device_tokens = ->(recipient) { recipient.notification_tokens.where(environment: :development, platform: :iOS).pluck(:token) }
+end
+```

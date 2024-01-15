@@ -45,9 +45,10 @@ module Noticed
   class ResponseUnsuccessful < StandardError
     attr_reader :response
 
-    def initialize(response, url)
+    def initialize(response, url, args)
       @response = response
       @url = url
+      @args = args
 
       super("POST request to #{url} returned #{response.code} response:\n#{response.body.inspect}")
     end

@@ -6,8 +6,10 @@ module Noticed
       required_options :json
 
       def deliver
-        response = post_request url, headers: evaluate_option(:headers), json: evaluate_option(:json)
-        raise ResponseUnsuccessful.new(response) if JSON.parse(response.body).dig("messages", 0, "status") != "0"
+        headers = evaluate_option(:headers)
+        json = evaluate_option(:json)
+        response = post_request url, headers: headers, json: json
+        raise ResponseUnsuccessful.new(response, url, headers: headers, json: json) if JSON.parse(response.body).dig("messages", 0, "status") != "0"
       end
 
       def url

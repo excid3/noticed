@@ -90,12 +90,17 @@ module Noticed
         new(params: params, record: record)
       end
 
-      def deliver(recipients = nil)
-        new.deliver(recipients)
+      def deliver(recipients = nil, options = {})
+        new.deliver(recipients, options)
       end
     end
 
-    def deliver(recipients = nil)
+    # CommentNotifier.deliver(User.all)
+    # CommentNotifier.deliver(User.all, priority: 10)
+    # CommentNotifier.deliver(User.all, queue: :low_priority)
+    # CommentNotifier.deliver(User.all, wait: 5.minutes)
+    # CommentNotifier.deliver(User.all, wait_until: 1.hour.from_now)
+    def deliver(recipients = nil, options = {})
       validate!
 
       transaction do
@@ -118,7 +123,7 @@ module Noticed
       end
 
       # Enqueue delivery job
-      EventJob.perform_later(self)
+      EventJob.set(options).perform_later(self)
 
       self
     end

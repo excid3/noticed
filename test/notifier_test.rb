@@ -64,6 +64,20 @@ class NotifierTest < ActiveSupport::TestCase
     end
   end
 
+  test "deliver wait" do
+    freeze_time
+    assert_enqueued_with job: Noticed::EventJob, at: 5.minutes.from_now do
+      ReceiptNotifier.deliver(User.first, wait: 5.minutes)
+    end
+  end
+
+  test "deliver queue" do
+    freeze_time
+    assert_enqueued_with job: Noticed::EventJob, queue: :low_priority do
+      ReceiptNotifier.deliver(User.first, queue: :low_priority)
+    end
+  end
+
   test "wait delivery method option" do
     freeze_time
     event = WaitNotifier.deliver(User.first)

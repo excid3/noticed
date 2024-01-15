@@ -6,7 +6,7 @@ module Noticed
       # Generate a Notification class each time a Notifier is defined
       def inherited(notifier)
         super
-        notifier.const_set "Notification", Class.new(Noticed::Notification)
+        notifier.const_set :Notification, Class.new(Noticed::Notification)
       end
 
       def notification_methods(&block)

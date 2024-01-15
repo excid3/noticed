@@ -8,7 +8,7 @@ class SimpleNotifier < Noticed::Event
 
   notification_methods do
     def message
-      "hey its me"
+      "hello #{recipient.email}"
     end
   end
 end

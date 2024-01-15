@@ -2,24 +2,28 @@
 
 one:
   event: one
+  type: CommentNotifier::Notification
   recipient: one (User)
   read_at: 2023-12-15 13:03:19
   seen_at: 2023-12-15 13:03:19
 
 two:
   event: two
+  type: CommentNotifier::Notification
   recipient: two (User)
   read_at: 2023-12-15 13:03:19
   seen_at: 2023-12-15 13:03:19
 
 three:
   event: three
+  type: ReceiptNotifier::Notification
   recipient: one (Account)
   read_at: 2023-12-15 13:03:19
   seen_at: 2023-12-15 13:03:19
 
 four:
   event: three
+  type: ReceiptNotifier::Notification
   recipient: two (Account)
   read_at: 2023-12-15 13:03:19
   seen_at: 2023-12-15 13:03:19

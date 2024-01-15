@@ -2,7 +2,7 @@
 
 Sends an SMS notification via Vonage / Nexmo.
 
-`deliver_by :vonage`
+`deliver_by :vonage_sms`
 
 ##### Options
 

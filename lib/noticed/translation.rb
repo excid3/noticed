@@ -4,7 +4,7 @@ module Noticed
 
     # Returns the +i18n_scope+ for the class. Overwrite if you want custom lookup.
     def i18n_scope
-      :notifications
+      :notifiers
     end
 
     def class_scope
@@ -22,7 +22,7 @@ module Noticed
 
     def scope_translation_key(key)
       if key.to_s.start_with?(".")
-        "#{i18n_scope}.#{class_scope}#{key}"
+        [i18n_scope, class_scope].compact.join(".") + key
       else
         key
       end

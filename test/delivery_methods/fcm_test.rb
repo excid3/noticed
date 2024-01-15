@@ -1,82 +1,76 @@
 require "test_helper"
 
-class FcmExample < Noticed::Base
-  deliver_by :fcm, credentials: :fcm_credentials, format: :format_notification
-
-  def fcm_credentials
-    {project_id: "api-12345"}
-  end
-
-  def fcm_credentials_as_pathname
-    Rails.root.join("config/credentials/fcm.json")
-  end
-
-  def fcm_credentials_as_string
-    "config/credentials/fcm.json"
-  end
-
-  def format_notification(device_token)
-    {
-      token: device_token,
-      notification: {
-        title: "Hey Chris",
-        body: "Am I worky?"
-      }
-    }
-  end
-end
-
-class FakeAuthorizer
-  def self.make_creds(options = {})
-    new
-  end
-
-  def fetch_access_token!
-    {"access_token" => "access-token-12341234"}
-  end
-end
-
 class FcmTest < ActiveSupport::TestCase
-  test "when credentials option is a hash, it returns the hash" do
-    credentials_hash = {foo: "bar"}
-    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: credentials_hash}).credentials
+  class FakeAuthorizer
+    def self.make_creds(options = {})
+      new
+    end
+
+    def fetch_access_token!
+      {"access_token" => "access-token-12341234"}
+    end
   end
 
-  test "when credentials option is a Pathname object, it returns the file contents" do
-    credentials_hash = {project_id: "api-12345"}
-    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: Rails.root.join("config/credentials/fcm.json")}).credentials
+  setup do
+    @delivery_method = Noticed::DeliveryMethods::Fcm.new
   end
 
-  test "when credentials option is a string, it returns the file contents" do
-    credentials_hash = {project_id: "api-12345"}
-    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: "config/credentials/fcm.json"}).credentials
+  test "notifies each device token" do
+    set_config(
+      authorizer: FakeAuthorizer,
+      credentials: {
+        "type" => "service_account",
+        "project_id" => "p_1234",
+        "private_key_id" => "private_key"
+      },
+      device_tokens: [:a, :b],
+      json: ->(device_token) {
+        {
+          message: {
+            token: device_token,
+            notification: {title: "Title", body: "Body"}
+          }
+        }
+      }
+    )
+
+    stub_request(:post, "https://fcm.googleapis.com/v1/projects/p_1234/messages:send").with(body: "{\"message\":{\"token\":\"a\",\"notification\":{\"title\":\"Title\",\"body\":\"Body\"}}}")
+    stub_request(:post, "https://fcm.googleapis.com/v1/projects/p_1234/messages:send").with(body: "{\"message\":{\"token\":\"b\",\"notification\":{\"title\":\"Title\",\"body\":\"Body\"}}}")
+
+    @delivery_method.deliver
   end
 
-  test "when credentials option is a symbol and return value of a method is a hash, it returns the hash" do
-    credentials_hash = {project_id: "api-12345"}
-    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: :fcm_credentials}).credentials
+  test "notifies of invalid tokens for clean up" do
+    cleanups = 0
+
+    set_config(
+      authorizer: FakeAuthorizer,
+      credentials: {
+        "type" => "service_account",
+        "project_id" => "p_1234",
+        "private_key_id" => "private_key"
+      },
+      device_tokens: [:a, :b],
+      json: ->(device_token) {
+        {
+          message: {
+            token: device_token,
+            notification: {title: "Title", body: "Body"}
+          }
+        }
+      },
+      invalid_token: ->(device_token) { cleanups += 1 }
+    )
+
+    stub_request(:post, "https://fcm.googleapis.com/v1/projects/p_1234/messages:send").to_return(status: 404, body: "", headers: {})
+
+    @delivery_method.deliver
+    assert_equal 2, cleanups
   end
 
-  test "when credentials option is a symbol and return value of a method is a Pathname object, it returns the file contents" do
-    credentials_hash = {project_id: "api-12345"}
-    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: :fcm_credentials_as_pathname}).credentials
-  end
+  private
 
-  test "when credentials option is a symbol and return value of a method is a string, it returns the file contents" do
-    credentials_hash = {project_id: "api-12345"}
-    assert_equal credentials_hash, Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: :fcm_credentials_as_string}).credentials
-  end
-
-  test "project_id returns the project id value from the credentials" do
-    assert_equal "api-12345", Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: :fcm_credentials}).project_id
-  end
-
-  test "access token returns a string" do
-    assert_equal "access-token-12341234", Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: :fcm_credentials, authorizer: FakeAuthorizer}).access_token
-  end
-
-  test "format" do
-    fcm_message = Noticed::DeliveryMethods::Fcm.new.assign_args(notification_class: "FcmExample", options: {credentials: :fcm_credentials, format: :format_notification}).format("12345")
-    assert_equal "12345", fcm_message.fetch(:token)
+  def set_config(config)
+    @delivery_method.instance_variable_set :@config, ActiveSupport::HashWithIndifferentAccess.new(config)
   end
 end

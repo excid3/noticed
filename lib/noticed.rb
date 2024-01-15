@@ -1,32 +1,43 @@
-require "active_job/arguments"
-require "http"
+require "noticed/version"
 require "noticed/engine"
 
 module Noticed
-  autoload :Base, "noticed/base"
+  include ActiveSupport::Deprecation::DeprecatedConstantAccessor
+
+  def self.deprecator # :nodoc:
+    @deprecator ||= ActiveSupport::Deprecation.new
+  end
+
+  deprecate_constant :Base, "Noticed::Event", deprecator: deprecator
+
+  autoload :ApiClient, "noticed/api_client"
+  autoload :BulkDeliveryMethod, "noticed/bulk_delivery_method"
   autoload :Coder, "noticed/coder"
-  autoload :HasNotifications, "noticed/has_notifications"
-  autoload :Model, "noticed/model"
-  autoload :TextCoder, "noticed/text_coder"
+  autoload :DeliveryMethod, "noticed/delivery_method"
+  autoload :RequiredOptions, "noticed/required_options"
   autoload :Translation, "noticed/translation"
-  autoload :NotificationChannel, "noticed/notification_channel"
+
+  module BulkDeliveryMethods
+    autoload :Discord, "noticed/bulk_delivery_methods/discord"
+    autoload :Slack, "noticed/bulk_delivery_methods/slack"
+    autoload :Webhook, "noticed/bulk_delivery_methods/webhook"
+  end
 
   module DeliveryMethods
+    include ActiveSupport::Deprecation::DeprecatedConstantAccessor
+    deprecate_constant :Base, "Noticed::DeliveryMethod", deprecator: Noticed.deprecator
+
     autoload :ActionCable, "noticed/delivery_methods/action_cable"
-    autoload :Base, "noticed/delivery_methods/base"
-    autoload :Database, "noticed/delivery_methods/database"
     autoload :Email, "noticed/delivery_methods/email"
     autoload :Fcm, "noticed/delivery_methods/fcm"
     autoload :Ios, "noticed/delivery_methods/ios"
     autoload :MicrosoftTeams, "noticed/delivery_methods/microsoft_teams"
     autoload :Slack, "noticed/delivery_methods/slack"
     autoload :Test, "noticed/delivery_methods/test"
-    autoload :Twilio, "noticed/delivery_methods/twilio"
-    autoload :Vonage, "noticed/delivery_methods/vonage"
+    autoload :TwilioMessaging, "noticed/delivery_methods/twilio_messaging"
+    autoload :VonageSms, "noticed/delivery_methods/vonage_sms"
+    autoload :Webhook, "noticed/delivery_methods/webhook"
   end
-
-  mattr_accessor :parent_class
-  @@parent_class = "ApplicationJob"
 
   class ValidationError < StandardError
   end
@@ -36,6 +47,8 @@ module Noticed
 
     def initialize(response)
       @response = response
+
+      super("Request to returned #{response.code} response")
     end
   end
 end

@@ -1,6 +1,6 @@
 # Firebase Cloud Messaging Delivery Method
 
-Send Android Device Notifications using the Google Firebase Cloud Messaging service and the `googleauth` gem.
+Send Device Notifications using the Google Firebase Cloud Messaging service and the `googleauth` gem. FCM supports Android, iOS, and web clients.
 
 ```bash
 bundle add "googleauth"
@@ -24,19 +24,15 @@ See the below instructions on where to store this information within your applic
 
 ```ruby
 class CommentNotification
-  deliver_by :fcm, credentials: :fcm_credentials, format: :format_notification
-
-  # This needs to return the path to your FCM credentials
-  def fcm_credentials
-    Rails.root.join("config/certs/fcm.json")
-  end
-
-  def format_notification(device_token)
-    {
-      token: device_token,
-      notification: {
-        title: "Test Title",
-        body: "Test body"
+  deliver_by :fcm do |config|
+    config.credentials = Rails.root.join("config/certs/fcm.json")
+    config.json = ->(device_token) {
+      {
+        token: device_token,
+        notification: {
+          title: "Test Title",
+          body: "Test body"
+        }
       }
     }
   end
@@ -45,10 +41,10 @@ end
 
 ## Options
 
-* `format: :format_notification`
-  Customize the Firebase Cloud Messaging notification object
+* `json`
+  Customize the Firebase Cloud Messaging notification object. This can be a Lambda or Symbol of a method name on the notifier. The callable object will be given the device token as an argument.
 
-* `credentials: :fcm_credentials`
+* `credentials`
 The location of your Firebase Cloud Messaging credentials.
 - When a String object: `deliver_by :fcm, credentials: "config/credentials/fcm.json"`
   * Interally, this string is passed to `Rails.root.join()` as an argument so there is no need to do this beforehand.

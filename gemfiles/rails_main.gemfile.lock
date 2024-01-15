@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 90a6f3663b937cf90a7f642a10dfb36f8710ce6d
+  revision: fc7befc87af05796612d03531b21c691699aeb74
   branch: main
   specs:
     actioncable (7.2.0.alpha)
@@ -15,29 +15,25 @@ GIT
       activerecord (= 7.2.0.alpha)
       activestorage (= 7.2.0.alpha)
       activesupport (= 7.2.0.alpha)
-      mail (>= 2.7.1)
-      net-imap
-      net-pop
-      net-smtp
+      mail (>= 2.8.0)
     actionmailer (7.2.0.alpha)
       actionpack (= 7.2.0.alpha)
       actionview (= 7.2.0.alpha)
       activejob (= 7.2.0.alpha)
       activesupport (= 7.2.0.alpha)
-      mail (~> 2.5, >= 2.5.4)
-      net-imap
-      net-pop
-      net-smtp
+      mail (>= 2.8.0)
       rails-dom-testing (~> 2.2)
     actionpack (7.2.0.alpha)
       actionview (= 7.2.0.alpha)
       activesupport (= 7.2.0.alpha)
       nokogiri (>= 1.8.5)
+      racc
       rack (>= 2.2.4)
       rack-session (>= 1.0.1)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
+      useragent (~> 0.16)
     actiontext (7.2.0.alpha)
       actionpack (= 7.2.0.alpha)
       activerecord (= 7.2.0.alpha)
@@ -74,8 +70,7 @@ GIT
       drb
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
-      mutex_m
-      tzinfo (~> 2.0)
+      tzinfo (~> 2.0, >= 2.0.5)
     rails (7.2.0.alpha)
       actioncable (= 7.2.0.alpha)
       actionmailbox (= 7.2.0.alpha)
@@ -102,14 +97,13 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (1.6.3)
-      http (>= 4.0.0)
-      rails (>= 5.2.0)
+    noticed (2.0.0)
+      rails (>= 6.1.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.5)
+    addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     apnotic (1.7.1)
       connection_pool (~> 2)
@@ -119,8 +113,8 @@ GEM
       rake
       thor (>= 0.14.0)
     ast (2.4.2)
-    base64 (0.1.1)
-    bigdecimal (3.1.4)
+    base64 (0.2.0)
+    bigdecimal (3.1.5)
     builder (3.2.4)
     byebug (11.1.3)
     concurrent-ruby (1.2.2)
@@ -128,53 +122,38 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    date (3.3.3)
-    domain_name (0.5.20190701)
-      unf (>= 0.0.5, < 1.0.0)
-    drb (2.1.1)
+    date (3.3.4)
+    drb (2.2.0)
       ruby2_keywords
     erubi (1.12.0)
-    faraday (2.7.11)
-      base64
-      faraday-net_http (>= 2.0, < 3.1)
-      ruby2_keywords (>= 0.0.4)
-    faraday-net_http (3.0.2)
-    ffi (1.16.3)
-    ffi-compiler (1.0.1)
-      ffi (>= 1.0.0)
-      rake
+    faraday (2.9.0)
+      faraday-net_http (>= 2.0, < 3.2)
+    faraday-net_http (3.1.0)
+      net-http
     globalid (1.2.1)
       activesupport (>= 6.1)
-    googleauth (1.8.1)
-      faraday (>= 0.17.3, < 3.a)
+    google-cloud-env (2.1.0)
+      faraday (>= 1.0, < 3.a)
+    googleauth (1.9.1)
+      faraday (>= 1.0, < 3.a)
+      google-cloud-env (~> 2.1)
       jwt (>= 1.4, < 3.0)
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
-    hashdiff (1.0.1)
+    hashdiff (1.1.0)
     http-2 (0.11.0)
-    http (5.1.1)
-      addressable (~> 2.8)
-      http-cookie (~> 1.0)
-      http-form_data (~> 2.2)
-      llhttp-ffi (~> 0.4.0)
-    http-cookie (1.0.5)
-      domain_name (~> 0.5)
-    http-form_data (2.3.0)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
-    io-console (0.6.0)
-    irb (1.8.1)
+    io-console (0.7.1)
+    irb (1.11.1)
       rdoc
-      reline (>= 0.3.8)
-    json (2.6.3)
+      reline (>= 0.4.2)
+    json (2.7.1)
     jwt (2.7.1)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
-    llhttp-ffi (0.4.0)
-      ffi-compiler (~> 1.0)
-      rake (~> 13.0)
-    loofah (2.21.4)
+    loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mail (2.8.1)
@@ -184,34 +163,40 @@ GEM
       net-smtp
     marcel (1.0.2)
     mini_mime (1.1.5)
-    minitest (5.20.0)
+    mini_portile2 (2.8.5)
+    minitest (5.21.1)
     multi_json (1.15.0)
-    mutex_m (0.1.2)
     mysql2 (0.5.5)
+    net-http (0.4.1)
+      uri
     net-http2 (0.18.5)
       http-2 (~> 0.11)
-    net-imap (0.4.1)
+    net-imap (0.4.9.1)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.2.1)
+    net-protocol (0.2.2)
       timeout
-    net-smtp (0.4.0)
+    net-smtp (0.4.0.1)
       net-protocol
-    nio4r (2.5.9)
-    nokogiri (1.15.4-arm64-darwin)
+    nio4r (2.7.0)
+    nokogiri (1.16.0-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.0-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.0-x86_64-linux)
       racc (~> 1.4)
     os (1.1.4)
-    parallel (1.23.0)
-    parser (3.2.2.4)
+    parallel (1.24.0)
+    parser (3.3.0.3)
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
-    psych (5.1.1)
+    psych (5.1.2)
       stringio
-    public_suffix (5.0.3)
-    racc (1.7.1)
+    public_suffix (5.0.4)
+    racc (1.7.3)
     rack (3.0.8)
     rack-session (2.0.0)
       rack (>= 3.0.0)
@@ -228,30 +213,29 @@ GEM
       loofah (~> 2.21)
       nokogiri (~> 1.14)
     rainbow (3.1.1)
-    rake (13.0.6)
-    rdoc (6.5.0)
+    rake (13.1.0)
+    rdoc (6.6.2)
       psych (>= 4.0.0)
-    regexp_parser (2.8.2)
-    reline (0.3.9)
+    regexp_parser (2.9.0)
+    reline (0.4.2)
       io-console (~> 0.5)
     rexml (3.2.6)
-    rubocop (1.56.4)
-      base64 (~> 0.1.1)
+    rubocop (1.59.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.2.3)
+      parser (>= 3.2.2.4)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.28.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.29.0)
+    rubocop-ast (1.30.0)
       parser (>= 3.2.1.0)
-    rubocop-performance (1.19.1)
-      rubocop (>= 1.7.0, < 2.0)
-      rubocop-ast (>= 0.4.0)
+    rubocop-performance (1.20.2)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     signet (0.18.0)
@@ -259,28 +243,28 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    sqlite3 (1.6.7-arm64-darwin)
-    standard (1.31.2)
+    sqlite3 (1.6.9)
+      mini_portile2 (~> 2.8.0)
+    standard (1.33.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
-      rubocop (~> 1.56.4)
+      rubocop (~> 1.59.0)
       standard-custom (~> 1.0.0)
-      standard-performance (~> 1.2)
+      standard-performance (~> 1.3)
     standard-custom (1.0.2)
       lint_roller (~> 1.0)
       rubocop (~> 1.50)
-    standard-performance (1.2.1)
+    standard-performance (1.3.1)
       lint_roller (~> 1.1)
-      rubocop-performance (~> 1.19.1)
-    stringio (3.0.8)
-    thor (1.2.2)
-    timeout (0.4.0)
+      rubocop-performance (~> 1.20.2)
+    stringio (3.1.0)
+    thor (1.3.0)
+    timeout (0.4.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.8.2)
     unicode-display_width (2.5.0)
+    uri (0.13.0)
+    useragent (0.16.10)
     webmock (3.19.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -294,6 +278,7 @@ GEM
 PLATFORMS
   arm64-darwin-22
   x86_64-darwin-22
+  x86_64-darwin-23
   x86_64-linux
 
 DEPENDENCIES
@@ -311,4 +296,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.4.20
+   2.5.3

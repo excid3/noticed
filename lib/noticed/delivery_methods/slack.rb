@@ -1,26 +1,16 @@
 module Noticed
   module DeliveryMethods
-    class Slack < Base
+    class Slack < DeliveryMethod
+      DEFAULT_URL = "https://slack.com/api/chat.postMessage"
+
+      required_options :json
+
       def deliver
-        post(url, json: format)
-      end
-
-      private
-
-      def format
-        if (method = options[:format])
-          notification.send(method)
-        else
-          notification.params
-        end
+        post_request url, headers: evaluate_option(:headers), json: evaluate_option(:json)
       end
 
       def url
-        if (method = options[:url])
-          notification.send(method)
-        else
-          Rails.application.credentials.slack[:notification_url]
-        end
+        evaluate_option(:url) || DEFAULT_URL
       end
     end
   end

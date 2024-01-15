@@ -1,9 +1,5 @@
 one:
-  first_name: "First"
-  last_name: "User"
-  email: "first@example.com"
+  email: one@example.org
 
 two:
-  first_name: "Second"
-  last_name: "User"
-  email: "second@example.com"
+  email: two@example.org

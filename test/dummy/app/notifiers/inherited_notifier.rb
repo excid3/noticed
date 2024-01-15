@@ -1,0 +1,2 @@
+class InheritedNotifier < SimpleNotifier
+end

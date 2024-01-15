@@ -125,12 +125,15 @@ end
 
 ## Delivering to Sandboxes and real devices
 
+If you wish to send notifications to both sandboxed and real devices from the same application, you can configure two iOS delivery methods
+A user has_many tokens that can be generated from both development (sandboxed devices), or production (not sandboxed devices) and is unrelated to the rails environment or endpoint being used. I
+
 ```ruby
 deliver_by :ios do |config|
  config.device_tokens = ->(recipient) { recipient.notification_tokens.where(environment: :production, platform: :iOS).pluck(:token) }
 end
 
-deliver_by :ios_development do |config|
+deliver_by :ios_development, class: "Noticed::DeliveryMethods::Ios" do |config|
   config.development = true
   config.device_tokens = ->(recipient) { recipient.notification_tokens.where(environment: :development, platform: :iOS).pluck(:token) }
 end

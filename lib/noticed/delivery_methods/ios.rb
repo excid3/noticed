@@ -12,7 +12,7 @@ module Noticed
           apn = Apnotic::Notification.new(device_token)
           format_notification(apn)
 
-          connection_pool = !!evaluate_option(:development) ? development_pool : production_pool
+          connection_pool = (!!evaluate_option(:development)) ? development_pool : production_pool
           connection_pool.with do |connection|
             response = connection.push(apn)
             raise "Timeout sending iOS push notification" unless response

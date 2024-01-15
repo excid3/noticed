@@ -11,6 +11,12 @@ class NotifierTest < ActiveSupport::TestCase
     assert_equal [:message], InheritedNotifier.required_params
   end
 
+  test "notification_methods adds methods to Noticed::Notifications" do
+    user = users(:one)
+    event = SimpleNotifier.with(message: "test").deliver(user)
+    assert_equal "hello #{user.email}", event.notifications.last.message
+  end
+
   test "serializes globalid objects with text column" do
     user = users(:one)
     notification = Noticed::Event.create!(type: "SimpleNotifier", params: {user: user})

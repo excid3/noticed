@@ -5,4 +5,10 @@ class SimpleNotifier < Noticed::Event
   def url
     root_url(host: "example.org")
   end
+
+  notification_methods do
+    def message
+      "hello #{recipient.email}"
+    end
+  end
 end

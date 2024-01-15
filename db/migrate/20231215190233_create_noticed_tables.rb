@@ -13,6 +13,7 @@ class CreateNoticedTables < ActiveRecord::Migration[6.1]
     end
 
     create_table :noticed_notifications do |t|
+      t.string :type
       t.belongs_to :event, null: false
       t.belongs_to :recipient, polymorphic: true, null: false
       t.datetime :read_at

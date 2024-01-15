@@ -1,6 +1,7 @@
 module Noticed
   class Event < ApplicationRecord
     include Deliverable
+    include NotificationMethods
     include Translation
     include Rails.application.routes.url_helpers
 

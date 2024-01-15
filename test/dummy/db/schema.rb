@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2023_12_15_202924) do
   end
 
   create_table "noticed_notifications", force: :cascade do |t|
+    t.string "type"
     t.integer "event_id", null: false
     t.string "recipient_type", null: false
     t.integer "recipient_id", null: false

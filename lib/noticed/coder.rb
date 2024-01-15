@@ -1,3 +1,5 @@
+require "active_job/arguments"
+
 module Noticed
   class Coder
     def self.load(data)

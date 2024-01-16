@@ -1,9 +1,10 @@
 # Noticed
 
-
 ### 🎉  Notifications for your Ruby on Rails app.
 
 [![Build Status](https://github.com/excid3/noticed/workflows/Tests/badge.svg)](https://github.com/excid3/noticed/actions) [![Gem Version](https://badge.fury.io/rb/noticed.svg)](https://badge.fury.io/rb/noticed)
+
+**⚠️⚠️ Upgrading from V1? Read the [Upgrade Guide](https://github.com/excid3/noticed/blob/main/UPGRADE.md)!**
 
 Noticed is a gem that allows your application to send notifications of varying types, over various mediums, to various recipients. Be it a Slack notification to your own team when some internal event occurs or a notification to your user, sent as a text message, email, and real-time UI element in the browser, Noticed supports all of the above (at the same time)!
 
@@ -39,18 +40,20 @@ Bulk delivery methods we support:
 
 ## 🎬 Screencast
 
+(Note, this screencast is from Noticed V1 and while many concepts transfer, version 2.0 introduces several [major changes](https://github.com/excid3/noticed/blob/main/UPGRADE.md))
+
 <a href="https://www.youtube.com/watch?v=Scffi4otlFc"><img src="https://i.imgur.com/UvVKWwD.png" title="How to add Notifications to Rails with Noticed" width="50%" /></a>
 
 [Watch Screencast](https://www.youtube.com/watch?v=Scffi4otlFc)
 
 ## 🚀 Installation
-Run the following command to add Noticed to your Gemfile
+Run the following command to add Noticed to your Gemfile:
 
 ```ruby
 bundle add "noticed"
 ```
 
-Add the migraitons
+Generate then run the migrations:
 
 ```bash
 rails noticed:install:migrations
@@ -71,9 +74,9 @@ rails generate noticed:notifier NewCommentNotifier
 
 Notifiers are essentially the controllers of the Noticed ecosystem and represent an Event. As such, we recommend naming them with the event they model in mind — be it a `NewSaleNotifier,` `ChargeFailureNotifier`, etc.
 
-Notifiers must inherit from `Noticed::Event`. This provides all their functionality and allows them to be delivered.
+Notifiers must inherit from `Noticed::Event`. This provides all of their functionality.
 
-A Notifier exists to declare the various delivery systems intended to be used for that event _and_ any notification helper methods necessary in those delivery mechanisms. In this example we’ll deliver by `:action_cable` to provide real-time UI updates to users’ browsers, `:email` if they’ve opted into email notifications, and a bulk notification to `:discord` to tell folks on the Discord server there’s been a new comment.
+A Notifier exists to declare the various delivery methods that should be used for that event _and_ any notification helper methods necessary in those delivery mechanisms. In this example we’ll deliver by `:action_cable` to provide real-time UI updates to users’ browsers, `:email` if they’ve opted into email notifications, and a bulk notification to `:discord` to tell everyone on the Discord server there’s been a new comment.
 
 ```ruby
 # ~/app/notifiers/new_comment_notifier.rb
@@ -93,7 +96,8 @@ class NewCommentNotifier < Noticed::Event
     config.url = "https://discord.com/xyz/xyz/123"
     config.json = -> {
       {
-        message: message
+        message: message,
+        channel: :general
       }
     }
   end
@@ -115,9 +119,34 @@ end
 
 For deeper specifics on setting up the `:action_cable`, `:email`, and `:discord` (bulk) delivery methods, refer to their docs: [`action_cable`](docs/delivery_methods/action_cable.md), [`email`](docs/delivery_methods/email.md), and [`discord` (bulk)](docs/bulk_delivery_methods/discord.md).
 
+##### Required Params
+
+While explicit / required parameters are completely optional, Notifiers are able to opt in to required parameters via the `required_params` method:
+
+```ruby
+class CarSaleNotifier < Noticed::Event
+  deliver_by :email { |c| c.mailer = "BranchMailer" }
+
+  # `record` is the Car record, `Branch` is the dealership
+  required_params :record, :branch
+end
+```
+
+Which will validate upon any invocation that the specified parameters are present:
+
+```ruby
+CarSaleNotifier.with(record: Car.last).deliver(Branch.last)
+#=> Noticed::ValidationError("Param `branch` is required for CarSaleNotifier")
+
+CarSaleNotifier.with(record: Car.last, branch: Branch.last).deliver(Branch.hq)
+#=> OK
+```
+
+
+
 ##### Helper Methods
 
-Notifiers can implement various helper methods, within a `notification_methods` block, that make it easier to render the resulting notification directly. While delivering by email (which has its own ActionMailer stack for rendering and processing) may or may not need these helpers, for example, rendering a notification in a web-view with ERB presents a case where these helpers are useful.
+Notifiers can implement various helper methods, within a `notification_methods` block, that make it easier to render the resulting notification directly. These helpers can be helpful depending on where and how you choose to render notifications. A common use is rendering a user’s notifications in your web UI as standard ERB. These notification helper methods make that rendering much simpler:
 
 ```erb
 <div>
@@ -127,7 +156,9 @@ Notifiers can implement various helper methods, within a `notification_methods` 
 </div>
 ```
 
-##### URL Helpers
+On the other hand, if you’re using email delivery, ActionMailer has its own full stack for setting up objects and rendering. Your notification helper methods will always be available from the notification object, but using ActionMailer’s own paradigms may fit better for that particular delivery method. YMMV.
+
+######  URL Helpers
 
 Rails url helpers are included in Notifiers by default so you have full access to them in your notification helper methods, just like you would in your controllers and views.
 
@@ -137,7 +168,7 @@ _But don't forget_, you'll need to configure `default_url_options` in order for 
 Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 ```
 
-##### Translations
+###### Translations
 
 We've also included Rails’ `translate` and `t` helpers for you to use in your notification helper methods. This also provides an easy way of scoping translations. If the key starts with a period, it will automatically scope the key under `notifiers`, the underscored name of the notifier class, and `notification`. For example:
 
@@ -184,7 +215,7 @@ You can use the `if:` and `unless: ` options on your delivery methods to check t
 For example:
 
 ```ruby
-class CommentNotifier < Noticed::Base
+class CommentNotifier < Noticed::Event
   deliver_by :email do |config|
     config.mailer = 'CommentMailer'
     config.method = :new_comment
@@ -213,27 +244,29 @@ NewCommentNotifier.with(record: @comment, foo: "bar").deliver(@comment.thread.al
 
 This instantiates a new `NewCommentNotifier` with params (similar to ActiveJob, any serializable params are permitted), then delivers notifications to all authors in the thread.
 
-The `record:` param is a special param that gets assigned to the `record` polymorphic association in the database. You should try to set the `record:` param where possible. This may be best understood as ‘the record/object this notification is _about_’.
+✨ The `record:` param is a special param that gets assigned to the `record` polymorphic association in the database. You should try to set the `record:` param where possible. This may be best understood as ‘the record/object this notification is _about_’, and allows for future queries from the record-side: “give me all notifications that were generated from this comment”.
 
-This invocation will create a single `Noticed::Event` record and a `Noticed::Notification` record for each recipient. A background job will then process the Event and fire off a separate background job for each bulk delivery method and recipient + individual-delivery-method combination. In this case, that’d be the following jobs kicked off from this event:
+This invocation will create a single `Noticed::Event` record and a `Noticed::Notification` record for each recipient. A background job will then process the Event and fire off a separate background job for each bulk delivery method _and_ each recipient + individual-delivery-method combination. In this case, that’d be the following jobs kicked off from this event:
 
-- A bulk delivery job for `:discord`
-- An individual delivery job of `:action_cable` for the first thread author
-- An individual delivery job of `:email` for the first thread author
-- An individual delivery job of `:action_cable` for the second thread author
-- An individual delivery job of `:email` for the second thread author
+- A bulk delivery job for `:discord` bulk delivery
+- An individual delivery job for `:action_cable` method to the first thread author
+- An individual delivery job for `:email` method to the first thread author
+- An individual delivery job for `:action_cable` method to the second thread author
+- An individual delivery job for `:email` method to the second thread author
 - Etc...
 
 ## ✅ Best Practices
 
 ### Renaming Notifiers
 
-If you rename a Notifier class your existing data and Noticed setup can break. This is because Noticed serializes the class name and sets it to the `type` column on the `Noticed::Event` record.
+If you rename a Notifier class your existing data and Noticed setup may break. This is because Noticed serializes the class name and sets it to the `type` column on the `Noticed::Event` record and the `type` column on the `Noticed::Notification` record.
 
-When renaming a Notifier class you will need to backfill existing Events to reference the new name.
+When renaming a Notifier class you will need to backfill existing Events and Notifications to reference the new name.
 
 ```ruby
 Noticed::Event.where(type: "OldNotifierClassName").update_all(type: NewNotifierClassName.name)
+# and
+Noticed::Notification.where(type: "OldNotifierClassName::Notification").update_all(type: "#{NewNotifierClassName.name}::Notification")
 ```
 
 ## 🚛 Delivery Methods
@@ -260,12 +293,28 @@ Bulk delivery methods:
 * [Slack](docs/bulk_delivery_methods/slack.md)
 * [Webhook](docs/bulk_delivery_methods/webhook.md)
 
+### No Delivery Methods
+
+It’s worth pointing out that you can have a fully-functional and useful Notifier that has _no_ delivery methods. This means that invoking the Notifier and ‘sending’ the notification will only create new database records (no external surfaces like email, sms, etc.). This is still useful as it’s the database records that allow your app to render a user’s (or other object’s) notifications in your web UI.
+
+So even with no delivery methods set, this example is still perfectly available and helpful:
+
+```erb
+<div>
+  <% @user.notifications.each do |notification| %>
+    <%= link_to notification.message, notification.url %>
+  <% end %>
+</div>
+```
+
+Sending a notification is entirely an internal-to-your-app function. Delivery methods just get the word out! But many apps may be fully satisfied without that extra layer.
+
 ### Fallback Notifications
 
 A common pattern is to deliver a notification via a real (or real-ish)-time service, then, after some time has passed, email the user if they have not yet read the notification. You can implement this functionality by combining multiple delivery methods, the `wait` option, and the conditional `if` / `unless` option.
 
 ```ruby
-class NewCommentNotifier< Noticed::Base
+class NewCommentNotifier< Noticed::Event
   deliver_by :action_cable
   deliver_by :email do |config|
     config.mailer = "CommentMailer"
@@ -277,100 +326,96 @@ end
 
 Here a notification will be created immediately in the database (for display directly in your app’s web interface) and sent via ActionCable. If the notification has not been marked `read` after 15 minutes, the email notification will be sent. If the notification has already been read in the app, the email will be skipped.
 
+_A note here: notifications expose a `#mark_as_read` method, but your app must choose when and where to call that method._
+
 You can mix and match the options and delivery methods to suit your application specific needs.
 
 ### 🚚 Custom Delivery Methods
 
-To generate a custom delivery method, simply run
+If you want to build your own delivery method to deliver notifications to a specific service or medium that Noticed doesn’t (or doesn’t _yet_) support, you’re welcome to do so! To generate a custom delivery method, simply run
 
 `rails generate noticed:delivery_method Discord`
 
-This will generate a new `DeliveryMethods::Discord` class inside the `app/notifications/delivery_methods` folder, which can be used to deliver notifications to Discord.
+This will generate a new `DeliveryMethods::Discord` class inside the `app/notifiers/delivery_methods` folder, which can be used to deliver notifications to Discord.
 
 ```ruby
-class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
+class DeliveryMethods::Discord < Noticed::DeliveryMethod
+  # Specify the config options your delivery method requires in its config block
+  required_options # :foo, :bar
+
   def deliver
-    # Logic for sending a Discord notification
+    # Logic for sending the notification
   end
 end
+
 ```
 
 You can use the custom delivery method thus created by adding a `deliver_by` line with a unique name and `class` option in your notification class.
 
 ```ruby
-class MyNotifier < Noticed::Base
+class MyNotifier < Noticed::Event
   deliver_by :discord, class: "DeliveryMethods::Discord"
 end
 ```
 
 Delivery methods have access to the following methods and attributes:
 
-* `record` - The instance of the Notification. You can call methods on the notification to let the user easily override formatting and other functionality of the delivery method.
-* `options` - Any configuration options on the `deliver_by` line.
-* `recipient` - The object who should receive the notification. This is typically a User, Account, or other ActiveRecord model.
-* `params` - The params passed into the notification. This is details about the event that happened. For example, a user commenting on a post would have params of `{ user: User.first }`
+* `event` — The `Noticed::Event` record that spawned the notification object currently being delivered
+* `record` — The object originally passed into the Notifier as the `record:` param (see the ✨ note above)
+* `notification` — The `Noticed::Notification` instance being delivered. All notification helper methods are available on this object
+* `recipient` — The individual recipient object being delivered to for this notification (remember that each recipient gets their own instance of the Delivery Method `#deliver`)
+* `config` — The hash of configuration options declared by the Notifier that generated this notification and delivery
+* `params` — The parameters given to the Notifier in the invocation (via `.with()`)
 
-#### Validating options passed to Custom Delivery methods
+#### Validating config options passed to Custom Delivery methods
 
-The presence of the delivery method options is automatically validated if using the `option(s)` method.
-
-If you want to validate that the passed options contain valid values, or to add any custom validations, override the `self.validate!(delivery_method_options)` method from the `Noticed::DeliveryMethods::Base` class.
+The presence of delivery method config options are automatically validated when declaring them with the `required_options` method. In the following example, Noticed will ensure that any Notifier using `deliver_by :email` will specify the `mailer` and `method` config keys:
 
 ```ruby
-class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
-  option :username # Requires the username option to be passed
+class DeliveryMethods::Email < Noticed::DeliveryMethod
+  required_options :mailer, :method
 
   def deliver
-    # Logic for sending a Discord notification
+    # ...
+    method = config.method
   end
-
-  def self.validate!(delivery_method_options)
-    super # Don't forget to call super, otherwise option presence won't be validated
-
-    # Custom validations
-    if delivery_method_options[:username].blank?
-      raise Noticed::ValidationError, 'the `username` option must be present'
-    end
-  end
-end
-
-class CommentNotifier < Noticed::Base
-  deliver_by :discord, class: 'DeliveryMethods::Discord'
 end
 ```
 
-Now it will raise an error because a required argument is missing.
-
-To fix the error, the argument has to be passed correctly. For example:
+If you’d like your config options to support dynamic resolution (set `config.foo` to a lambda or symbol of a method name etc.), you can use `evaluate_option`:
 
 ```ruby
-class CommentNotifier < Noticed::Base
-  deliver_by :discord, class: 'DeliveryMethods::Discord', username: User.admin.username
+class NewSaleNotifier < Noticed::Event
+  deliver_by :whats_app do |config|
+    config.day = -> { is_tuesday? "Tuesday" : "Not Tuesday" }
+  end
 end
-```
 
-#### Callbacks
+class DeliveryMethods::WhatsApp < Noticed::DeliveryMethod
+  required_options :day
 
-Callbacks for delivery methods wrap the *actual* delivery of the notification. You can use `before_deliver`, `around_deliver` and `after_deliver` in your custom delivery methods.
-
-```ruby
-class DeliveryMethods::Discord < Noticed::DeliveryMethods::Base
-  after_deliver do
-    # Do whatever you want
+  def deliver
+    # ...
+		config.day #=> #<Proc:0x000f7c8 (lambda)>
+    evaluate_option(config.day) #=> "Tuesday"
   end
 end
 ```
 
 ### 📦 Database Model
 
-The Notification database model includes several helpful features to make working with database notifications easier.
+The Noticed database models include several helpful features to make working with notifications easier.
 
-#### Class methods
+#### Notification
+
+##### Class methods/scopes
+
+(Assuming your user `has_many :notifications, as: :recipient, class_name: "Noticed::Notification"`)
 
 Sorting notifications by newest first:
 
 ```ruby
-user.notifications.newest_first
+@user.notifications.newest_first
 ```
 
 Query for read or unread notifications:
@@ -399,7 +444,9 @@ Convert back into a Noticed notifier object:
 Mark notification as read / unread:
 
 ```ruby
+@notification.mark_as_read
 @notification.mark_as_read!
+@notification.mark_as_unread
 @notification.mark_as_unread!
 ```
 
@@ -412,41 +459,36 @@ Check if read / unread:
 
 #### Associating Notifications
 
-Adding notification associations to your models makes querying and deleting notifications easy and is a pretty critical feature of most applications.
+Adding notification associations to your models makes querying, rendering, and managing notifications easy (and is a pretty critical feature of most applications).
 
-For example, in most cases, you'll want to delete notifications for records that are destroyed.
+There are two ways to associate your models to notifications:
 
-We'll need two associations for this:
+1. Where your object `has_many` notifications as the recipient (who you sent the notification to)
+2. Where your object `has_many` notifications as the `record` (what the notifications were about)
 
-1. Notifications where the record is the recipient
-2. Notifications where the record is in the notification params
+In the former, we’ll use a `has_many` to `:notifications`. In the latter, we’ll actually `has_many` to `:events`, since `record`s generate notifiable _events_ (and events generate notifications).
 
-For example,  we can query the notifications and delete them on destroy like so:
+We can illustrate that in the following:
 
 ```ruby
-class Post < ApplicationRecord
-  # Standard association for deleting notifications when you're the recipient
-  has_many :notifications, as: :recipient, dependent: :destroy
-
-  # Helper for associating and destroying Notification records where(params: {post: self})
-  has_noticed_notifications
-
-  # You can override the param_name, the notification model name, or disable the before_destroy callback
-  has_noticed_notifications param_name: :parent, destroy: false, model_name: "Notification"
+class User < ApplicationRecord
+  has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
 end
 
-# Create a CommentNotification with a post param
-CommentNotifier.with(post: @post).deliver(user)
-# Lookup Notifications where params: {post: @post}
-@post.notifications_as_post
+# All of the notifications the user has been sent
+# @user.notifications.each { |n| render(n) }
 
-CommentNotifier.with(parent: @post).deliver(user)
-@post.notifications_as_parent
+class Post < ApplicationRecord
+  has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
+end
+
+# All of the notification events this post generated
+# @post.noticed_events.each { |ne| ne.notifications... }
 ```
 
 #### Handling Deleted Records
 
-If you create a notification but delete the associated record and forgot `has_noticed_notifications` on the model, the jobs for sending the notification will not be able to find the record when ActiveJob deserializes. You can discard the job on these errors by adding the following to `ApplicationJob`:
+Generally we recommend using a `dependent: ___` relationship on your models to avoid cases where Noticed Events or Notifications are left lingering when your models are destroyed. In the case that they are or data becomes mis-matched, you’ll likely run into deserialization issues. That may be globally alleviated with the following snippet, but use with caution.
 
 ```ruby
 class ApplicationJob < ActiveJob::Base
@@ -468,3 +510,11 @@ DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
 
 ## 📝 License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+
+
+
+
+
+
+Search the whole doc for `notification`

@@ -7,6 +7,7 @@ module Noticed
 
     attr_reader :config, :event, :notification
     delegate :recipient, to: :notification
+    delegate :record, :params, to: :event
 
     def perform(delivery_method_name, notification, overrides: {})
       @notification = notification

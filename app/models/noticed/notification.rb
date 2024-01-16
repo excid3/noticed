@@ -10,7 +10,5 @@ module Noticed
     scope :newest_first, -> { order(created_at: :desc) }
 
     delegate :params, :record, to: :event
-
-    attribute :params, default: {}
   end
 end

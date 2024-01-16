@@ -33,7 +33,7 @@ Bulk delivery methods (one notification for all recipients):
 
 ## 🎬 Screencast
 
-<a href="https://www.youtube.com/watch?v=SzX-aBEqnAc"><img src="https://i.imgur.com/fOCvUh2.png" title="How to add Notifications to Rails with Noticed" width="50%" /></a>
+<a href="https://www.youtube.com/watch?v=SzX-aBEqnAc"><img src="https://i.imgur.com/UvVKWwD.png" title="How to add Notifications to Rails with Noticed" width="50%" /></a>
 
 [Watch Screencast](https://www.youtube.com/watch?v=SzX-aBEqnAc)
 

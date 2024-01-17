@@ -509,10 +509,3 @@ DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
 ## 📝 License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
-
-
-
-
-
-
-Search the whole doc for `notification`

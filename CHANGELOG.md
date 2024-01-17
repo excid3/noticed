@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.0.1
+
+* Include `notification` and `recipient` in email params. Fixes #366
+
 ### 2.0.0
 
 * [Breaking] Noticed now provides its own models for managing notifications. Migrate existing model(s) to use the new Noticed tables.

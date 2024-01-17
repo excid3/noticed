@@ -12,6 +12,7 @@ Instead of having models live in your application, Noticed v2 adds models manage
 
 Delete the `Notification` model from `app/models/notifications.rb`.
 
+Then run the new migrations:
 ```bash
 rails noticed:install:migrations
 rails db:migrate

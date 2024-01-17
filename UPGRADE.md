@@ -10,14 +10,22 @@ We've made some major changes to Noticed to simplify and support more delivery m
 
 Instead of having models live in your application, Noticed v2 adds models managed by the gem.
 
+Delete the `Notification` model from `app/models/notifications.rb`.
+
 ```bash
 rails noticed:install:migrations
 rails db:migrate
 ```
 
-To migrate your data to the new tables, loop through your existing notifications and create new records for each one
+To migrate your data to the new tables, loop through your existing notifications and create new records for each one. You can do this in a Rake task or in the Rails console:
 
 ```ruby
+# Temporarily define the Notification model to access the old table
+class Notification < ActiveRecord::Base
+  self.inheritance_column = nil
+end
+
+# Migrate each record to the new tables
 Notification.find_each do |notification|
   attributes = notification.attributes.slice("id", "type")
   attributes[:type] = attributes[:type].sub("Notification", "Notifier"))
@@ -27,7 +35,7 @@ Notification.find_each do |notification|
 end
 ```
 
-After migrating, you can drop the old notifications table and model.
+After migrating, you can drop the old notifications table.
 
 ### Parent Class
 

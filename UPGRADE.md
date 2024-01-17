@@ -88,6 +88,43 @@ class CommentNotifier < Noticed::Event
 end
 ```
 
+### Helper methods
+
+Helper methods defined in Notifiers have changed slightly. In order to access helper methods from Notification objects, for example:
+
+```erb
+<div>
+  <% @user.notifications.each do |notification| %>
+    <%= link_to notification.message, notification.url %>
+  <% end %>
+</div>
+```
+
+You’ll need to wrap helper methods in the new `notification_methods` block within your Notifier:
+
+```ruby
+class NewCommentNotifier < Noticed::Event
+  deliver_by :email do |config|
+    # ...
+  end
+
+  notification_methods do
+    # I18n helpers still available here
+    def message
+      t(".message")
+    end
+
+    # URL helpers are available here too
+    def url
+      user_post_path(recipient, params[:post])
+    end
+  end
+end
+```
+
+
+
+
 ### Has Noticed Notifications
 
 `has_noticed_notifications` has been removed in favor of the `record` polymorphic relationship that can be directly queried with ActiveRecord. You can add the necessary json query to your model(s) to restore the json query if needed.

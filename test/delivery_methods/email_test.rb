@@ -32,6 +32,21 @@ class EmailTest < ActiveSupport::TestCase
     end
   end
 
+  test "includes notification in params" do
+    set_config(mailer: "UserMailer", method: "new_comment")
+    assert @delivery_method.params.has_key?(:notification)
+  end
+
+  test "includes record in params" do
+    set_config(mailer: "UserMailer", method: "new_comment")
+    assert @delivery_method.params.has_key?(:record)
+  end
+
+  test "includes recipient in params" do
+    set_config(mailer: "UserMailer", method: "new_comment")
+    assert @delivery_method.params.has_key?(:recipient)
+  end
+
   private
 
   def set_config(config)

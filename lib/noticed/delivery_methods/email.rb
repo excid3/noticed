@@ -6,13 +6,17 @@ module Noticed
       def deliver
         mailer = fetch_constant(:mailer)
         email = evaluate_option(:method)
-        params = (evaluate_option(:params) || notification&.params || {}).merge(record: notification&.record)
-        args = evaluate_option(:args)
-
-        mail = mailer.with(params)
-        mail = args.present? ? mail.send(email, *args) : mail.send(email)
-
+        args = evaluate_option(:args) || []
+        mail = mailer.with(params).send(email, *args)
         (!!evaluate_option(:enqueue)) ? mail.deliver_later : mail.deliver_now
+      end
+
+      def params
+        (evaluate_option(:params) || notification&.params || {}).merge(
+          notification: notification,
+          record: notification&.record,
+          recipient: notification&.recipient
+        )
       end
     end
   end

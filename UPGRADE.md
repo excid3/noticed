@@ -31,7 +31,12 @@ Notification.find_each do |notification|
   attributes = notification.attributes.slice("id", "type")
   attributes[:type] = attributes[:type].sub("Notification", "Notifier"))
   attributes[:params] = Noticed::Coder.load(notification.params)
-  attributes[:notifications_attributes] = [{recipient_type: notification.recipient_type, recipient_id: notification.recipient_id, seen_at: notification.read_at, read_at: notification.interacted_at}]
+  attributes[:notifications_attributes] = [{
+    recipient_type: notification.recipient_type,
+    recipient_id: notification.recipient_id,
+    read_at: notification.read_at,
+    seen_at: notification.read_at
+  }]
   Noticed::Event.create!(attributes)
 end
 ```
@@ -130,9 +135,6 @@ class NewCommentNotifier < Noticed::Event
   end
 end
 ```
-
-
-
 
 ### Has Noticed Notifications
 

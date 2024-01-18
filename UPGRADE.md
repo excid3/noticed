@@ -28,10 +28,12 @@ end
 
 # Migrate each record to the new tables
 Notification.find_each do |notification|
-  attributes = notification.attributes.slice("id", "type")
-  attributes[:type] = attributes[:type].sub("Notification", "Notifier"))
+  attributes = notification.attributes.slice("id", "type").with_indifferent_access
+  attributes[:type] = attributes[:type].sub("Notification", "Notifier")
   attributes[:params] = Noticed::Coder.load(notification.params)
+  attributes[:params] = {} if attributes[:params].try(:has_key?, "noticed_error") # Skip invalid records
   attributes[:notifications_attributes] = [{
+    type: "#{attributes[:type]}::Notification",
     recipient_type: notification.recipient_type,
     recipient_id: notification.recipient_id,
     read_at: notification.read_at,

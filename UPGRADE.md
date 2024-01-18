@@ -186,6 +186,7 @@ Options for delivery methods have been renamed for clarity and consistency.
 #### ActionCable
 
 The `format` option has been renamed to `message`.
+The `Noticed::NotificationChannel` has been removed and an example channel is provided in the [ActionCable docs](docs/delivery_methods/action_cable.md).
 
 #### Email Delivery Method
 

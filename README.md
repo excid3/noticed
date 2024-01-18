@@ -87,7 +87,7 @@ class NewCommentNotifier < Noticed::Event
 
   deliver_by :email do |config|
     config.mailer = "CommentMailer"
-		config.if = ->(recipient) { !!recipient.preferences[:email] }
+    config.if = ->(recipient) { !!recipient.preferences[:email] }
   end
 
   bulk_deliver_by :discord do |config|
@@ -201,7 +201,7 @@ en:
   notifiers:
   	new_comment_notifier:
   	  notification:
-        message: "Someone posted a new comment!"
+            message: "Someone posted a new comment!"
 ```
 
 Or, if you have your Notifier within another module, such as `Admin::NewCommentNotifier`, the resulting lookup path will be `en.notifiers.admin.new_comment_notifier.notification.message` (modules become nesting steps).

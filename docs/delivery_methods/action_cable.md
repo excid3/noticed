@@ -12,21 +12,17 @@ end
 
 ## Options
 
-* `format: :format_for_action_cable` - *Optional*
+* `message`
 
-  Use a custom method to define the Hash sent through ActionCable
+  Should return a Hash to be sent as the ActionCable message
 
-* `channel` - *Optional*
+* `channel`
 
   Override the ActionCable channel used to send notifications.
 
-  Defaults to `Noticed::NotificationChannel`
+* `stream`
 
-* `stream` - *Optional*
-
-  Overrides the stream that is broadcasted to.
-
-  Defaults to `recipient`
+  The stream that is broadcasted to.
 
 ## Authentication
 

@@ -1,32 +1,46 @@
-### Twilio Messaaging Delivery Method
+# Twilio Messaaging Delivery Method
 
 Sends an SMS or Whatsapp message via Twilio Messaging.
 
-`deliver_by :twilio_messaging`
+```ruby
+deliver_by :twilio_messaging do |config|
+  config.json = ->{
+    {
+      From: phone_number,
+      To: recipient.phone_number,
+      Body: params.fetch(:message)
+    }
+  }
 
-##### Options
+  config.credentials = {
+    phone_number: Rails.application.credentials.dig(:twilio, :phone_number),
+    account_sid: Rails.application.credentials.dig(:twilio, :account_sid),
+    auth_token: Rails.application.credentials.dig(:twilio, :auth_token)
+  }
+  # config.credentials = Rails.application.credentials.twilio
+  # config.phone = "+1234567890"
+  # config.url = "https://api.twilio.com/2010-04-01/Accounts/#{account_sid}/Messages.json"
+end
+```
 
-* `message` - *Required*
+## Content Templates
 
-  Message is required and needs to be passed in as part of the params:
+```ruby
+deliver_by :twilio_messaging do |config|
+  config.json = -> {
+    {
+       From: "+1234567890",
+       To: recipient.phone_number,
+       ContentSid: "value", # Template SID
+       ContentVariables: {1: recipient.first_name}
+    }
+  }
+end
+```
 
-  ```ruby
-  SmsNotification.with(message: "Howdy!")
-  ```
+## Options
 
-* `credentials: :get_twilio_credentials` - *Optional*
-
-  Use a custom method to retrieve the credentials for Twilio. Method should return a Hash with `:account_sid`, `:auth_token` and `:phone_number` keys.
-
-  Defaults to `Rails.application.credentials.twilio[:account_sid]` and `Rails.application.credentials.twilio[:auth_token]`
-
-* `url: :get_twilio_url` - *Optional*
-
-  Use a custom method to retrieve the Twilio URL.  Method should return the Twilio API url as a string.
-
-  Defaults to `"https://api.twilio.com/2010-04-01/Accounts/#{twilio_credentials(recipient)[:account_sid]}/Messages.json"`
-
-* `format: :format_for_twilio` - *Optional*
+* `json` - *Optional*
 
   Use a custom method to define the payload sent to Twilio. Method should return a Hash.
 
@@ -39,3 +53,15 @@ Sends an SMS or Whatsapp message via Twilio Messaging.
     To: recipient.phone_number
   }
   ```
+
+* `credentials` - *Optional*
+
+  Retrieve the credentials for Twilio. Should return a Hash with `:account_sid`, `:auth_token` and `:phone_number` keys.
+
+  Defaults to `Rails.application.credentials.twilio[:account_sid]` and `Rails.application.credentials.twilio[:auth_token]`
+
+* `url` - *Optional*
+
+  Retrieve the Twilio URL. Should return the Twilio API url as a string.
+
+  Defaults to `"https://api.twilio.com/2010-04-01/Accounts/#{twilio_credentials(recipient)[:account_sid]}/Messages.json"`

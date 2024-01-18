@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.0.2
+
+* Add `Noticed::NotificationChannel` and change defaults for ActionCable deliveries to this channel and stream to `recipient`
+
 ### 2.0.1
 
 * Include `notification` and `recipient` in email params. Fixes #366

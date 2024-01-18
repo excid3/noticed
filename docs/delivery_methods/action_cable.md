@@ -4,7 +4,7 @@ Sends a notification to the browser via websockets (ActionCable channel by defau
 
 ```ruby
 deliver_by :action_cable do |config|
-  config.channel = "NotificationsChannel"
+  config.channel = "Noticed::NotificationsChannel"
   config.stream = ->{ recipient }
   config.message = ->{ params.merge( user_id: recipient.id) }
 end
@@ -18,37 +18,15 @@ end
 
 * `channel`
 
-  Override the ActionCable channel used to send notifications.
+  Override the ActionCable channel used to send notifications. Defaults to `Noticed::NotificationChannel`
 
 * `stream`
 
-  The stream that is broadcasted to.
+  Should return the stream the message is broadcasted to. Defaults to `recipient`
 
 ## Authentication
 
-To send notifications to individual users, you'll want to use `stream_for current_user`
-
-```ruby
-class NotificationChannel < ApplicationCable::Channel
-  def subscribed
-    stream_for current_user
-  end
-
-  def unsubscribed
-    stop_all_streams
-  end
-
-  def mark_as_seen(data)
-    current_user.notifications.where(id: data["ids"]).mark_as_seen
-  end
-
-  def mark_as_read(data)
-    current_user.notifications.where(id: data["ids"]).mark_as_read
-  end
-end
-```
-
-This requires `identified_by :current_user` in your ApplicationCable::Connection. For example, using Devise for authentication:
+To send notifications to individual users, you'll want to use `stream_for current_user`. This requires `identified_by :current_user` in your ApplicationCable::Connection. For example, using Devise for authentication:
 
 ```ruby
 module ApplicationCable

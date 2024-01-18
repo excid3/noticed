@@ -178,3 +178,46 @@ class User < ApplicationRecord
   has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
 end
 ```
+
+### Delivery Method Changes
+
+Options for delivery methods have been renamed for clarity and consistency.
+
+#### ActionCable
+
+The `format` option has been renamed to `message`.
+
+#### Email Delivery Method
+
+`method` is now a required option. Previously, it was inferred from the notification name but we've decided it would be better to be explicit.
+
+#### FCM
+
+The `format` option has been renamed to `json`.
+The `device_tokens` option is now required and should return an Array of device tokens.
+The `invalid_token` option replaces the `cleanup_device_tokens` method for handling invalid/expired tokens.
+
+#### iOS
+
+The `format` option has been renamed to `json`.
+The `device_tokens` option is now required and should return an Array of device tokens.
+The `invalid_token` option replaces the `cleanup_device_tokens` method for handling invalid/expired tokens.
+
+#### Microsoft Teams
+
+The `format` option has been renamed to `json`.
+
+#### Slack
+
+The `format` option has been renamed to `json`.
+The `url` option now defaults to `"https://slack.com/api/chat.postMessage` instead of `Rails.application.credentials.dig(:slack, :notification_url)`
+
+#### Twilio Messaging
+
+Twilio has been renamed to `:twilio_messaging` to make room for `:twilio_voice` and other services they may provide in the future.
+The `format` option has been renamed to `json`.
+
+#### Vonage SMS
+
+Vonage has been renamed to `:vonage_sms` to make room for other Vonage services in the future.
+The `format` option has been renamed to `json` and is now required.

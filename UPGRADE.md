@@ -10,7 +10,7 @@ We've made some major changes to Noticed to simplify and support more delivery m
 
 Instead of having models live in your application, Noticed v2 adds models managed by the gem.
 
-Delete the `Notification` model from `app/models/notifications.rb`.
+Delete the `Notification` model at `app/models/notification.rb`.
 
 Then run the new migrations:
 ```bash

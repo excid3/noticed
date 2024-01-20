@@ -1,5 +1,28 @@
 ### Unreleased
 
+### 2.0.3
+
+* Notifier generator now ensures the `Notifier` suffix.
+
+```bash
+rails g noticed:notifier Example #=> app/notifiers/example_notifier.rb
+rails g noticed:notifier ExampleNotifier #=> app/notifiers/example_notifier.rb
+```
+
+* Delivery method options set to a Symbol will now pass the `notification` argument when calling the method instead of the delivery method instance.
+
+```ruby
+class CommentNotifier
+  deliver_by :email do
+    config.if = :prefers_email?
+  end
+
+  def prefers_email?(notification)
+    notification.recipient.preferences[:email]
+  end
+end
+```
+
 ### 2.0.2
 
 * Add `Noticed::NotificationChannel` and change defaults for ActionCable deliveries to this channel and stream to `recipient`

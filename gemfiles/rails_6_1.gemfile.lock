@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    noticed (2.0.2)
+    noticed (2.0.3)
       rails (>= 6.1.0)
 
 GEM
@@ -217,6 +217,7 @@ GEM
       sprockets (>= 3.0.0)
     sqlite3 (1.6.9)
       mini_portile2 (~> 2.8.0)
+    sqlite3 (1.6.9-arm64-darwin)
     standard (1.33.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)

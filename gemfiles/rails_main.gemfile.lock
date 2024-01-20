@@ -97,7 +97,7 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (2.0.2)
+    noticed (2.0.3)
       rails (>= 6.1.0)
 
 GEM
@@ -163,7 +163,6 @@ GEM
       net-smtp
     marcel (1.0.2)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.5)
     minitest (5.21.1)
     multi_json (1.15.0)
     mysql2 (0.5.5)
@@ -243,8 +242,9 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    sqlite3 (1.6.9)
-      mini_portile2 (~> 2.8.0)
+    sqlite3 (1.6.9-arm64-darwin)
+    sqlite3 (1.6.9-x86_64-darwin)
+    sqlite3 (1.6.9-x86_64-linux)
     standard (1.33.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)

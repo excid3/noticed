@@ -217,7 +217,6 @@ GEM
       sprockets (>= 3.0.0)
     sqlite3 (1.6.9)
       mini_portile2 (~> 2.8.0)
-    sqlite3 (1.6.9-arm64-darwin)
     standard (1.33.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -247,6 +246,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
   x86_64-darwin-22
   x86_64-darwin-23
   x86_64-linux
@@ -261,7 +261,7 @@ DEPENDENCIES
   noticed!
   pg
   rails (~> 6.1.0)
-  sqlite3 (~> 1.6.0.rc2)
+  sqlite3
   standard
   webmock
 

@@ -40,7 +40,7 @@ module Noticed
 
       # Call method if symbol and matching method on Notifier
       elsif option.is_a?(Symbol) && event.respond_to?(option)
-        event.send(option, self)
+        event.send(option, notification)
 
       # Return the value
       else

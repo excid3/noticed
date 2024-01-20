@@ -23,6 +23,19 @@ class NotifierTest < ActiveSupport::TestCase
     assert_equal({user: user}, notification.params)
   end
 
+  test "assigns record association from params" do
+    user = users(:one)
+    notifier = RecordNotifier.with(record: user)
+    assert_equal user, notifier.record
+    assert_empty notifier.params
+  end
+
+  test "can add validations for record association" do
+    notifier = RecordNotifier.with({})
+    refute notifier.valid?
+    assert_equal ["can't be blank"], notifier.errors[:record]
+  end
+
   test "deliver creates an event" do
     assert_difference "Noticed::Event.count" do
       ReceiptNotifier.deliver(User.first)

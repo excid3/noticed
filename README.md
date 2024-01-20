@@ -62,7 +62,7 @@ rails db:migrate
 
 Noticed operates with a few constructs: Notifiers, delivery methods, and Notification records.
 
-To start, generate a Notifier: 
+To start, generate a Notifier:
 
 ```sh
 rails generate noticed:notifier NewCommentNotifier
@@ -126,7 +126,10 @@ class CarSaleNotifier < Noticed::Event
   deliver_by :email { |c| c.mailer = "BranchMailer" }
 
   # `record` is the Car record, `Branch` is the dealership
-  required_params :record, :branch
+  required_params :branch
+
+  # To validate the `:record` param, add a validation since it is an association on the Noticed::Event
+  validates :record, presence: true
 end
 ```
 
@@ -175,13 +178,13 @@ From the above Notifier...
 ```ruby
 class NewCommentNotifier < Noticed::Event
   # ...
-  
+
   notification_methods do
     def message
       t(".message")
     end
   end
-  
+
   # ...
 end
 ```

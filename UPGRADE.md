@@ -138,6 +138,34 @@ class NewCommentNotifier < Noticed::Event
 end
 ```
 
+#### Notification Model Methods
+
+In order to extend the Notification model you'll need to use a concern an a to_prepare block:
+
+```ruby
+module NotificationExtensions
+  extend ActiveSupport::Concern
+
+  included do
+    scope :filter_by_type, ->(type) { where(type:) }
+    scope :filter_by_org, ->(organisation_id) { where(organisation_id:) }
+    scope :exclude_type, ->(type) { where.not(type:) }
+
+    counter_culture :recipient, column_name: "notifications_count"
+    counter_culture :recipient, column_name: proc { |a| 'unread_notifications_count' if a.read_at.nil? },
+                              column_names: { Notification.unread => :unread_notifications_count }
+  end
+
+  def organisation
+    Organisation.find_by(id: organisation_id)
+  end
+end
+
+Rails.application.config.to_prepare do
+  Noticed::Notification.include NotificationExtensions
+end
+```
+
 ### Has Noticed Notifications
 
 `has_noticed_notifications` has been removed in favor of the `record` polymorphic relationship that can be directly queried with ActiveRecord. You can add the necessary json query to your model(s) to restore the json query if needed.

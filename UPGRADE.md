@@ -64,8 +64,8 @@ You will need to remove `deliver_by :database` from your notifiers.
 
 For clarity, we've renamed `app/notifications` to `app/notifiers`.
 
-Notifiers - the class that delivers notifications
-Notification - the database record of the notification
+**Notifiers** - the class that delivers notifications
+**Notification** - the database record of the notification
 
 We recommend renaming your existing classes to match. You'll also need to update the `type` column on existing notifications when renaming.
 
@@ -92,6 +92,10 @@ class CommentNotifier < Noticed::Event
     { foo: :bar }
   end
 ```
+
+### Deliver Later
+
+Notifications are always delivered later now. The `.deliver_later` method has been removed. Instead you can just user `.deliver`
 
 ### Required Params
 
@@ -138,6 +142,32 @@ class NewCommentNotifier < Noticed::Event
 end
 ```
 
+#### Notification Model Methods
+
+In order to extend the Noticed models you'll need to use a concern an a to_prepare block:
+
+```ruby
+# config/initializers/noticed.rb
+module NotificationExtensions
+  extend ActiveSupport::Concern
+
+  included do
+    belongs_to :organisation
+
+    scope :filter_by_type, ->(type) { where(type:) }
+    scope :exclude_type, ->(type) { where.not(type:) }
+  end
+
+  # You can also add instance methods here
+end
+
+Rails.application.config.to_prepare do
+  # You can extend Noticed::Event or Noticed::Notification here
+  Noticed::Event.include NotificationExtensions
+  Noticed::Notification.include NotificationExtensions
+end
+```
+
 ### Has Noticed Notifications
 
 `has_noticed_notifications` has been removed in favor of the `record` polymorphic relationship that can be directly queried with ActiveRecord. You can add the necessary json query to your model(s) to restore the json query if needed.
@@ -169,7 +199,7 @@ model.where("json_extract(params, ?) = ?", "$.#{param_name}", Noticed::Coder.dum
 model.where(params: {param_name.to_sym => self})
 ```
 
-### Receipient Notifications Association
+### Recipient Notifications Association
 
 Recipients can be associated with notifications using the following. This is useful for displaying notifications in your UI.
 
@@ -200,6 +230,7 @@ The `invalid_token` option replaces the `cleanup_device_tokens` method for handl
 
 #### iOS
 
+The `cert_path` option has been renamed to `apns_key` and should be given the key and not a path.
 The `format` option has been renamed to `json`.
 The `device_tokens` option is now required and should return an Array of device tokens.
 The `invalid_token` option replaces the `cleanup_device_tokens` method for handling invalid/expired tokens.

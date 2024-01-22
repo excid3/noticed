@@ -93,6 +93,10 @@ class CommentNotifier < Noticed::Event
   end
 ```
 
+### Deliver Later
+
+Notifications are always delivered later now. The `.deliver_later` method has been removed. Instead you can just user `.deliver`
+
 ### Required Params
 
 `param` and `params` have been renamed to `required_param(s)` to be more clear.

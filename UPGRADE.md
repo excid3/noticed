@@ -151,18 +151,13 @@ module NotificationExtensions
   extend ActiveSupport::Concern
 
   included do
+    belongs_to :organisation
+
     scope :filter_by_type, ->(type) { where(type:) }
-    scope :filter_by_org, ->(organisation_id) { where(organisation_id:) }
     scope :exclude_type, ->(type) { where.not(type:) }
-
-    counter_culture :recipient, column_name: "notifications_count"
-    counter_culture :recipient, column_name: proc { |a| 'unread_notifications_count' if a.read_at.nil? },
-                              column_names: { Notification.unread => :unread_notifications_count }
   end
 
-  def organisation
-    Organisation.find_by(id: organisation_id)
-  end
+  # You can also add instance methods here
 end
 
 Rails.application.config.to_prepare do

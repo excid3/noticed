@@ -201,7 +201,7 @@ model.where("json_extract(params, ?) = ?", "$.#{param_name}", Noticed::Coder.dum
 model.where(params: {param_name.to_sym => self})
 ```
 
-### Receipient Notifications Association
+### Recipient Notifications Association
 
 Recipients can be associated with notifications using the following. This is useful for displaying notifications in your UI.
 

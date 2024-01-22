@@ -64,8 +64,8 @@ You will need to remove `deliver_by :database` from your notifiers.
 
 For clarity, we've renamed `app/notifications` to `app/notifiers`.
 
-Notifiers - the class that delivers notifications
-Notification - the database record of the notification
+**Notifiers** - the class that delivers notifications <br>
+**Notification** - the database record of the notification
 
 We recommend renaming your existing classes to match. You'll also need to update the `type` column on existing notifications when renaming.
 

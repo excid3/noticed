@@ -11,7 +11,9 @@ module Noticed
       # Enqueue individual deliveries
       event.notifications.each do |notification|
         event.delivery_methods.each do |_, deliver_by|
-          deliver_by.perform_later(notification)
+          event.run_callbacks deliver_by.name do
+            deliver_by.perform_later(notification)
+          end
         end
       end
     end

@@ -5,6 +5,9 @@ module Noticed
     include Translation
     include Rails.application.routes.url_helpers
 
+    extend ActiveModel::Callbacks
+    define_model_callbacks :deliver
+
     belongs_to :record, polymorphic: true, optional: true
     has_many :notifications, dependent: :delete_all
 

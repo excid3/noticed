@@ -143,7 +143,27 @@ CarSaleNotifier.with(record: Car.last, branch: Branch.last).deliver(Branch.hq)
 #=> OK
 ```
 
+##### Callbacks
 
+Like ActiveRecord, notifications have several different types of callbacks.
+
+```ruby
+class CarSaleNotifier < Noticed::Event
+  deliver_by :email { |c| c.mailer = "BranchMailer" }
+
+  # Callbacks for the entire delivery
+  before_deliver :whatever
+  around_deliver :whatever
+  after_deliver :whatever
+
+  # Callbacks for each delivery method
+  before_email :whatever
+  around_email :whatever
+  after_email :whatever
+end
+```
+
+Defining custom delivery methods allows you to add callbacks that run inside the background job as each individual delivery is executed. See the Custom Delivery Methods section for more information.
 
 ##### Helper Methods
 
@@ -399,6 +419,18 @@ class DeliveryMethods::WhatsApp < Noticed::DeliveryMethod
     # ...
 		config.day #=> #<Proc:0x000f7c8 (lambda)>
     evaluate_option(config.day) #=> "Tuesday"
+  end
+end
+```
+
+#### Callbacks
+
+Callbacks for delivery methods wrap the _actual_ delivery of the notification. You can use `before_deliver`, `around_deliver` and `after_deliver` in your custom delivery methods.
+
+```ruby
+class DeliveryMethods::Discord < Noticed::DeliveryMethod
+  after_deliver do
+    # Do whatever you want
   end
 end
 ```

@@ -29,6 +29,7 @@ module Noticed
 
         config = ActiveSupport::OrderedOptions.new.merge(options)
         yield config if block_given?
+        define_model_callbacks(name)
         bulk_delivery_methods[name] = DeliverBy.new(name, config, bulk: true)
       end
 
@@ -37,6 +38,7 @@ module Noticed
 
         config = ActiveSupport::OrderedOptions.new.merge(options)
         yield config if block_given?
+        define_model_callbacks(name)
         delivery_methods[name] = DeliverBy.new(name, config)
       end
 
@@ -63,28 +65,37 @@ module Noticed
     def deliver(recipients = nil, options = {})
       validate!
 
-      transaction do
-        save!
+      run_callbacks :deliver do
+        transaction do
+          save!
 
-        recipients_attributes = Array.wrap(recipients).map do |recipient|
-          recipient_attributes_for(recipient)
-        end
+          recipients_attributes =
+            Array
+              .wrap(recipients)
+              .map { |recipient| recipient_attributes_for(recipient) }
 
-        if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
-          notifications.insert_all!(recipients_attributes, record_timestamps: true) if recipients_attributes.any?
-        else
-          time = Time.current
-          recipients_attributes.each do |attributes|
-            attributes[:created_at] = time
-            attributes[:updated_at] = time
+          if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
+            if recipients_attributes.any?
+              notifications.insert_all!(
+                recipients_attributes,
+                record_timestamps: true,
+              )
+            end
+          else
+            time = Time.current
+            recipients_attributes.each do |attributes|
+              attributes[:created_at] = time
+              attributes[:updated_at] = time
+            end
+            if recipients_attributes.any?
+              notifications.insert_all!(recipients_attributes)
+            end
           end
-          notifications.insert_all!(recipients_attributes) if recipients_attributes.any?
         end
+
+        # Enqueue delivery job
+        EventJob.set(options).perform_later(self)
       end
-
-      # Enqueue delivery job
-      EventJob.set(options).perform_later(self)
-
       self
     end
 

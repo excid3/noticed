@@ -226,7 +226,8 @@ The `Noticed::NotificationChannel` has been removed and an example channel is pr
 
 #### FCM
 
-The `format` option has been renamed to `json`.
+The `format` option has been renamed to `json`. 
+The `cert_path` option has been renamed to `apns_key`.
 The `device_tokens` option is now required and should return an Array of device tokens.
 The `invalid_token` option replaces the `cleanup_device_tokens` method for handling invalid/expired tokens.
 

@@ -32,18 +32,18 @@ class Noticed::EventTest < ActiveSupport::TestCase
     end
   end
 
-  test "calls callbacks" do
-    class CallbackNotifier < Noticed::Event
-      deliver_by :test
-      required_params :message
+  class CallbackNotifier < Noticed::Event
+    deliver_by :test
+    required_params :message
 
-      before_test :set_message
+    before_deliver :set_message
 
-      def set_message
-        params[:message] = "new message"
-      end
+    def set_message
+      params[:message] = "new message"
     end
+  end
 
+  test "calls callbacks" do
     event = CallbackNotifier.with(message: "test").deliver
     assert_equal event.params[:message], "new message"
   end

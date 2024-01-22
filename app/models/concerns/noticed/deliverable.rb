@@ -76,10 +76,7 @@ module Noticed
 
           if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
             if recipients_attributes.any?
-              notifications.insert_all!(
-                recipients_attributes,
-                record_timestamps: true,
-              )
+              notifications.insert_all!(recipients_attributes, record_timestamps: true)
             end
           else
             time = Time.current

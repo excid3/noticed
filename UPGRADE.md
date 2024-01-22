@@ -144,9 +144,10 @@ end
 
 #### Notification Model Methods
 
-In order to extend the Notification model you'll need to use a concern an a to_prepare block:
+In order to extend the Noticed models you'll need to use a concern an a to_prepare block:
 
 ```ruby
+# config/initializers/noticed.rb
 module NotificationExtensions
   extend ActiveSupport::Concern
 
@@ -161,6 +162,8 @@ module NotificationExtensions
 end
 
 Rails.application.config.to_prepare do
+  # You can extend Noticed::Event or Noticed::Notification here
+  Noticed::Event.include NotificationExtensions
   Noticed::Notification.include NotificationExtensions
 end
 ```

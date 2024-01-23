@@ -9,10 +9,10 @@ class ActionCableDeliveryMethodTest < ActiveSupport::TestCase
 
   test "sends websocket message" do
     user = users(:one)
-    channel = NotificationChannel.broadcasting_for(user)
+    channel = Noticed::NotificationChannel.broadcasting_for(user)
 
     set_config(
-      channel: "NotificationChannel",
+      channel: "Noticed::NotificationChannel",
       stream: user,
       message: {foo: :bar}
     )

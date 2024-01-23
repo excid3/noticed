@@ -9,4 +9,3 @@ module Noticed
     end
   end
 end
-

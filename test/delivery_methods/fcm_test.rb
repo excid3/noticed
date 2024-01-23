@@ -25,11 +25,12 @@ class FcmTest < ActiveSupport::TestCase
       },
       device_tokens: [:a, :b],
       json: ->(device_token) {
-        {message:
-          {
+        {
+          message: {
             token: device_token,
             notification: {title: "Title", body: "Body"}
-          }}
+          }
+        }
       }
     )
 

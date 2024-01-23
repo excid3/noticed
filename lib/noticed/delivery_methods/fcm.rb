@@ -24,8 +24,7 @@ module Noticed
       end
 
       def format_notification(device_token)
-        raise ArgumentError, "No json for fcm delivery. Add the 'json' option in 'deliver_by :fcm'." unless (method = config[:json])
-
+        method = config[:json]
         if method.is_a?(Symbol) && event.respond_to?(method)
           event.send(method, device_token)
         else

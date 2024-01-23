@@ -36,7 +36,7 @@ end
 
 ## Options
 
-* `json`
+* `format`
 
   Customize the Apnotic notification object
 

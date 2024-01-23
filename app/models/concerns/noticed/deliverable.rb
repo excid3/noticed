@@ -9,10 +9,13 @@ module Noticed
 
       attribute :params, default: {}
 
-      if Rails.gem_version >= Gem::Version.new("7.1.0.alpha")
-        serialize :params, coder: Coder
-      else
-        serialize :params, Coder
+      # Ephemeral notifiers cannot serialize params since they aren't ActiveRecord backed
+      if respond_to? :serialize
+        if Rails.gem_version >= Gem::Version.new("7.1.0.alpha")
+          serialize :params, coder: Coder
+        else
+          serialize :params, Coder
+        end
       end
     end
 

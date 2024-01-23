@@ -29,10 +29,12 @@ class CommentNotification
     config.device_tokens = ->(recipient) { recipient.notification_tokens.where(platform: "fcm").pluck(:token) }
     config.json = ->(device_token) {
       {
-        token: device_token,
-        notification: {
-          title: "Test Title",
-          body: "Test body"
+        message: {
+          token: device_token,
+          notification: {
+            title: "Test Title",
+            body: "Test body"
+          }
         }
       }
     }
@@ -47,8 +49,6 @@ end
 Customize the Firebase Cloud Messaging notification object. This can be a Lambda or Symbol of a method name on the notifier. 
   
 The callable object will be given the device token as an argument.
-
-We wrap the object with the required `{message: {}}` structure.
 
 There are lots of options of now to structure a FCM notification message. See https://firebase.google.com/docs/cloud-messaging/concept-options for more details.
 

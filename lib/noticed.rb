@@ -39,6 +39,10 @@ module Noticed
     autoload :Webhook, "noticed/delivery_methods/webhook"
   end
 
+  mattr_accessor :parent_class
+  @@parent_class = "Noticed::ApplicationJob"
+
+
   class ValidationError < StandardError
   end
 

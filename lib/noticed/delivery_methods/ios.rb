@@ -33,6 +33,7 @@ module Noticed
         apn.topic = evaluate_option(:bundle_identifier)
 
         if (method = config[:format])
+          method = event.send(method, apn) if method.is_a?(Symbol) && event.respond_to?(method)
           notification.instance_exec(apn, &method)
         elsif notification.params.try(:has_key?, :message)
           apn.alert = notification.params[:message]
@@ -70,9 +71,9 @@ module Noticed
       def connection_pool_options
         {
           auth_method: :token,
-          cert_path: StringIO.new(config.fetch(:apns_key)),
-          key_id: config.fetch(:key_id),
-          team_id: config.fetch(:team_id)
+          cert_path: StringIO.new(evaluate_option(:apns_key)),
+          key_id: evaluate_option(:key_id),
+          team_id: evaluate_option(:team_id)
         }
       end
 

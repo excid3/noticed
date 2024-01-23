@@ -68,7 +68,7 @@ To start, generate a Notifier:
 rails generate noticed:notifier NewCommentNotifier
 ```
 
-#### Notifier Objects
+### Notifier Objects
 
 Notifiers are essentially the controllers of the Noticed ecosystem and represent an Event. As such, we recommend naming them with the event they model in mind — be it a `NewSaleNotifier,` `ChargeFailureNotifier`, etc.
 
@@ -117,7 +117,75 @@ end
 
 For deeper specifics on setting up the `:action_cable`, `:email`, and `:discord` (bulk) delivery methods, refer to their docs: [`action_cable`](docs/delivery_methods/action_cable.md), [`email`](docs/delivery_methods/email.md), and [`discord` (bulk)](docs/bulk_delivery_methods/discord.md).
 
-##### Required Params
+#### Delivery Method Configuration
+
+Each delivery method can be configured with a block that yields a `config` object. 
+
+Procs/Lambdas will be evaluated when needed and symbols can be used to call a method.
+
+If you are using a symbol to call a method, we pass the notification object as an argument to the method. This allows you to access the notification object within the method.
+Your method must accept a single argument. If you don't need to use the object you can just use `(*)`.
+
+```ruby
+class CommentNotifier < Noticed::Event
+  deliver_by :ios do |config|
+    config.format = :ios_format
+    config.apns_key = :ios_cert
+    config.key_id = :ios_key_id
+    config.team_id = :ios_team_id
+    config.bundle_identifier = Rails.application.credentials.dig(:ios, :bundle_identifier)
+    config.device_tokens = :ios_device_tokens
+    config.if = ->(notification) { recipient.send_ios_notification? }
+  end
+
+  def ios_format(apn)
+    apn.alert = { title:, body: }
+    apn.mutable_content = true
+    apn.content_available = true
+    apn.sound = "notification.m4r"
+    apn.custom_payload = {
+      url:,
+      type: self.class.name,
+      id: record.id,
+      image_url: "" || image_url,
+      params: params.to_json
+    }
+  end
+
+  def ios_cert(*)
+    Rails.application.credentials.dig(:ios, Rails.env.to_sym, :apns_token_cert)
+  end
+
+  def ios_key_id(*)
+    Rails.application.credentials.dig(:ios, Rails.env.to_sym, :key_id)
+  end
+
+  def ios_team_id(*)
+    Rails.application.credentials.dig(:ios, Rails.env.to_sym, :team_id)
+  end
+
+  def ios_bundle_id(*)
+    Rails.application.credentials.dig(:ios, Rails.env.to_sym, :bundle_identifier)
+  end
+
+  def ios_device_tokens(notification)
+    notification.recipient.ios_device_tokens
+  end
+
+  def send_ios_notification?(notification)
+    recipient = notification.recipient
+    return false unless recipient.is_a?(User)
+
+    recipient.send_notifications?
+  end
+
+  def url
+    comment_thread_path(record.thread)
+  end
+end
+```
+
+#### Required Params
 
 While explicit / required parameters are completely optional, Notifiers are able to opt in to required parameters via the `required_params` method:
 
@@ -143,9 +211,7 @@ CarSaleNotifier.with(record: Car.last, branch: Branch.last).deliver(Branch.hq)
 #=> OK
 ```
 
-
-
-##### Helper Methods
+#### Helper Methods
 
 Notifiers can implement various helper methods, within a `notification_methods` block, that make it easier to render the resulting notification directly. These helpers can be helpful depending on where and how you choose to render notifications. A common use is rendering a user’s notifications in your web UI as standard ERB. These notification helper methods make that rendering much simpler:
 
@@ -159,7 +225,7 @@ Notifiers can implement various helper methods, within a `notification_methods` 
 
 On the other hand, if you’re using email delivery, ActionMailer has its own full stack for setting up objects and rendering. Your notification helper methods will always be available from the notification object, but using ActionMailer’s own paradigms may fit better for that particular delivery method. YMMV.
 
-######  URL Helpers
+#####  URL Helpers
 
 Rails url helpers are included in Notifiers by default so you have full access to them in your notification helper methods, just like you would in your controllers and views.
 
@@ -169,7 +235,7 @@ _But don't forget_, you'll need to configure `default_url_options` in order for 
 Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 ```
 
-###### Translations
+##### Translations
 
 We've also included Rails’ `translate` and `t` helpers for you to use in your notification helper methods. This also provides an easy way of scoping translations. If the key starts with a period, it will automatically scope the key under `notifiers`, the underscored name of the notifier class, and `notification`. For example:
 
@@ -209,7 +275,7 @@ en:
 
 Or, if you have your Notifier within another module, such as `Admin::NewCommentNotifier`, the resulting lookup path will be `en.notifiers.admin.new_comment_notifier.notification.message` (modules become nesting steps).
 
-##### Tip: Capture User Preferences
+#### Tip: Capture User Preferences
 
 You can use the `if:` and `unless: ` options on your delivery methods to check the user's preferences and skip processing if they have disabled that type of notification.
 
@@ -224,8 +290,42 @@ class CommentNotifier < Noticed::Event
   end
 end
 ```
+#### Tip: Extracting Delivery Method Configurations
 
-**Shared Delivery Method Options**
+If you want to reuse delivery method configurations across multiple Notifiers, you can extract them into a module and include them in your Notifiers.
+
+```ruby
+# /app/notifiers/notifiers/comment_notifier.rb
+class CommentNotifier < Noticed::Event
+  include IosNotifier
+  include AndriodNotifer
+  include EmailNotifier
+
+  validates :record, presence: true
+end
+
+# /app/notifiers/concerns/ios_notifier.rb
+module IosNotifier
+  extend ActiveSupport::Concern
+
+  included do
+    deliver_by :ios do |config|
+      config.device_tokens = ->(recipient) { recipient.notification_tokens.where(platform: :iOS).pluck(:token) }
+      config.format = ->(apn) {
+        apn.alert = "Hello world"
+        apn.custom_payload = {url: root_url(host: "example.org")}
+      }
+      config.bundle_identifier = Rails.application.credentials.dig(:ios, :bundle_id)
+      config.key_id = Rails.application.credentials.dig(:ios, :key_id)
+      config.team_id = Rails.application.credentials.dig(:ios, :team_id)
+      config.apns_key = Rails.application.credentials.dig(:ios, :apns_key)
+      config.if = ->(recipient) { recipient.ios_notifications? }
+    end
+  end
+end
+```  
+  
+#### Shared Delivery Method Options
 
 Each of these options are available for every delivery method (individual or bulk). The value passed may be a lambda, a symbol that represents a callable method, a symbol value, or a string value.
 
@@ -235,7 +335,7 @@ Each of these options are available for every delivery method (individual or bul
 * `config.wait_until` — (Should yield a specific time object) Delays the job that runs this delivery method until the specific time specified
 * `config.queue` — Sets the ActiveJob queue name to be used for the job that runs this delivery method
 
-#### Sending Notifications
+### Sending Notifications
 
 Following the `NewCommentNotifier` example above, here’s how we might invoke the Notifier to send notifications to every author in the thread about a new comment being added:
 

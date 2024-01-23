@@ -80,6 +80,9 @@ end
 Configuration for each delivery method can be contained within a block now. This improves organization for delivery method options by defining them in the block.
 Procs/Lambdas will be evaluated when needed and symbols can be used to call a method.
 
+If you are using a symbol to call a method, we pass the notification object as an argument to the method. This allows you to access the notification object within the method. 
+Your method must accept a single argument. If you don't need to use the object you can just use `(*)`.
+
 ```ruby
 class CommentNotifier < Noticed::Event
   deliver_by :action_cable do |config|
@@ -90,7 +93,79 @@ class CommentNotifier < Noticed::Event
 
   def to_websocket
     { foo: :bar }
+  end 
+end
+```
+
+```ruby
+class CommentNotifier < Noticed::Event
+  include IosNotifier
+
+  def data_only?
+    false
   end
+
+  def url
+    comment_thread_path(record.thread)
+  end
+end
+
+module IosNotifier
+  extend ActiveSupport::Concern
+
+  included do
+    deliver_by :ios do |config|
+      config.format = :ios_format
+      config.apns_key = :ios_cert
+      config.key_id = :ios_key_id
+      config.team_id = :ios_team_id
+      config.bundle_identifier = :ios_bundle_id
+      config.device_tokens = :ios_device_tokens
+      config.if = :send_ios_notification?
+    end
+  end
+
+  def ios_format(apn)
+    apn.alert = { title:, body: } unless data_only?
+    apn.mutable_content = true
+    apn.content_available = true
+    apn.sound = "notification.m4r"
+    apn.custom_payload = {
+      url:,
+      type: self.class.name,
+      id: record.id,
+      image_url: "" || image_url,
+      params: params.to_json
+    }
+  end
+
+  def ios_cert(*)
+    Rails.application.credentials.dig(:ios, Rails.env.to_sym, :apns_token_cert)
+  end
+
+  def ios_key_id(*)
+    Rails.application.credentials.dig(:ios, Rails.env.to_sym, :key_id)
+  end
+
+  def ios_team_id(*)
+    Rails.application.credentials.dig(:ios, Rails.env.to_sym, :team_id)
+  end
+
+  def ios_bundle_id(*)
+    Rails.application.credentials.dig(:ios, Rails.env.to_sym, :bundle_identifier)
+  end
+
+  def ios_device_tokens(notification)
+    notification.recipient.ios_device_tokens
+  end
+
+  def send_ios_notification?(notification)
+    recipient = notification.recipient
+    return false unless recipient.is_a?(User)
+
+    recipient.send_notifications?
+  end 
+end
 ```
 
 ### Deliver Later
@@ -232,7 +307,6 @@ Options for delivery methods have been renamed for clarity and consistency.
 #### iOS
 
 - The `cert_path` option has been renamed to `apns_key` and should be given the key and not a path.
-- The `format` option has been renamed to `json`.
 - The `device_tokens` option is now required and should return an Array of device tokens.
 - The `invalid_token` option replaces the `cleanup_device_tokens` method for handling invalid/expired tokens.
 

@@ -487,6 +487,14 @@ end
 # @post.noticed_events.each { |ne| ne.notifications... }
 ```
 
+#### ActiveJob Parent Class
+
+Noticed uses its own `Noticed::ApplicationJob` as the base job for all notifications.  In the event that you would like to customize the parent job class, there is a `parent_class` attribute that can be overridden with your own class.  This should be done in a `noticed.rb` initializer.
+
+```ruby
+Noticed.parent_class = "ApplicationJob"
+```
+
 #### Handling Deleted Records
 
 Generally we recommend using a `dependent: ___` relationship on your models to avoid cases where Noticed Events or Notifications are left lingering when your models are destroyed. In the case that they are or data becomes mis-matched, you’ll likely run into deserialization issues. That may be globally alleviated with the following snippet, but use with caution.
@@ -511,4 +519,3 @@ DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
 
 ## 📝 License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-

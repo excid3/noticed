@@ -32,7 +32,7 @@ module Noticed
       def format_notification(apn)
         apn.topic = evaluate_option(:bundle_identifier)
 
-        if (method = config[:json])
+        if (method = config[:format])
           method = event.send(method, apn) if method.is_a?(Symbol) && event.respond_to?(method)
           notification.instance_exec(apn, &method)
         elsif notification.params.try(:has_key?, :message)

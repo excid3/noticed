@@ -22,7 +22,7 @@ https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_
 class CommentNotification
   deliver_by :ios do |config|
     config.device_tokens = ->(recipient) { recipient.notification_tokens.where(platform: :iOS).pluck(:token) }
-    config.json = ->(apn) {
+    config.format = ->(apn) {
       apn.alert = "Hello world"
       apn.custom_payload = {url: root_url(host: "example.org")}
     }
@@ -36,7 +36,7 @@ end
 
 ## Options
 
-* `json`
+* `format`
 
   Customize the Apnotic notification object
 

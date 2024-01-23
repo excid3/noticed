@@ -306,7 +306,6 @@ The `invalid_token` option replaces the `cleanup_device_tokens` method for handl
 #### iOS
 
 The `cert_path` option has been renamed to `apns_key` and should be given the key and not a path.
-The `format` option has been renamed to `json`.
 The `device_tokens` option is now required and should return an Array of device tokens.
 The `invalid_token` option replaces the `cleanup_device_tokens` method for handling invalid/expired tokens.
 

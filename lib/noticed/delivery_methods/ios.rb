@@ -71,9 +71,9 @@ module Noticed
       def connection_pool_options
         {
           auth_method: :token,
-          cert_path: StringIO.new(config.fetch(:apns_key)),
-          key_id: config.fetch(:key_id),
-          team_id: config.fetch(:team_id)
+          cert_path: StringIO.new(evaluate_option(:apns_key)),
+          key_id: evaluate_option(:key_id),
+          team_id: evaluate_option(:team_id)
         }
       end
 

@@ -143,28 +143,6 @@ CarSaleNotifier.with(record: Car.last, branch: Branch.last).deliver(Branch.hq)
 #=> OK
 ```
 
-##### Callbacks
-
-Like ActiveRecord, notifications have several different types of callbacks.
-
-```ruby
-class CarSaleNotifier < Noticed::Event
-  deliver_by :email { |c| c.mailer = "BranchMailer" }
-
-  # Callbacks for the entire delivery
-  before_deliver :whatever
-  around_deliver :whatever
-  after_deliver :whatever
-
-  # Callbacks for each delivery method
-  before_email :whatever
-  around_email :whatever
-  after_email :whatever
-end
-```
-
-Defining custom delivery methods allows you to add callbacks that run inside the background job as each individual delivery is executed. See the Custom Delivery Methods section for more information.
-
 ##### Helper Methods
 
 Notifiers can implement various helper methods, within a `notification_methods` block, that make it easier to render the resulting notification directly. These helpers can be helpful depending on where and how you choose to render notifications. A common use is rendering a user’s notifications in your web UI as standard ERB. These notification helper methods make that rendering much simpler:
@@ -543,4 +521,3 @@ DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
 
 ## 📝 License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-

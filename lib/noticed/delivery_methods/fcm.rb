@@ -14,12 +14,22 @@ module Noticed
       def send_notification(device_token)
         post_request("https://fcm.googleapis.com/v1/projects/#{credentials[:project_id]}/messages:send",
           headers: {authorization: "Bearer #{access_token}"},
-          json: notification.instance_exec(device_token, &config[:json]))
+          json: {message: format_notification(device_token)})
       rescue Noticed::ResponseUnsuccessful => exception
         if exception.response.code == "404" && config[:invalid_token]
           notification.instance_exec(device_token, &config[:invalid_token])
         else
           raise
+        end
+      end
+
+      def format_notification(device_token)
+        raise ArgumentError, "No json for fcm delivery. Add the 'json' option in 'deliver_by :fcm'." unless (method = config[:json])
+
+        if method.is_a?(Symbol) && event.respond_to?(method)
+          event.send(method, device_token)
+        else
+          notification.instance_exec(device_token, &method)
         end
       end
 

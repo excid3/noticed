@@ -65,31 +65,31 @@ module Noticed
     def deliver(recipients = nil, options = {})
       validate!
 
-      run_callbacks :deliver do
-        transaction do
-          save!
+      transaction do
+        save!
 
-          recipients_attributes =
-            Array
-              .wrap(recipients)
-              .map { |recipient| recipient_attributes_for(recipient) }
+        recipients_attributes =
+          Array
+            .wrap(recipients)
+            .map { |recipient| recipient_attributes_for(recipient) }
 
-          if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
-            if recipients_attributes.any?
-              notifications.insert_all!(recipients_attributes, record_timestamps: true)
-            end
-          else
-            time = Time.current
-            recipients_attributes.each do |attributes|
-              attributes[:created_at] = time
-              attributes[:updated_at] = time
-            end
-            if recipients_attributes.any?
-              notifications.insert_all!(recipients_attributes)
-            end
+        if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
+          if recipients_attributes.any?
+            notifications.insert_all!(recipients_attributes, record_timestamps: true)
+          end
+        else
+          time = Time.current
+          recipients_attributes.each do |attributes|
+            attributes[:created_at] = time
+            attributes[:updated_at] = time
+          end
+          if recipients_attributes.any?
+            notifications.insert_all!(recipients_attributes)
           end
         end
+      end
 
+      run_callbacks :deliver do
         # Enqueue delivery job
         EventJob.set(options).perform_later(self)
       end

@@ -43,7 +43,7 @@ class IosTest < ActiveSupport::TestCase
       team_id: "team_id",
       apns_key: "apns_key",
       device_tokens: [:a, :b],
-      format: ->(apn) {
+      json: ->(apn) {
         apn.alert = "Hello world"
         apn.custom_payload = {url: root_url(host: "example.org")}
       },

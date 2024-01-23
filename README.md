@@ -133,9 +133,9 @@ class CommentNotifier < Noticed::Event
     config.apns_key = :ios_cert
     config.key_id = :ios_key_id
     config.team_id = :ios_team_id
-    config.bundle_identifier = :ios_bundle_id
+    config.bundle_identifier = Rails.application.credentials.dig(:ios, :bundle_identifier)
     config.device_tokens = :ios_device_tokens
-    config.if = :send_ios_notification?
+    config.if = ->(notification) { recipient.send_ios_notification? }
   end
 
   def ios_format(apn)

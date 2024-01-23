@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Validate param key exists, not the value
+
 ### 2.0.3
 
 * Notifier generator now ensures the `Notifier` suffix.

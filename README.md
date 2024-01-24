@@ -543,8 +543,8 @@ user.notifications.unread
 Marking all notifications as read or unread:
 
 ```ruby
-user.notifications.mark_as_read!
-user.notifications.mark_as_unread!
+user.notifications.mark_as_read
+user.notifications.mark_as_unread
 ```
 
 #### Instance methods

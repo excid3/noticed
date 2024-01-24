@@ -1,4 +1,4 @@
-class DeliveryMethods::<%= class_name %> < Noticed::DeliveryMethod
+class DeliveryMethods::<%= class_name %> < ApplicationDeliveryMethod
   # Specify the config options your delivery method requires in its config block
   required_options # :foo, :bar
 

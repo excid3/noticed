@@ -1,4 +1,4 @@
-class SimpleNotifier < Noticed::Event
+class SimpleNotifier < ApplicationNotifier
   deliver_by :test
   required_params :message
 

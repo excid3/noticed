@@ -12,6 +12,7 @@ module Noticed
       desc "Generates a class for a custom delivery method with the given NAME."
 
       def generate_notification
+        template "application_delivery_method.rb", "app/notifiers/delivery_methods/application_delivery_method.rb"
         template "delivery_method.rb", "app/notifiers/delivery_methods/#{singular_name}.rb"
       end
     end

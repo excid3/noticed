@@ -1,3 +1,3 @@
-class RecordNotifier < Noticed::Event
+class RecordNotifier < ApplicationNotifier
   validates :record, presence: true
 end

@@ -1,4 +1,4 @@
-class ReceiptNotifier < Noticed::Event
+class ReceiptNotifier < ApplicationNotifier
   deliver_by :test
 
   deliver_by :email do |config|

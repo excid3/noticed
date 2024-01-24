@@ -1,3 +1,3 @@
-class TestNotifier < Noticed::Event
+class TestNotifier < ApplicationNotifier
   deliver_by :test
 end

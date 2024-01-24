@@ -211,6 +211,7 @@ CarSaleNotifier.with(record: Car.last, branch: Branch.last).deliver(Branch.hq)
 #=> OK
 ```
 
+
 #### Helper Methods
 
 Notifiers can implement various helper methods, within a `notification_methods` block, that make it easier to render the resulting notification directly. These helpers can be helpful depending on where and how you choose to render notifications. A common use is rendering a user’s notifications in your web UI as standard ERB. These notification helper methods make that rendering much simpler:
@@ -225,7 +226,7 @@ Notifiers can implement various helper methods, within a `notification_methods` 
 
 On the other hand, if you’re using email delivery, ActionMailer has its own full stack for setting up objects and rendering. Your notification helper methods will always be available from the notification object, but using ActionMailer’s own paradigms may fit better for that particular delivery method. YMMV.
 
-#####  URL Helpers
+####  URL Helpers
 
 Rails url helpers are included in Notifiers by default so you have full access to them in your notification helper methods, just like you would in your controllers and views.
 
@@ -235,7 +236,7 @@ _But don't forget_, you'll need to configure `default_url_options` in order for 
 Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 ```
 
-##### Translations
+#### Translations
 
 We've also included Rails’ `translate` and `t` helpers for you to use in your notification helper methods. This also provides an easy way of scoping translations. If the key starts with a period, it will automatically scope the key under `notifiers`, the underscored name of the notifier class, and `notification`. For example:
 
@@ -499,6 +500,18 @@ class DeliveryMethods::WhatsApp < Noticed::DeliveryMethod
     # ...
 		config.day #=> #<Proc:0x000f7c8 (lambda)>
     evaluate_option(config.day) #=> "Tuesday"
+  end
+end
+```
+
+#### Callbacks
+
+Callbacks for delivery methods wrap the _actual_ delivery of the notification. You can use `before_deliver`, `around_deliver` and `after_deliver` in your custom delivery methods.
+
+```ruby
+class DeliveryMethods::Discord < Noticed::DeliveryMethod
+  after_deliver do
+    # Do whatever you want
   end
 end
 ```

@@ -26,51 +26,92 @@ See the below instructions on where to store this information within your applic
 class CommentNotification
   deliver_by :fcm do |config|
     config.credentials = Rails.root.join("config/certs/fcm.json")
+    config.device_tokens = ->(recipient) { recipient.notification_tokens.where(platform: "fcm").pluck(:token) }
     config.json = ->(device_token) {
       {
-        token: device_token,
-        notification: {
-          title: "Test Title",
-          body: "Test body"
+        message: {
+          token: device_token,
+          notification: {
+            title: "Test Title",
+            body: "Test body"
+          }
         }
       }
     }
+    config.if = ->(recipient) { recipient.android_notifications? }
   end
 end
 ```
 
 ## Options
 
-* `json`
-  Customize the Firebase Cloud Messaging notification object. This can be a Lambda or Symbol of a method name on the notifier. The callable object will be given the device token as an argument.
+### `json`
+Customize the Firebase Cloud Messaging notification object. This can be a Lambda or Symbol of a method name on the notifier. 
+  
+The callable object will be given the device token as an argument.
 
-* `credentials`
+There are lots of options of now to structure a FCM notification message. See https://firebase.google.com/docs/cloud-messaging/concept-options for more details.
+
+### `credentials`
 The location of your Firebase Cloud Messaging credentials.
-- When a String object: `deliver_by :fcm, credentials: "config/credentials/fcm.json"`
-  * Interally, this string is passed to `Rails.root.join()` as an argument so there is no need to do this beforehand.
-- When a Pathname object: `deliver_by :fcm, credentials: Rails.root.join("config/credentials/fcm.json")`
-   * The Pathname object can point to any location where you are storing your credentials.
-- When a Hash object: `deliver_by :fcm, credentials: credentials_hash`
-    ```ruby
-        credentials_hash = {
-          "type": "service_account",
-          "project_id": "test-project-1234",
-          "private_key_id": ...,
-          etc.....
-        }
-    ```
 
-  * A Hash which contains your credentials
-- When a Symbol: `deliver_by :fcm, credentials: :fcm_credentials, format: :format_notification`
-    ```ruby
-        def fcm_credentials
-          Rails.root.join("config/certs/fcm.json")
-        end
-    ```
+#### When a String Object
 
-  * Points to a method which can return a Hash of your credentials, Pathname, or String to your credentials like the examples above.
+Internally, this string is passed to `Rails.root.join()` as an argument so there is no need to do this beforehand.
 
-Otherwise, if the credentials option is left out, it will look for your credentials in: `Rails.application.credentials.fcm`
+```ruby
+deliver_by :fcm do |config| 
+  config.credentials = "config/credentials/fcm.json"
+end
+```
+
+#### When a Pathname object
+
+The Pathname object can point to any location where you are storing your credentials.
+
+```ruby
+deliver_by :fcm do |config| 
+  config.credentials = Rails.root.join("config/credentials/fcm.json")
+end
+```
+
+#### When a Hash object
+
+A Hash which contains your credentials
+
+```ruby
+deliver_by :fcm do |config| 
+  config.credentials = credentials_hash 
+end
+
+credentials_hash = {
+  "type": "service_account",
+  "project_id": "test-project-1234",
+  "private_key_id": ...,
+  etc.....
+}
+```
+
+#### When a Symbol
+
+Points to a method which can return a Hash of your credentials, Pathname, or String to your credentials like the examples above. 
+
+We pass the notification object as an argument to the method. If you don't need to use it you can use the splat operator `(*)` to ignore it.
+
+```ruby
+deliver_by :fcm do |config| 
+  config.credentials = :fcm_credentials
+  config.json = :format_notification
+end
+
+def fcm_credentials(*)
+  Rails.root.join("config/certs/fcm.json")
+end
+```
+
+#### Otherwise
+
+If the credentials option is left out, it will look for your credentials in: `Rails.application.credentials.fcm`
 
 ## Gathering Notification Tokens
 

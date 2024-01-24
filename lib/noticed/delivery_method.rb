@@ -1,5 +1,5 @@
 module Noticed
-  class DeliveryMethod < ApplicationJob
+  class DeliveryMethod < Noticed.parent_class.constantize
     include ApiClient
     include RequiredOptions
 

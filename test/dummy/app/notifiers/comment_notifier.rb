@@ -1,4 +1,4 @@
-class CommentNotifier < Noticed::Event
+class CommentNotifier < ApplicationNotifier
   deliver_by :test
 
   # delivery_by :email, mailer: "UserMailer", method: "new_comment"

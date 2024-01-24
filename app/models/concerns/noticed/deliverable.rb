@@ -103,7 +103,7 @@ module Noticed
 
     def validate_params!
       required_param_names.each do |param_name|
-        raise ValidationError, "Param `#{param_name}` is required for #{self.class.name}." unless params[param_name].present?
+        raise ValidationError, "Param `#{param_name}` is required for #{self.class.name}." unless params.has_key?(param_name)
       end
     end
 

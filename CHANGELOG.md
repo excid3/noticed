@@ -1,6 +1,10 @@
 ### Unreleased
 
+### 2.0.4
+
 * Validate param key exists, not the value
+* Fix recipients that are STI models by storing base class name
+* Re-add delivery method callbacks
 
 ### 2.0.3
 

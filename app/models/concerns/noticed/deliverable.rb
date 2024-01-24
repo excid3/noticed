@@ -91,7 +91,7 @@ module Noticed
     def recipient_attributes_for(recipient)
       {
         type: "#{self.class.name}::Notification",
-        recipient_type: recipient.class.name,
+        recipient_type: recipient.class.base_class.name,
         recipient_id: recipient.id
       }
     end

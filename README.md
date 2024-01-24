@@ -119,7 +119,7 @@ For deeper specifics on setting up the `:action_cable`, `:email`, and `:discord`
 
 #### Delivery Method Configuration
 
-Each delivery method can be configured with a block that yields a `config` object. 
+Each delivery method can be configured with a block that yields a `config` object.
 
 Procs/Lambdas will be evaluated when needed and symbols can be used to call a method.
 
@@ -324,8 +324,8 @@ module IosNotifier
     end
   end
 end
-```  
-  
+```
+
 #### Shared Delivery Method Options
 
 Each of these options are available for every delivery method (individual or bulk). The value passed may be a lambda, a symbol that represents a callable method, a symbol value, or a string value.

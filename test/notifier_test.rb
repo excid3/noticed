@@ -56,6 +56,16 @@ class NotifierTest < ActiveSupport::TestCase
     end
   end
 
+  test "deliver to STI recipient writes base class" do
+    admin = Admin.first
+    assert_difference "Noticed::Notification.count" do
+      ReceiptNotifier.deliver(admin)
+    end
+    notification = Noticed::Notification.last
+    assert_equal "User", notification.recipient_type
+    assert_equal admin, notification.recipient
+  end
+
   test "creates jobs for deliveries" do
     # Delivering a notification creates records
     assert_enqueued_jobs 1, only: Noticed::EventJob do

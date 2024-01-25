@@ -111,7 +111,6 @@ module Noticed
     end
     alias_method :deliver_later, :deliver
 
-
     def recipient_attributes_for(recipient)
       {
         type: "#{self.class.name}::Notification",

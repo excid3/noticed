@@ -139,4 +139,12 @@ class NotifierTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "deprecations don't cause problems" do
+    assert_nothing_raised do
+      Noticed.deprecator.silence do
+        DeprecatedNotifier.with(message: "test").deliver_later
+      end
+    end
+  end
 end

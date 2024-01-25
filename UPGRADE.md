@@ -93,7 +93,7 @@ class CommentNotifier < Noticed::Event
     config.message = :to_websocket
   end
 
-  def to_websocket
+  def to_websocket(notification)
     { foo: :bar }
   end
 end
@@ -172,7 +172,7 @@ end
 
 ### Deliver Later
 
-Notifications are always delivered later now. The `.deliver_later` method has been removed. Instead you can just user `.deliver`
+Notifications are always delivered later now. `deliver` and `deliver_later` perform the same action.
 
 ### Required Params
 

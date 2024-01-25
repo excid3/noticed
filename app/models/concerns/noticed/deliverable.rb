@@ -35,6 +35,13 @@ module Noticed
       def deliver_by(name, options = {})
         raise NameError, "#{name} has already been used for this Notifier." if delivery_methods.has_key?(name)
 
+        if name == :database
+          Noticed.deprecator.warn <<-WARNING.squish
+            The :database delivery method has been deprecated and does nothing. Notifiers automatically save to the database now.
+          WARNING
+          return
+        end
+
         config = ActiveSupport::OrderedOptions.new.merge(options)
         yield config if block_given?
         delivery_methods[name] = DeliverBy.new(name, config)
@@ -67,11 +74,7 @@ module Noticed
       def deliver(recipients = nil, options = {})
         new.deliver(recipients, options)
       end
-
-      # For backwards compatibility
-      def deliver_later(recipients = nil, options = {})
-        deliver(recipients, options)
-      end
+      alias_method :deliver_later, :deliver
     end
 
     # CommentNotifier.deliver(User.all)
@@ -106,6 +109,8 @@ module Noticed
 
       self
     end
+    alias_method :deliver_later, :deliver
+
 
     def recipient_attributes_for(recipient)
       {

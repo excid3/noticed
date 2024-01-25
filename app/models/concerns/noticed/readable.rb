@@ -11,19 +11,19 @@ module Noticed
 
     class_methods do
       def mark_as_read
-        update_all(read_at: Time.current)
+        update_all(read_at: Time.current, updated_at: Time.current)
       end
 
       def mark_as_unread
-        update_all(read_at: nil)
+        update_all(read_at: nil, updated_at: Time.current)
       end
 
       def mark_as_seen
-        update_all(seen_at: Time.current)
+        update_all(seen_at: Time.current, updated_at: Time.current)
       end
 
       def mark_as_unseen
-        update_all(seen_at: nil)
+        update_all(seen_at: nil, updated_at: Time.current)
       end
     end
 

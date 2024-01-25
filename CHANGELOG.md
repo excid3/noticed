@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.0.5
+
+* `mark_as_read` and other class methods will now write `updated_at` as well to bust caches
+
 ### 2.0.4
 
 * Validate param key exists, not the value

@@ -45,6 +45,20 @@ module Noticed
       end
       alias_method :required_param, :required_params
 
+      def params(*names)
+        Noticed.deprecator.warn <<-WARNING.squish
+          `params` is deprecated and has been renamed to `required_params`
+        WARNING
+        required_params(*names)
+      end
+
+      def param(*names)
+        Noticed.deprecator.warn <<-WARNING.squish
+          `param :name` is deprecated and has been renamed to `required_param :name`
+        WARNING
+        required_params(*names)
+      end
+
       def with(params)
         record = params.delete(:record)
         new(params: params, record: record)
@@ -52,6 +66,11 @@ module Noticed
 
       def deliver(recipients = nil, options = {})
         new.deliver(recipients, options)
+      end
+
+      # For backwards compatibility
+      def deliver_later(recipients = nil, options = {})
+        deliver(recipients, options)
       end
     end
 

@@ -28,7 +28,7 @@ end
 
 # Migrate each record to the new tables
 Notification.find_each do |notification|
-  attributes = notification.attributes.slice("type").with_indifferent_access
+  attributes = notification.attributes.slice("type", "created_at", "updated_at").with_indifferent_access
   attributes[:type] = attributes[:type].sub("Notification", "Notifier")
   attributes[:params] = Noticed::Coder.load(notification.params)
   attributes[:params] = {} if attributes[:params].try(:has_key?, "noticed_error") # Skip invalid records
@@ -37,7 +37,9 @@ Notification.find_each do |notification|
     recipient_type: notification.recipient_type,
     recipient_id: notification.recipient_id,
     read_at: notification.read_at,
-    seen_at: notification.read_at
+    seen_at: notification.read_at,
+    created_at: notification.created_at,
+    updated_at: notification.updated_at
   }]
   Noticed::Event.create!(attributes)
 end
@@ -80,7 +82,7 @@ end
 Configuration for each delivery method can be contained within a block now. This improves organization for delivery method options by defining them in the block.
 Procs/Lambdas will be evaluated when needed and symbols can be used to call a method.
 
-If you are using a symbol to call a method, we pass the notification object as an argument to the method. This allows you to access the notification object within the method. 
+If you are using a symbol to call a method, we pass the notification object as an argument to the method. This allows you to access the notification object within the method.
 Your method must accept a single argument. If you don't need to use the object you can just use `(*)`.
 
 ```ruby
@@ -93,7 +95,7 @@ class CommentNotifier < Noticed::Event
 
   def to_websocket
     { foo: :bar }
-  end 
+  end
 end
 ```
 
@@ -164,7 +166,7 @@ module IosNotifier
     return false unless recipient.is_a?(User)
 
     recipient.send_notifications?
-  end 
+  end
 end
 ```
 

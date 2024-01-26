@@ -429,6 +429,7 @@ module MyApp
   end
 end
 ```
+
 ## ✅ Best Practices
 
 ### Renaming Notifiers
@@ -645,13 +646,13 @@ class DeliveryMethods::Discord < Noticed::DeliveryMethod
 end
 ```
 
-### 📦 Database Model
+## 📦 Database Model
 
 The Noticed database models include several helpful features to make working with notifications easier.
 
-#### Notification
+### Notification
 
-##### Class methods/scopes
+#### Class methods/scopes
 
 (Assuming your user `has_many :notifications, as: :recipient, class_name: "Noticed::Notification"`)
 
@@ -746,6 +747,48 @@ class ApplicationJob < ActiveJob::Base
   discard_on ActiveJob::DeserializationError
 end
 ```
+
+### Customizing the Database Models
+
+You can modify the database models by editing the generated migrations.
+
+One common adjustment is to change the IDs to UUIDs (if you're using UUIDs in your app).
+
+You can also add additional columns to the `Noticed::Event` and `Noticed::Notification` models. 
+
+```ruby
+# This migration comes from noticed (originally 20231215190233)
+class CreateNoticedTables < ActiveRecord::Migration[7.1]
+  def change
+    create_table :noticed_events, id: :uuid do |t|
+      t.string :type
+      t.belongs_to :record, polymorphic: true, type: :uuid
+      t.jsonb :params
+
+      # Custom Fields
+      t.string :organisation_id, type: :uuid, as: "((params ->> 'organisation_id')::uuid)", stored: true
+      t.virtual :action_type, type: :string, as: "((params ->> 'action_type'))", stored: true
+      t.virtual :url, type: :string, as: "((params ->> 'url'))", stored: true
+
+      t.timestamps
+    end
+
+    create_table :noticed_notifications, id: :uuid do |t|
+      t.string :type
+      t.belongs_to :event, null: false, type: :uuid
+      t.belongs_to :recipient, polymorphic: true, null: false, type: :uuid
+      t.datetime :read_at
+      t.datetime :seen_at
+
+      t.timestamps
+    end
+
+    add_index :noticed_notifications, :read_at
+  end
+end
+```
+
+The custom fields in the above example are stored as virtual columns.  These are populated from values passed in the `params` hash when creating the notifier.
 
 ## 🙏 Contributing
 

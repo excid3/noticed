@@ -4,6 +4,9 @@ module Noticed
     include ActiveModel::Attributes
     include Noticed::Deliverable
 
+    attribute :record
+    attribute :params, default: {}
+
     class Notification
       include ActiveModel::Model
       include ActiveModel::Attributes
@@ -20,7 +23,11 @@ module Noticed
       end
     end
 
-    attribute :params, default: {}
+    # Dynamically define Notification on each Ephemeral Notifier
+    def self.inherited(notifier)
+      super
+      notifier.const_set :Notification, Class.new(Noticed::Ephemeral::Notification)
+    end
 
     def deliver(recipients)
       recipients = Array.wrap(recipients)

@@ -26,7 +26,7 @@ See the below instructions on where to store this information within your applic
 class CommentNotification
   deliver_by :fcm do |config|
     config.credentials = Rails.root.join("config/certs/fcm.json")
-    config.device_tokens = ->(recipient) { recipient.notification_tokens.where(platform: "fcm").pluck(:token) }
+    config.device_tokens = -> { recipient.notification_tokens.where(platform: "fcm").pluck(:token) }
     config.json = ->(device_token) {
       {
         message: {
@@ -38,7 +38,7 @@ class CommentNotification
         }
       }
     }
-    config.if = ->(recipient) { recipient.android_notifications? }
+    config.if = -> { recipient.android_notifications? }
   end
 end
 ```

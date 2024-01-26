@@ -1,24 +1,31 @@
 # Noticed
 
-### 🎉  Notifications for your Ruby on Rails app.
+## 🎉  Notifications for your Ruby on Rails app.
 
 [![Build Status](https://github.com/excid3/noticed/workflows/Tests/badge.svg)](https://github.com/excid3/noticed/actions) [![Gem Version](https://badge.fury.io/rb/noticed.svg)](https://badge.fury.io/rb/noticed)
 
-**⚠️⚠️ Upgrading from V1? Read the [Upgrade Guide](https://github.com/excid3/noticed/blob/main/UPGRADE.md)!**
+> [!IMPORTANT]
+> **⚠️⚠️ Upgrading from V1? Read the [Upgrade Guide](https://github.com/excid3/noticed/blob/main/UPGRADE.md)!**
 
 Noticed is a gem that allows your application to send notifications of varying types, over various mediums, to various recipients. Be it a Slack notification to your own team when some internal event occurs or a notification to your user, sent as a text message, email, and real-time UI element in the browser, Noticed supports all of the above (at the same time)!
 
 Noticed implements two top-level types of delivery methods:
 
-1. Individual Deliveries: Where each recipient gets their own notification
+1. **Individual Deliveries**: Where each recipient gets their own notification
+<details>
+<summary> Show Example </summary>
 
 Let’s use a car dealership as an example here. When someone purchases a car, a notification will be sent to the buyer with some contract details (“Congrats on your new 2024 XYZ Model...”), another to the car sales-person with different details (“You closed X deal; your commission is Y”), and another to the bank handling the loan with financial details (“New loan issued; amount $20,000...”). The event (the car being sold) necessitates multiple notifications being sent out to different recipients, but each contains its own unique information and should be separate from the others. These are individual deliveries.
+</details>
 
-2. Bulk Deliveries - one notification for all recipients. This is useful for sending a notification to your Slack team, for example.
+2. **Bulk Deliveries**: One notification for all recipients. This is useful for sending a notification to your Slack team, for example.
 
+<details>
+<summary> Show Example </summary>
 Let’s continue with the car-sale example here. Consider that your development team created the car-sales application that processed the deal above and sent out the notifications to the three parties. For the sake of team morale and feeling the ‘wins’, you may want to implement a notification that notifies your internal development team whenever a car sells through your platform. In this case, you’ll be notifying many people (your development team, maybe others at your company) but with the same content (“someone just bought a car through our platform!”). This is a bulk delivery. It’s generally a single notification that many people just need to be made aware of.
 
 Bulk deliveries are typically used to push notifications to other platforms where users are managed (Slack, Discord, etc.) instead of your own.
+</details>
 
 Delivery methods we officially support:
 
@@ -67,6 +74,19 @@ To start, generate a Notifier:
 ```sh
 rails generate noticed:notifier NewCommentNotifier
 ```
+
+### Usage Contents
+- [Notifier Objects](#notifier-objects)
+  - [Delivery Method Configuration](#delivery-method-configuration)
+  - [Required Params](#required-params)
+  - [Helper Methods](#helper-methods)
+  - [URL Helpers](#url-helpers)
+  - [Translations](#translations)
+  - [Tip: Capture User Preferences](#tip-capture-user-preferences)
+  - [Tip: Extracting Delivery Method Configurations](#tip-extracting-delivery-method-configurations)
+  - [Shared Delivery Method Options](#shared-delivery-method-options)
+- [Sending Notifications](#sending-notifications)
+- [Custom Noticed Model Methods](#custom-noticed-model-methods)
 
 ### Notifier Objects
 
@@ -123,8 +143,13 @@ Each delivery method can be configured with a block that yields a `config` objec
 
 Procs/Lambdas will be evaluated when needed and symbols can be used to call a method.
 
+When a lambda is passed, it will not pass any arguments and evaluates the Proc in the context of the Noticed::Notification
+
 If you are using a symbol to call a method, we pass the notification object as an argument to the method. This allows you to access the notification object within the method.
 Your method must accept a single argument. If you don't need to use the object you can just use `(*)`.
+
+<details>
+<summary> Show Example </summary>
 
 ```ruby
 class CommentNotifier < Noticed::Event
@@ -135,7 +160,7 @@ class CommentNotifier < Noticed::Event
     config.team_id = :ios_team_id
     config.bundle_identifier = Rails.application.credentials.dig(:ios, :bundle_identifier)
     config.device_tokens = :ios_device_tokens
-    config.if = ->(notification) { recipient.send_ios_notification? }
+    config.if = -> { recipient.send_ios_notification? }
   end
 
   def ios_format(apn)
@@ -172,18 +197,22 @@ class CommentNotifier < Noticed::Event
     notification.recipient.ios_device_tokens
   end
 
-  def send_ios_notification?(notification)
-    recipient = notification.recipient
-    return false unless recipient.is_a?(User)
-
-    recipient.send_notifications?
-  end
-
   def url
     comment_thread_path(record.thread)
   end
 end
+
+class Recipent < ApplicationRecord # or whatever your recipient model is
+  has_many :ios_device_tokens
+
+    def send_ios_notification?
+        # some logic
+    end
+end
 ```
+</details>
+
+More examples are in the docs for each delivery method.
 
 #### Required Params
 
@@ -211,7 +240,6 @@ CarSaleNotifier.with(record: Car.last, branch: Branch.last).deliver(Branch.hq)
 #=> OK
 ```
 
-
 #### Helper Methods
 
 Notifiers can implement various helper methods, within a `notification_methods` block, that make it easier to render the resulting notification directly. These helpers can be helpful depending on where and how you choose to render notifications. A common use is rendering a user’s notifications in your web UI as standard ERB. These notification helper methods make that rendering much simpler:
@@ -226,7 +254,7 @@ Notifiers can implement various helper methods, within a `notification_methods` 
 
 On the other hand, if you’re using email delivery, ActionMailer has its own full stack for setting up objects and rendering. Your notification helper methods will always be available from the notification object, but using ActionMailer’s own paradigms may fit better for that particular delivery method. YMMV.
 
-####  URL Helpers
+#### URL Helpers
 
 Rails url helpers are included in Notifiers by default so you have full access to them in your notification helper methods, just like you would in your controllers and views.
 
@@ -336,7 +364,7 @@ Each of these options are available for every delivery method (individual or bul
 * `config.wait_until` — (Should yield a specific time object) Delays the job that runs this delivery method until the specific time specified
 * `config.queue` — Sets the ActiveJob queue name to be used for the job that runs this delivery method
 
-### Sending Notifications
+### 📨 Sending Notifications
 
 Following the `NewCommentNotifier` example above, here’s how we might invoke the Notifier to send notifications to every author in the thread about a new comment being added:
 
@@ -356,6 +384,51 @@ This invocation will create a single `Noticed::Event` record and a `Noticed::Not
 - An individual delivery job for `:action_cable` method to the second thread author
 - An individual delivery job for `:email` method to the second thread author
 - Etc...
+
+### Custom Noticed Model Methods
+
+In order to extend the Noticed models you'll need to use a concern an a to_prepare block:
+
+```ruby
+# config/initializers/noticed.rb
+module NotificationExtensions
+  extend ActiveSupport::Concern
+
+  included do
+    belongs_to :organisation
+
+    scope :filter_by_type, ->(type) { where(type:) }
+    scope :exclude_type, ->(type) { where.not(type:) }
+  end
+
+  # You can also add instance methods here
+end
+
+Rails.application.config.to_prepare do
+  # You can extend Noticed::Event or Noticed::Notification here
+  Noticed::Event.include EventExtensions
+  Noticed::Notification.include NotificationExtensions
+end
+```
+
+The `NotificationExtensions` class could be separated into it's own file and live somewhere like `app/models/concerns/notification_extensions.rb`.
+
+If you do this, the `to_prepare` block will need to be in `application.rb` instead of an initializer.
+
+```ruby
+# config/application.rb
+module MyApp
+  class Application < Rails::Application
+    
+    # ...
+
+    config.to_prepare do
+      Noticed::Event.include Noticed::EventExtensions
+      Noticed::Notification.include Noticed::NotificationExtensions
+    end
+  end
+end
+```
 
 ## ✅ Best Practices
 
@@ -441,7 +514,7 @@ If you want to build your own delivery method to deliver notifications to a spec
 This will generate a new `DeliveryMethods::Discord` class inside the `app/notifiers/delivery_methods` folder, which can be used to deliver notifications to Discord.
 
 ```ruby
-class DeliveryMethods::Discord < Noticed::DeliveryMethod
+class DeliveryMethods::Discord < ApplicationDeliveryMethod
   # Specify the config options your delivery method requires in its config block
   required_options # :foo, :bar
 
@@ -459,6 +532,63 @@ class MyNotifier < Noticed::Event
   deliver_by :discord, class: "DeliveryMethods::Discord"
 end
 ```
+
+<details>
+<summary>Turbo Stream Custom Delivery Method Example</summary>
+
+A common custom delivery method in the Rails world might be to Delivery to the web via turbo stream.
+
+Note: This example users custom methods that extend the `Noticed::Notification` class. 
+
+See the [Custom Noticed Model Methods](#custom-noticed-model-methods) section for more information.
+
+```ruby
+# app/notifiers/delivery_methods/turbo_stream.rb
+class DeliveryMethods::TurboStream < ApplicationDeliveryMethod
+  def deliver
+    return unless recipient.is_a?(User)
+
+    notification.broadcast_update_to_bell
+    notification.broadcast_replace_to_index_count
+    notification.broadcast_prepend_to_index_list
+  end
+end
+```
+
+```ruby
+# app/models/concerns/noticed/notification_extensions.rb
+module Noticed::NotificationExtensions
+  extend ActiveSupport::Concern
+
+  def broadcast_update_to_bell
+    broadcast_update_to(
+      "notifications_#{recipient.id}",
+      target: "notification_bell",
+      partial: "navbar/notifications/bell",
+      locals: { user: recipient }
+    )
+  end
+
+  def broadcast_replace_to_index_count
+    broadcast_replace_to(
+      "notifications_index_#{recipient.id}",
+      target: "notification_index_count",
+      partial: "notifications/notifications_count",
+      locals: { count: recipient.reload.notifications_count, unread: recipient.reload.unread_notifications_count }
+    )
+  end
+
+  def broadcast_prepend_to_index_list
+    broadcast_prepend_to(
+      "notifications_index_list_#{recipient.id}",
+      target: "notifications",
+      partial: "notifications/notification",
+      locals: { notification: self }
+    )
+  end
+end
+```
+</details>
 
 Delivery methods have access to the following methods and attributes:
 
@@ -516,13 +646,13 @@ class DeliveryMethods::Discord < Noticed::DeliveryMethod
 end
 ```
 
-### 📦 Database Model
+## 📦 Database Model
 
 The Noticed database models include several helpful features to make working with notifications easier.
 
-#### Notification
+### Notification
 
-##### Class methods/scopes
+#### Class methods/scopes
 
 (Assuming your user `has_many :notifications, as: :recipient, class_name: "Noticed::Notification"`)
 
@@ -538,7 +668,6 @@ Query for read or unread notifications:
 user.notifications.read
 user.notifications.unread
 ```
-
 
 Marking all notifications as read or unread:
 
@@ -594,10 +723,11 @@ end
 
 class Post < ApplicationRecord
   has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
+  has_many :notifications, through: :noticed_events, class_name: "Noticed::Notification"
 end
 
 # All of the notification events this post generated
-# @post.noticed_events.each { |ne| ne.notifications... }
+# @post.notifications
 ```
 
 #### ActiveJob Parent Class
@@ -617,6 +747,48 @@ class ApplicationJob < ActiveJob::Base
   discard_on ActiveJob::DeserializationError
 end
 ```
+
+### Customizing the Database Models
+
+You can modify the database models by editing the generated migrations.
+
+One common adjustment is to change the IDs to UUIDs (if you're using UUIDs in your app).
+
+You can also add additional columns to the `Noticed::Event` and `Noticed::Notification` models. 
+
+```ruby
+# This migration comes from noticed (originally 20231215190233)
+class CreateNoticedTables < ActiveRecord::Migration[7.1]
+  def change
+    create_table :noticed_events, id: :uuid do |t|
+      t.string :type
+      t.belongs_to :record, polymorphic: true, type: :uuid
+      t.jsonb :params
+
+      # Custom Fields
+      t.string :organisation_id, type: :uuid, as: "((params ->> 'organisation_id')::uuid)", stored: true
+      t.virtual :action_type, type: :string, as: "((params ->> 'action_type'))", stored: true
+      t.virtual :url, type: :string, as: "((params ->> 'url'))", stored: true
+
+      t.timestamps
+    end
+
+    create_table :noticed_notifications, id: :uuid do |t|
+      t.string :type
+      t.belongs_to :event, null: false, type: :uuid
+      t.belongs_to :recipient, polymorphic: true, null: false, type: :uuid
+      t.datetime :read_at
+      t.datetime :seen_at
+
+      t.timestamps
+    end
+
+    add_index :noticed_notifications, :read_at
+  end
+end
+```
+
+The custom fields in the above example are stored as virtual columns.  These are populated from values passed in the `params` hash when creating the notifier.
 
 ## 🙏 Contributing
 

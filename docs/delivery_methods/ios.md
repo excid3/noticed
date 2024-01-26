@@ -21,7 +21,7 @@ https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_
 ```ruby
 class CommentNotification
   deliver_by :ios do |config|
-    config.device_tokens = ->(recipient) { recipient.notification_tokens.where(platform: :iOS).pluck(:token) }
+    config.device_tokens = -> { recipient.notification_tokens.where(platform: :iOS).pluck(:token) }
     config.format = ->(apn) {
       apn.alert = "Hello world"
       apn.custom_payload = {url: root_url(host: "example.org")}
@@ -97,11 +97,11 @@ A user has_many tokens that can be generated from both development (sandboxed de
 
 ```ruby
 deliver_by :ios do |config|
- config.device_tokens = ->(recipient) { recipient.notification_tokens.where(environment: :production, platform: :iOS).pluck(:token) }
+ config.device_tokens = -> { recipient.notification_tokens.where(environment: :production, platform: :iOS).pluck(:token) }
 end
 
 deliver_by :ios_development, class: "Noticed::DeliveryMethods::Ios" do |config|
   config.development = true
-  config.device_tokens = ->(recipient) { recipient.notification_tokens.where(environment: :development, platform: :iOS).pluck(:token) }
+  config.device_tokens = ->{ recipient.notification_tokens.where(environment: :development, platform: :iOS).pluck(:token) }
 end
 ```

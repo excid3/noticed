@@ -51,6 +51,30 @@ class DeliveryMethodTest < ActiveSupport::TestCase
     assert_equal notification, event.instance_variable_get(:@example)
   end
 
+  class CallbackDeliveryMethod < Noticed::DeliveryMethod
+    before_deliver :set_message
+    attr_reader :message
+
+    def set_message
+      @message = "new message"
+    end
+
+    def deliver
+    end
+  end
+
+  class CallbackNotifier < Noticed::Event
+    deliver_by :test
+  end
+
+  test "calls callbacks" do
+    event = CallbackNotifier.with(message: "test")
+    notification = Noticed::Notification.create(recipient: User.first, event: event)
+    delivery_method = CallbackDeliveryMethod.new
+    delivery_method.perform(:test, notification)
+    assert_equal delivery_method.message, "new message"
+  end
+
   private
 
   def set_config(config)

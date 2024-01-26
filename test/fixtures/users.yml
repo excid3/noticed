@@ -3,3 +3,7 @@ one:
 
 two:
   email: two@example.org
+
+admin:
+  type: Admin
+  email: admin@example.org

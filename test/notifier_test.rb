@@ -56,6 +56,16 @@ class NotifierTest < ActiveSupport::TestCase
     end
   end
 
+  test "deliver to STI recipient writes base class" do
+    admin = Admin.first
+    assert_difference "Noticed::Notification.count" do
+      ReceiptNotifier.deliver(admin)
+    end
+    notification = Noticed::Notification.last
+    assert_equal "User", notification.recipient_type
+    assert_equal admin, notification.recipient
+  end
+
   test "creates jobs for deliveries" do
     # Delivering a notification creates records
     assert_enqueued_jobs 1, only: Noticed::EventJob do
@@ -126,6 +136,14 @@ class NotifierTest < ActiveSupport::TestCase
       event = PriorityNotifier.deliver(User.first)
       assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last], priority: 2) do
         perform_enqueued_jobs
+      end
+    end
+  end
+
+  test "deprecations don't cause problems" do
+    assert_nothing_raised do
+      Noticed.deprecator.silence do
+        DeprecatedNotifier.with(message: "test").deliver_later
       end
     end
   end

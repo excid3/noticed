@@ -1,6 +1,18 @@
 ### Unreleased
 
+### 2.0.6
+
+* Add `param(s)` and `deliver_later` back with deprecations where necessary to ease upgrading from v1
+
+### 2.0.5
+
+* `mark_as_read` and other class methods will now write `updated_at` as well to bust caches
+
+### 2.0.4
+
 * Validate param key exists, not the value
+* Fix recipients that are STI models by storing base class name
+* Re-add delivery method callbacks
 
 ### 2.0.3
 

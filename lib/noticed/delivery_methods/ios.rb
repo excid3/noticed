@@ -37,7 +37,7 @@ module Noticed
         if method&.is_a?(Symbol) && event.respond_to?(method)
           event.send(method, apn)
         # If Proc, evaluate it on the Notification
-        elsif method.present?
+        elsif method&.respond_to?(:call)
           notification.instance_exec(apn, &method)
         elsif notification.params.try(:has_key?, :message)
           apn.alert = notification.params[:message]

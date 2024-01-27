@@ -45,5 +45,9 @@ module Noticed
     def record
       params[:record]
     end
+
+    def notification_methods(&block)
+      const_get(:Notification).class_eval(&block)
+    end
   end
 end

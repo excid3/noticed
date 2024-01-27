@@ -32,8 +32,12 @@ module Noticed
       def format_notification(apn)
         apn.topic = evaluate_option(:bundle_identifier)
 
-        if (method = config[:format])
-          method = event.send(method, apn) if method.is_a?(Symbol) && event.respond_to?(method)
+        method = config[:format]
+        # Call method on Notifier if defined
+        if method&.is_a?(Symbol) && event.respond_to?(method)
+          event.send(method, apn)
+        # If Proc, evaluate it on the Notification
+        elsif method&.respond_to?(:call)
           notification.instance_exec(apn, &method)
         elsif notification.params.try(:has_key?, :message)
           apn.alert = notification.params[:message]

@@ -2,6 +2,15 @@
 
 Follow this guide to upgrade your Noticed implementation to the next version
 
+## Noticed 2.1
+
+We've added a counter cache to Noticed::Event to keep track of the associated notifications.
+
+Run the following command to copy over the migrations:
+```bash
+rails noticed:install:migrations
+```
+
 ## Noticed 2.0
 
 We've made some major changes to Noticed to simplify and support more delivery methods.

@@ -8,6 +8,7 @@ class CreateNoticedTables < ActiveRecord::Migration[6.1]
       else
         t.json :params
       end
+      t.integer :notifications_count
 
       t.timestamps
     end

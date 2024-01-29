@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/excid3/noticed/workflows/Tests/badge.svg)](https://github.com/excid3/noticed/actions) [![Gem Version](https://badge.fury.io/rb/noticed.svg)](https://badge.fury.io/rb/noticed)
 
 > [!IMPORTANT]
-> **⚠️⚠️ Upgrading from V1? Read the [Upgrade Guide](https://github.com/excid3/noticed/blob/main/UPGRADE.md)!**
+> **⚠️ Upgrading from V1? Read the [Upgrade Guide](https://github.com/excid3/noticed/blob/main/UPGRADE.md)!**
 
 Noticed is a gem that allows your application to send notifications of varying types, over various mediums, to various recipients. Be it a Slack notification to your own team when some internal event occurs or a notification to your user, sent as a text message, email, and real-time UI element in the browser, Noticed supports all of the above (at the same time)!
 
@@ -419,7 +419,7 @@ If you do this, the `to_prepare` block will need to be in `application.rb` inste
 # config/application.rb
 module MyApp
   class Application < Rails::Application
-    
+
     # ...
 
     config.to_prepare do
@@ -538,7 +538,7 @@ end
 
 A common custom delivery method in the Rails world might be to Delivery to the web via turbo stream.
 
-Note: This example users custom methods that extend the `Noticed::Notification` class. 
+Note: This example users custom methods that extend the `Noticed::Notification` class.
 
 See the [Custom Noticed Model Methods](#custom-noticed-model-methods) section for more information.
 
@@ -754,7 +754,7 @@ You can modify the database models by editing the generated migrations.
 
 One common adjustment is to change the IDs to UUIDs (if you're using UUIDs in your app).
 
-You can also add additional columns to the `Noticed::Event` and `Noticed::Notification` models. 
+You can also add additional columns to the `Noticed::Event` and `Noticed::Notification` models.
 
 ```ruby
 # This migration comes from noticed (originally 20231215190233)

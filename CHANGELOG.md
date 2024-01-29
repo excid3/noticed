@@ -1,5 +1,13 @@
 ### Unreleased
 
+### 2.1.0
+
+[!IMPORTANT] Run `rails noticed:install:migrations` to upgrade to this version
+
+* Add `notifications_count` counter cache to Noticed::Event.
+* Add `has_noticed_notifications` for backwards compatibility.
+* Add `Noticed::Ephemeral` notifiers that skip the database records. These use ActiveModel to simulate Notifiers in memory and should work the same as a regular Notifier.
+
 ### 2.0.6
 
 * Add `param(s)` and `deliver_later` back with deprecations where necessary to ease upgrading from v1

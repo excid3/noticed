@@ -261,7 +261,7 @@ end
 
 ### Has Noticed Notifications
 
-`has_noticed_notifications` has been removed in favor of the `record` polymorphic relationship that can be directly queried with ActiveRecord. You can add the necessary json query to your model(s) to restore the json query if needed.
+`has_noticed_notifications` has been superceded with a `record` polymorphic relationship that can be directly associated and queried with ActiveRecord.
 
 We recommend backfilling the `record` association if your notification params has a primary related record and switching to a has_many association instead.
 

@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2024_01_29_184740) do
     t.string "record_type"
     t.integer "record_id"
     t.json "params"
+    t.integer "notifications_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["record_type", "record_id"], name: "index_noticed_events_on_record"

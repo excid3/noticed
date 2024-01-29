@@ -4,7 +4,7 @@ module Noticed
     include Readable
     include Translation
 
-    belongs_to :event
+    belongs_to :event, counter_cache: true
     belongs_to :recipient, polymorphic: true
 
     scope :newest_first, -> { order(created_at: :desc) }

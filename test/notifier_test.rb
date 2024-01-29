@@ -56,7 +56,10 @@ class NotifierTest < ActiveSupport::TestCase
     assert_difference "Noticed::Notification.count", User.count do
       event = ReceiptNotifier.deliver(User.all)
       assert_equal User.count, event.notifications_count
+    end
 
+    assert_difference "Noticed::Notification.count", -1 do
+      event = noticed_events(:one)
       event.notifications.destroy_all
       assert_equal 0, event.notifications_count
     end

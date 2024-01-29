@@ -6,7 +6,7 @@ module Noticed
     include Rails.application.routes.url_helpers
 
     belongs_to :record, polymorphic: true, optional: true
-    has_many :notifications, dependent: :delete_all, counter_cache: true
+    has_many :notifications, dependent: :delete_all
 
     accepts_nested_attributes_for :notifications
 

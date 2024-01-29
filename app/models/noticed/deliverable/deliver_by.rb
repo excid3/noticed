@@ -19,12 +19,21 @@ module Noticed
       end
 
       def perform_later(event_or_notification, options = {})
-        options[:wait] = evaluate_option(:wait, event_or_notification) if config.has_key?(:wait)
-        options[:wait_until] = evaluate_option(:wait_until, event_or_notification) if config.has_key?(:wait_until)
-        options[:queue] = evaluate_option(:queue, event_or_notification) if config.has_key?(:queue)
-        options[:priority] = evaluate_option(:priority, event_or_notification) if config.has_key?(:priority)
+        options[:wait] ||= evaluate_option(:wait, event_or_notification) if config.has_key?(:wait)
+        options[:wait_until] ||= evaluate_option(:wait_until, event_or_notification) if config.has_key?(:wait_until)
+        options[:queue] ||= evaluate_option(:queue, event_or_notification) if config.has_key?(:queue)
+        options[:priority] ||= evaluate_option(:priority, event_or_notification) if config.has_key?(:priority)
 
         constant.set(options).perform_later(name, event_or_notification)
+      end
+
+      def ephemeral_perform_later(notifier, recipient, params, options = {})
+        options[:wait] ||= evaluate_option(:wait, recipient) if config.has_key?(:wait)
+        options[:wait_until] ||= evaluate_option(:wait_until, recipient) if config.has_key?(:wait_until)
+        options[:queue] ||= evaluate_option(:queue, recipient) if config.has_key?(:queue)
+        options[:priority] ||= evaluate_option(:priority, recipient) if config.has_key?(:priority)
+
+        constant.set(options).perform_later(name, "#{notifier}::Notification", recipient: recipient, params: params)
       end
 
       def evaluate_option(name, context)

@@ -20,6 +20,7 @@ module Noticed
   module BulkDeliveryMethods
     autoload :Discord, "noticed/bulk_delivery_methods/discord"
     autoload :Slack, "noticed/bulk_delivery_methods/slack"
+    autoload :Test, "noticed/bulk_delivery_methods/test"
     autoload :Webhook, "noticed/bulk_delivery_methods/webhook"
   end
 

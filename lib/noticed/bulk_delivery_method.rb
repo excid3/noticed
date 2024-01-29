@@ -7,9 +7,15 @@ module Noticed
 
     attr_reader :config, :event
 
-    def perform(delivery_method_name, event)
-      @event = event
-      @config = event.bulk_delivery_methods.fetch(delivery_method_name).config
+    def perform(delivery_method_name, event, recipients: nil, params: {}, overrides: {})
+      # Ephemeral notifications
+      if event.is_a? String
+        @event = @notification.event
+        @config = overrides
+      else
+        @event = event
+        @config = event.bulk_delivery_methods.fetch(delivery_method_name).config.merge(overrides)
+      end
 
       return false if config.has_key?(:if) && !evaluate_option(:if)
       return false if config.has_key?(:unless) && evaluate_option(:unless)

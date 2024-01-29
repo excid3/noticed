@@ -12,9 +12,15 @@ module Noticed
     delegate :recipient, to: :notification
     delegate :record, :params, to: :event
 
-    def perform(delivery_method_name, notification, overrides: {})
-      @notification = notification
-      @event = notification.event
+    def perform(delivery_method_name, notification, recipient: nil, params: {}, overrides: {})
+      # Ephemeral notifications
+      if notification.is_a? String
+        @notification = notification.constantize.new_with_params(recipient, params)
+        @event = @notification.event
+      else
+        @notification = notification
+        @event = notification.event
+      end
 
       # Look up config from Notifier and merge overrides
       @config = event.delivery_methods.fetch(delivery_method_name).config.merge(overrides)

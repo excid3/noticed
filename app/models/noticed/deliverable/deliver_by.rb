@@ -33,7 +33,7 @@ module Noticed
         options[:queue] ||= evaluate_option(:queue, recipient) if config.has_key?(:queue)
         options[:priority] ||= evaluate_option(:priority, recipient) if config.has_key?(:priority)
 
-        constant.set(options).perform_later(name, "#{notifier}::Notification", recipient: recipient, params: params, overrides: config)
+        constant.set(options).perform_later(name, "#{notifier}::Notification", recipient: recipient, params: params)
       end
 
       def evaluate_option(name, context)

@@ -17,14 +17,13 @@ module Noticed
       if notification.is_a? String
         @notification = notification.constantize.new_with_params(recipient, params)
         @event = @notification.event
-        @config = overrides
       else
         @notification = notification
         @event = notification.event
-
-        # Look up config from Notifier and merge overrides
-        @config = event.delivery_methods.fetch(delivery_method_name).config.merge(overrides)
       end
+
+      # Look up config from Notifier and merge overrides
+      @config = event.delivery_methods.fetch(delivery_method_name).config.merge(overrides)
 
       return false if config.has_key?(:if) && !evaluate_option(:if)
       return false if config.has_key?(:unless) && evaluate_option(:unless)

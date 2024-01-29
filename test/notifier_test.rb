@@ -44,15 +44,24 @@ class NotifierTest < ActiveSupport::TestCase
 
   test "deliver creates notifications for each recipient" do
     assert_no_difference "Noticed::Notification.count" do
-      ReceiptNotifier.deliver
+      event = ReceiptNotifier.deliver
+      assert_equal 0, event.notifications_count
     end
 
     assert_difference "Noticed::Notification.count" do
-      ReceiptNotifier.deliver(User.first)
+      event = ReceiptNotifier.deliver(User.first)
+      assert_equal 1, event.notifications_count
     end
 
     assert_difference "Noticed::Notification.count", User.count do
-      ReceiptNotifier.deliver(User.all)
+      event = ReceiptNotifier.deliver(User.all)
+      assert_equal User.count, event.notifications_count
+    end
+
+    assert_difference "Noticed::Notification.count", -1 do
+      event = noticed_events(:one)
+      event.notifications.destroy_all
+      assert_equal 0, event.notifications_count
     end
   end
 

@@ -6,6 +6,7 @@ one:
   record_type: User
   params:
     foo: bar
+  notifications_count: 1
 
 two:
   type: CommentNotifier
@@ -13,6 +14,7 @@ two:
   record_type: User
   params:
     foo: bar
+  notifications_count: 1
 
 three:
   type: ReceiptNotifier
@@ -20,3 +22,4 @@ three:
   record_type: User
   params:
     foo: bar
+  notifications_count: 2

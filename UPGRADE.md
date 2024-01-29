@@ -2,6 +2,15 @@
 
 Follow this guide to upgrade your Noticed implementation to the next version
 
+## Noticed 2.1
+
+We've added a counter cache to Noticed::Event to keep track of the associated notifications.
+
+Run the following command to copy over the migrations:
+```bash
+rails noticed:install:migrations
+```
+
 ## Noticed 2.0
 
 We've made some major changes to Noticed to simplify and support more delivery methods.
@@ -32,6 +41,11 @@ Notification.find_each do |notification|
   attributes[:type] = attributes[:type].sub("Notification", "Notifier")
   attributes[:params] = Noticed::Coder.load(notification.params)
   attributes[:params] = {} if attributes[:params].try(:has_key?, "noticed_error") # Skip invalid records
+
+  # Extract related record to `belongs_to :record` association
+  # This allows ActiveRecord associations instead of querying the JSON data
+  # attributes[:record] = params.delete(:user) || params.delete(:account)
+
   attributes[:notifications_attributes] = [{
     type: "#{attributes[:type]}::Notification",
     recipient_type: notification.recipient_type,

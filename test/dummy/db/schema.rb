@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_15_202924) do
+ActiveRecord::Schema.define(version: 2024_01_29_184740) do
   create_table "accounts", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2023_12_15_202924) do
     t.string "record_type"
     t.integer "record_id"
     t.json "params"
+    t.integer "notifications_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["record_type", "record_id"], name: "index_noticed_events_on_record"

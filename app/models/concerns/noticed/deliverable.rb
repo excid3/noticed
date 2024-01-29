@@ -74,8 +74,8 @@ module Noticed
         new(params: params, record: record)
       end
 
-      def deliver(recipients = nil, options = {})
-        new.deliver(recipients, options)
+      def deliver(recipients = nil, **options)
+        new.deliver(recipients, **options)
       end
       alias_method :deliver_later, :deliver
     end
@@ -85,15 +85,16 @@ module Noticed
     # CommentNotifier.deliver(User.all, queue: :low_priority)
     # CommentNotifier.deliver(User.all, wait: 5.minutes)
     # CommentNotifier.deliver(User.all, wait_until: 1.hour.from_now)
-    def deliver(recipients = nil, options = {})
+    def deliver(recipients = nil, enqueue_job: true, **options)
       validate!
 
       transaction do
-        save!
-
         recipients_attributes = Array.wrap(recipients).map do |recipient|
           recipient_attributes_for(recipient)
         end
+
+        self.notifications_count = recipients_attributes.size
+        save!
 
         if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
           notifications.insert_all!(recipients_attributes, record_timestamps: true) if recipients_attributes.any?
@@ -108,7 +109,7 @@ module Noticed
       end
 
       # Enqueue delivery job
-      EventJob.set(options).perform_later(self)
+      EventJob.set(options).perform_later(self) if enqueue_job
 
       self
     end

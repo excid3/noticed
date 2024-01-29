@@ -21,7 +21,11 @@ ActiveRecord::Schema.define(version: 2024_01_29_184740) do
     t.string "type"
     t.string "record_type"
     t.integer "record_id"
-    t.json "params"
+    if t.respond_to?(:jsonb)
+      t.jsonb "params"
+    else
+      t.json "params"
+    end
     t.integer "notifications_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

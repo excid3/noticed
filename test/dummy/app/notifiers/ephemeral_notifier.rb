@@ -9,7 +9,7 @@ class EphemeralNotifier < Noticed::Ephemeral
     config.mailer = "UserMailer"
     config.method = "new_comment"
     config.args = :email_args
-    config.params = ->{ {recipient: recipient} }
+    config.params = -> { {recipient: recipient} }
   end
 
   def email_args(recipient)

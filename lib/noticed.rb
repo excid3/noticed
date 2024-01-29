@@ -14,6 +14,7 @@ module Noticed
   autoload :BulkDeliveryMethod, "noticed/bulk_delivery_method"
   autoload :Coder, "noticed/coder"
   autoload :DeliveryMethod, "noticed/delivery_method"
+  autoload :HasNotifications, "noticed/has_notifications"
   autoload :RequiredOptions, "noticed/required_options"
   autoload :Translation, "noticed/translation"
 

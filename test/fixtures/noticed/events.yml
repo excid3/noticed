@@ -23,3 +23,14 @@ three:
   params:
     foo: bar
   notifications_count: 2
+
+account:
+  type: ReceiptNotifier
+  record: two
+  record_type: User
+  params:
+    foo: bar
+    account:
+      _aj_globalid: gid://dummy/Account/<%= ActiveRecord::FixtureSet.identify(:primary) %>
+    _aj_symbol_keys:
+    - account

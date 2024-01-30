@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.1.1
+
+* Fix duplicate column in migrations.
+
 ### 2.1.0
 
 [!IMPORTANT] Run `rails noticed:install:migrations` to upgrade to this version

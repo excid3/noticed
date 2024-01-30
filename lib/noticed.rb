@@ -15,6 +15,7 @@ module Noticed
   autoload :Coder, "noticed/coder"
   autoload :DeliveryMethod, "noticed/delivery_method"
   autoload :HasNotifications, "noticed/has_notifications"
+  autoload :NotificationChannel, "noticed/notification_channel"
   autoload :RequiredOptions, "noticed/required_options"
   autoload :Translation, "noticed/translation"
 

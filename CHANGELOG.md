@@ -3,6 +3,7 @@
 ### 2.1.1
 
 * Fix duplicate column in migrations.
+* Add compatibility for apps that don't use ActionCable.
 
 ### 2.1.0
 

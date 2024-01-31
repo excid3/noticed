@@ -53,6 +53,9 @@ GEM
     activerecord (6.1.7.6)
       activemodel (= 6.1.7.6)
       activesupport (= 6.1.7.6)
+    activerecord-trilogy-adapter (3.1.2)
+      activerecord (>= 6.0.a, < 7.1.a)
+      trilogy (>= 2.4.0)
     activestorage (6.1.7.6)
       actionpack (= 6.1.7.6)
       activejob (= 6.1.7.6)
@@ -123,7 +126,6 @@ GEM
     mini_mime (1.1.5)
     minitest (5.21.2)
     multi_json (1.15.0)
-    mysql2 (0.5.5)
     net-http (0.4.1)
       uri
     net-http2 (0.18.5)
@@ -233,6 +235,7 @@ GEM
       rubocop-performance (~> 1.20.2)
     thor (1.3.0)
     timeout (0.4.1)
+    trilogy (2.7.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
@@ -254,11 +257,11 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  activerecord-trilogy-adapter
   apnotic (~> 1.7)
   appraisal
   byebug
   googleauth (~> 1.1)
-  mysql2
   net-smtp
   noticed!
   pg

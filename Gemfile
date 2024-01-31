@@ -15,7 +15,6 @@ gem "standard"
 gem "webmock"
 
 gem "pg"
-gem "mysql2"
 gem "sqlite3"
 
 # To use a debugger

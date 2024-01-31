@@ -92,7 +92,7 @@ jobs:
 
       - name: Run tests
         env:
-          DATABASE_URL: mysql2://root:password@127.0.0.1:3306/test
+          DATABASE_URL: trilogy://root:password@127.0.0.1:3306/test
           RAILS_ENV: test
         run: |
           bundle exec rails db:test:prepare

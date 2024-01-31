@@ -10,10 +10,10 @@ end
 
 appraise "rails-7-1" do
   gem "rails", "~> 7.1.0"
-  gem 'trilogy'
+  gem "trilogy"
 end
 
 appraise "rails-main" do
   gem "rails", github: "rails/rails", branch: "main"
-  gem 'trilogy'
+  gem "trilogy"
 end

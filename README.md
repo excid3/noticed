@@ -798,7 +798,7 @@ Running tests against multiple databases locally:
 
 ```
 DATABASE_URL=sqlite3:noticed_test rails test
-DATABASE_URL=mysql2://root:@127.0.0.1/noticed_test rails test
+DATABASE_URL=trilogy://root:@127.0.0.1/noticed_test rails test
 DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
 ```
 

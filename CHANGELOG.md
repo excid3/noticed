@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.1.2
+
+* Fix counter cache migration version for older Rails
+
 ### 2.1.1
 
 * Fix duplicate column in migrations.

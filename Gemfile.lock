@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    noticed (2.1.2)
+    noticed (2.1.3)
       rails (>= 6.1.0)
 
 GEM
@@ -111,7 +111,7 @@ GEM
       net-http
     globalid (1.2.1)
       activesupport (>= 6.1)
-    google-cloud-env (2.1.0)
+    google-cloud-env (2.1.1)
       faraday (>= 1.0, < 3.a)
     googleauth (1.9.2)
       faraday (>= 1.0, < 3.a)
@@ -175,7 +175,7 @@ GEM
       stringio
     public_suffix (5.0.4)
     racc (1.7.3)
-    rack (3.0.8)
+    rack (3.0.9)
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -243,9 +243,9 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    sqlite3 (1.7.1-arm64-darwin)
-    sqlite3 (1.7.1-x86_64-darwin)
-    sqlite3 (1.7.1-x86_64-linux)
+    sqlite3 (1.7.2-arm64-darwin)
+    sqlite3 (1.7.2-x86_64-darwin)
+    sqlite3 (1.7.2-x86_64-linux)
     standard (1.33.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)

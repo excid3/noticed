@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 2.1.3
+
 * Stringify keys for Twilio Messaging json
 
 ### 2.1.2

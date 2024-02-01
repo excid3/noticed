@@ -2,7 +2,7 @@ module Noticed
   module DeliveryMethods
     class TwilioMessaging < DeliveryMethod
       def deliver
-        post_request url, basic_auth: {user: account_sid, pass: auth_token}, form: json
+        post_request url, basic_auth: {user: account_sid, pass: auth_token}, form: json.stringify_keys
       end
 
       def json

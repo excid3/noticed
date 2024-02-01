@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Stringify keys for Twilio Messaging json
+
 ### 2.1.2
 
 * Fix counter cache migration version for older Rails

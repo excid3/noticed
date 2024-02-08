@@ -1,6 +1,6 @@
 # To deliver this notification:
 #
-# <%= class_name %>.with(record: @post, message: "New post").deliver(User.all)
+# <%= class_name %>Notifier.with(record: @post, message: "New post").deliver(User.all)
 
 class <%= class_name %>Notifier < ApplicationNotifier
   # Add your delivery methods

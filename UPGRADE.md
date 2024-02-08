@@ -61,6 +61,13 @@ end
 
 After migrating, you can drop the old notifications table.
 
+#### Mark As Read
+
+To be more consistent with Rails:
+
+`mark_as_read!` has been renamed to `mark_as_read`
+`mark_as_unread!` has been renamed to `mark_as_unread`
+
 ### Parent Class
 
 `Noticed::Base` has been deprecated in favor of `Noticed::Event`. This is an STI model that tracks all Notifier deliveries and recipients.

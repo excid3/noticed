@@ -20,7 +20,12 @@ class TwilioMessagingTest < ActiveSupport::TestCase
     stub_request(:post, "https://api.twilio.com/2010-04-01/Accounts/acct_1234/Messages.json").with(
       headers: {
         "Authorization" => "Basic YWNjdF8xMjM0OnRva2Vu",
-        "Content-Type" => "multipart/form-data"
+        "Content-Type" => "application/x-www-form-urlencoded"
+      },
+      body: {
+        From: "+1234567890",
+        To: "+1234567890",
+        Body: "Hello world"
       }
     ).to_return(status: 200)
     @delivery_method.deliver

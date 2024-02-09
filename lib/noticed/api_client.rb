@@ -28,7 +28,7 @@ module Noticed
       if (json = args.delete(:json))
         request.body = json.to_json
       elsif (form = args.delete(:form))
-        request.set_form(form, "multipart/form-data")
+        request.form_data = form
       end
 
       logger.debug("POST #{url}")

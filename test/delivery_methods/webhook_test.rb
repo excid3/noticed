@@ -20,7 +20,7 @@ class WebhookDeliveryMethodTest < ActiveSupport::TestCase
       url: "https://example.org/webhook",
       form: {foo: :bar}
     )
-    stub_request(:post, "https://example.org/webhook").with(headers: {"Content-Type" => /multipart\/form-data/})
+    stub_request(:post, "https://example.org/webhook").with(headers: {"Content-Type" => /application\/x-www-form-urlencoded/})
     @delivery_method.deliver
   end
 

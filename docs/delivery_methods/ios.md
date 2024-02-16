@@ -114,22 +114,12 @@ This is a great use of the Noticed::Ephemeral class. Since it's all in-memory, i
 class NativeBadgeNotifier < Noticed::Ephemeral
   deliver_by :ios do |config|
     config.format = ->(apn) {
-      apn.alert = ios_alert
-      apn.custom_payload = ios_custom_payload
+      # Setting the alert text to nil will deliver the notification in
+      # the background. This is used to update the app badge on the iOS home screen
+      apn.alert = nil
+      apn.custom_payload = {}
       apn.badge = recipient.notifications.unread.count
     }
-  end
-
-  notification_methods do
-    def ios_custom_payload
-      {}
-    end
-
-    # Setting the alert text to nil will deliver the notification in
-    # the background. This is used to update the app badge on the iOS home screen
-    def ios_alert
-      nil
-    end
   end
 end
 ```

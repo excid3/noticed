@@ -1,6 +1,6 @@
 # Webhook Bulk Delivery Method
 
-Send a webhook request to builk notify users in a channel.
+Send a webhook request to bulk notify users in a channel.
 
 ## Usage
 

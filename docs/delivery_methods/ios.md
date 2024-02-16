@@ -106,7 +106,9 @@ class CommentNotifier < ApplicationNotifier
 end
 ```
 
-Another common action is to update the badge after a user reads a notification. This is a great use of the   Noticed::Ephemeral class. Since it's all in-memory, it will perform the job and not touch the databse.
+Another common action is to update the badge after a user reads a notification. 
+
+This is a great use of the Noticed::Ephemeral class. Since it's all in-memory, it will perform the job and not touch the database.
 
 ```ruby
 class NativeBadgeNotifier < Noticed::Ephemeral

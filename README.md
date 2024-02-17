@@ -348,7 +348,7 @@ module IosNotifier
       config.key_id = Rails.application.credentials.dig(:ios, :key_id)
       config.team_id = Rails.application.credentials.dig(:ios, :team_id)
       config.apns_key = Rails.application.credentials.dig(:ios, :apns_key)
-      config.if = ->(recipient) { recipient.ios_notifications? }
+      config.if = -> { recipient.ios_notifications? }
     end
   end
 end

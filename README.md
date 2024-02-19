@@ -395,7 +395,7 @@ module NotificationExtensions
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :organisation
+    belongs_to :organization
 
     scope :filter_by_type, ->(type) { where(type:) }
     scope :exclude_type, ->(type) { where.not(type:) }
@@ -766,7 +766,7 @@ class CreateNoticedTables < ActiveRecord::Migration[7.1]
       t.jsonb :params
 
       # Custom Fields
-      t.string :organisation_id, type: :uuid, as: "((params ->> 'organisation_id')::uuid)", stored: true
+      t.string :organization_id, type: :uuid, as: "((params ->> 'organization_id')::uuid)", stored: true
       t.virtual :action_type, type: :string, as: "((params ->> 'action_type'))", stored: true
       t.virtual :url, type: :string, as: "((params ->> 'url'))", stored: true
 

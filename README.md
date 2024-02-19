@@ -387,7 +387,7 @@ This invocation will create a single `Noticed::Event` record and a `Noticed::Not
 
 ### Custom Noticed Model Methods
 
-In order to extend the Noticed models you'll need to use a concern an a to_prepare block:
+In order to extend the Noticed models you'll need to use a concern and a to_prepare block:
 
 ```ruby
 # config/initializers/noticed.rb

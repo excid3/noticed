@@ -1,5 +1,15 @@
 ### Unreleased
 
+* Fix iOS `format` option with Symbols. This now passes the `notification` and `apn` objects instead of just the `apn`.
+
+```ruby
+config.format = :ios_format
+
+# ...
+def ios_format(notification, apn)
+end
+```
+
 ### 2.1.3
 
 * Stringify keys for Twilio Messaging json

@@ -348,7 +348,7 @@ module IosNotifier
       config.key_id = Rails.application.credentials.dig(:ios, :key_id)
       config.team_id = Rails.application.credentials.dig(:ios, :team_id)
       config.apns_key = Rails.application.credentials.dig(:ios, :apns_key)
-      config.if = ->(recipient) { recipient.ios_notifications? }
+      config.if = -> { recipient.ios_notifications? }
     end
   end
 end
@@ -387,7 +387,7 @@ This invocation will create a single `Noticed::Event` record and a `Noticed::Not
 
 ### Custom Noticed Model Methods
 
-In order to extend the Noticed models you'll need to use a concern an a to_prepare block:
+In order to extend the Noticed models you'll need to use a concern and a to_prepare block:
 
 ```ruby
 # config/initializers/noticed.rb
@@ -395,7 +395,7 @@ module NotificationExtensions
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :organisation
+    belongs_to :organization
 
     scope :filter_by_type, ->(type) { where(type:) }
     scope :exclude_type, ->(type) { where.not(type:) }
@@ -766,7 +766,7 @@ class CreateNoticedTables < ActiveRecord::Migration[7.1]
       t.jsonb :params
 
       # Custom Fields
-      t.string :organisation_id, type: :uuid, as: "((params ->> 'organisation_id')::uuid)", stored: true
+      t.string :organization_id, type: :uuid, as: "((params ->> 'organization_id')::uuid)", stored: true
       t.virtual :action_type, type: :string, as: "((params ->> 'action_type'))", stored: true
       t.virtual :url, type: :string, as: "((params ->> 'url'))", stored: true
 

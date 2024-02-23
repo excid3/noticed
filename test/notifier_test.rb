@@ -4,7 +4,7 @@ class NotifierTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
   test "includes Rails urls" do
-    assert_equal "http://example.org/", SimpleNotifier.new.url
+    assert_equal "http://localhost:3000/", SimpleNotifier.new.url
   end
 
   test "notifiers inherit required params" do
@@ -15,6 +15,10 @@ class NotifierTest < ActiveSupport::TestCase
     user = users(:one)
     event = SimpleNotifier.with(message: "test").deliver(user)
     assert_equal "hello #{user.email}", event.notifications.last.message
+  end
+
+  test "notification_methods url helpers" do
+    assert_equal "http://localhost:3000/", SimpleNotifier::Notification.new.url
   end
 
   test "serializes globalid objects with text column" do

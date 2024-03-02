@@ -24,7 +24,7 @@ module Noticed
 
       def ephemeral_perform_later(notifier, recipient, params, options = {})
         constant.set(computed_options(options, recipient))
-                .perform_later(name, "#{notifier}::Notification", recipient: recipient, params: params)
+          .perform_later(name, "#{notifier}::Notification", recipient: recipient, params: params)
       end
 
       def evaluate_option(name, context)

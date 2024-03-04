@@ -40,10 +40,9 @@ module Noticed
       end
 
       def perform?(notification)
-        return false if config.key?(:if) && !evaluate_option(:if, notification)
-        return false if config.key?(:unless) && evaluate_option(:unless, notification)
+        return true unless config.key?(:skip_delivery_if)
 
-        true
+        !evaluate_option(:skip_delivery_if, notification)
       end
 
       private

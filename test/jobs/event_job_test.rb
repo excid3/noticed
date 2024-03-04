@@ -16,10 +16,10 @@ class EventJobTest < ActiveJob::TestCase
     notification = noticed_notifications(:one)
     event = notification.event
     event.class.deliver_by :test1 do |config|
-      config.if = -> { true }
+      config.skip_delivery_if = -> { false }
     end
     event.class.deliver_by :test2 do |config|
-      config.if = -> { false }
+      config.skip_delivery_if = -> { true }
     end
 
     Noticed::EventJob.perform_now(event)

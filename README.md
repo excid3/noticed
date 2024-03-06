@@ -297,9 +297,9 @@ Will look for the following translation path:
 
 en:
   notifiers:
-  	new_comment_notifier:
-  	  notification:
-            message: "Someone posted a new comment!"
+    new_comment_notifier:
+      notification:
+        message: "Someone posted a new comment!"
 ```
 
 Or, if you have your Notifier within another module, such as `Admin::NewCommentNotifier`, the resulting lookup path will be `en.notifiers.admin.new_comment_notifier.notification.message` (modules become nesting steps).

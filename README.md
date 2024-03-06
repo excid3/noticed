@@ -489,7 +489,7 @@ Sending a notification is entirely an internal-to-your-app function. Delivery me
 A common pattern is to deliver a notification via a real (or real-ish)-time service, then, after some time has passed, email the user if they have not yet read the notification. You can implement this functionality by combining multiple delivery methods, the `wait` option, and the conditional `if` / `unless` option.
 
 ```ruby
-class NewCommentNotifier< Noticed::Event
+class NewCommentNotifier < Noticed::Event
   deliver_by :action_cable
   deliver_by :email do |config|
     config.mailer = "CommentMailer"

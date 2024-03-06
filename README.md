@@ -202,7 +202,7 @@ class CommentNotifier < Noticed::Event
   end
 end
 
-class Recipent < ApplicationRecord # or whatever your recipient model is
+class Recipient < ApplicationRecord # or whatever your recipient model is
   has_many :ios_device_tokens
 
   def send_ios_notification?

@@ -544,6 +544,7 @@ See the [Custom Noticed Model Methods](#custom-noticed-model-methods) section fo
 
 ```ruby
 # app/notifiers/delivery_methods/turbo_stream.rb
+
 class DeliveryMethods::TurboStream < ApplicationDeliveryMethod
   def deliver
     return unless recipient.is_a?(User)
@@ -557,6 +558,7 @@ end
 
 ```ruby
 # app/models/concerns/noticed/notification_extensions.rb
+
 module Noticed::NotificationExtensions
   extend ActiveSupport::Concern
 
@@ -592,12 +594,12 @@ end
 
 Delivery methods have access to the following methods and attributes:
 
-* `event` — The `Noticed::Event` record that spawned the notification object currently being delivered
-* `record` — The object originally passed into the Notifier as the `record:` param (see the ✨ note above)
-* `notification` — The `Noticed::Notification` instance being delivered. All notification helper methods are available on this object
-* `recipient` — The individual recipient object being delivered to for this notification (remember that each recipient gets their own instance of the Delivery Method `#deliver`)
-* `config` — The hash of configuration options declared by the Notifier that generated this notification and delivery
-* `params` — The parameters given to the Notifier in the invocation (via `.with()`)
+* `event` — The `Noticed::Event` record that spawned the notification object currently being delivered
+* `record` — The object originally passed into the Notifier as the `record:` param (see the ✨ note above)
+* `notification` — The `Noticed::Notification` instance being delivered. All notification helper methods are available on this object
+* `recipient` — The individual recipient object being delivered to for this notification (remember that each recipient gets their own instance of the Delivery Method `#deliver`)
+* `config` — The hash of configuration options declared by the Notifier that generated this notification and delivery
+* `params` — The parameters given to the Notifier in the invocation (via `.with()`)
 
 #### Validating config options passed to Custom Delivery methods
 
@@ -628,7 +630,7 @@ class DeliveryMethods::WhatsApp < Noticed::DeliveryMethod
 
   def deliver
     # ...
-		config.day #=> #<Proc:0x000f7c8 (lambda)>
+    config.day #=> #<Proc:0x000f7c8 (lambda)>
     evaluate_option(config.day) #=> "Tuesday"
   end
 end
@@ -803,4 +805,5 @@ DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
 ```
 
 ## 📝 License
+
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

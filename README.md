@@ -205,9 +205,9 @@ end
 class Recipent < ApplicationRecord # or whatever your recipient model is
   has_many :ios_device_tokens
 
-    def send_ios_notification?
-        # some logic
-    end
+  def send_ios_notification?
+    # some logic
+  end
 end
 ```
 </details>

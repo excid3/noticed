@@ -361,8 +361,8 @@ Each of these options are available for every delivery method (individual or bul
 * `config.if` — Intended for a lambda or method; runs after the `wait` if configured; cancels the delivery method if returns falsey
 * `config.unless`  — Intended for a lambda or method; runs after the `wait` if configured; cancels the delivery method if returns truthy
 * `config.wait` — (Should yield an `ActiveSupport::Duration`) Delays the job that runs this delivery method for the given duration of time
-* `config.wait_until` — (Should yield a specific time object) Delays the job that runs this delivery method until the specific time specified
-* `config.queue` — Sets the ActiveJob queue name to be used for the job that runs this delivery method
+* `config.wait_until` — (Should yield a specific time object) Delays the job that runs this delivery method until the specific time specified
+* `config.queue` — Sets the ActiveJob queue name to be used for the job that runs this delivery method
 
 ### 📨 Sending Notifications
 

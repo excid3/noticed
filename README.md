@@ -306,7 +306,7 @@ Or, if you have your Notifier within another module, such as `Admin::NewCommentN
 
 #### Tip: Capture User Preferences
 
-You can use the `if:` and `unless: ` options on your delivery methods to check the user's preferences and skip processing if they have disabled that type of notification.
+You can use the `if:` and `unless:` options on your delivery methods to check the user's preferences and skip processing if they have disabled that type of notification.
 
 For example:
 
@@ -319,6 +319,19 @@ class CommentNotifier < Noticed::Event
   end
 end
 ```
+
+If you would like to skip the delivery job altogether, for example if you know that a user doesn't support the platform and you would like to save resources by not enqueuing the job, you can use `skip_delivery_if:`.
+
+For example:
+
+```ruby
+class IosNotifier < Noticed::Event
+  deliver_by :ios do |config|
+    # ...
+    config.skip_delivery_if = ->{ !recipient.registered_ios? }
+  end
+end
+
 #### Tip: Extracting Delivery Method Configurations
 
 If you want to reuse delivery method configurations across multiple Notifiers, you can extract them into a module and include them in your Notifiers.

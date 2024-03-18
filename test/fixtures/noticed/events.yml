@@ -34,3 +34,14 @@ account:
       _aj_globalid: gid://dummy/Account/<%= ActiveRecord::FixtureSet.identify(:primary) %>
     _aj_symbol_keys:
     - account
+
+missing_account:
+  type: ReceiptNotifier
+  record: two
+  record_type: User
+  params:
+    foo: bar
+    account:
+      _aj_globalid: gid://dummy/Account/100000
+    _aj_symbol_keys:
+    - account

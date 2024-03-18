@@ -10,6 +10,8 @@ def ios_format(notification, apn)
 end
 ```
 
+* Re-add `deserialize_error?` to `Noticed::Event`
+
 ### 2.1.3
 
 * Stringify keys for Twilio Messaging json

@@ -320,7 +320,7 @@ class CommentNotifier < Noticed::Event
 end
 ```
 
-If you would like to skip the delivery job altogether, for example if you know that a user doesn't support the platform and you would like to save resources by not enqueuing the job, you can use `skip_delivery_if:`.
+If you would like to skip the delivery job altogether, for example if you know that a user doesn't support the platform and you would like to save resources by not enqueuing the job, you can use `before_enqueue`.
 
 For example:
 
@@ -328,7 +328,7 @@ For example:
 class IosNotifier < Noticed::Event
   deliver_by :ios do |config|
     # ...
-    config.skip_delivery_if = ->{ !recipient.registered_ios? }
+    config.before_enqueue = ->{ throw(:abort) unless recipient.registered_ios? }
   end
 end
 

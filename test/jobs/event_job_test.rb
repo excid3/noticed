@@ -12,14 +12,14 @@ class EventJobTest < ActiveJob::TestCase
     assert_enqueued_jobs 3
   end
 
-  test "skips enqueueing jobs if the conditional is false" do
+  test "skips enqueueing jobs if before_enqueue raises an error" do
     notification = noticed_notifications(:one)
     event = notification.event
     event.class.deliver_by :test1 do |config|
-      config.skip_delivery_if = -> { false }
+      config.before_enqueue = -> { false }
     end
     event.class.deliver_by :test2 do |config|
-      config.skip_delivery_if = -> { true }
+      config.before_enqueue = -> { throw :abort }
     end
 
     Noticed::EventJob.perform_now(event)

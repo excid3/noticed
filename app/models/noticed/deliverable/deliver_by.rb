@@ -40,9 +40,14 @@ module Noticed
       end
 
       def perform?(notification)
-        return true unless config.key?(:skip_delivery_if)
+        return true unless config.key?(:before_enqueue)
 
-        !evaluate_option(:skip_delivery_if, notification)
+        perform = false
+        catch(:abort) {
+          evaluate_option(:before_enqueue, notification)
+          perform = true
+        }
+        perform
       end
 
       private

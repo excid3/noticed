@@ -1,5 +1,18 @@
 ### Unreleased
 
+### 2.2.0
+
+* Add `config.before_enqueue` callback
+  This callback can be used to skip enqueuing delivery methods:
+
+```ruby
+class CommentNotifier < Noticed::Event
+  deliver_by :email do |config|
+    config.before_enqueue = ->{ throw(:abort) unless recipient.email_notifications? }
+  end
+end
+```
+
 * Fix iOS `format` option with Symbols. This now passes the `notification` and `apn` objects instead of just the `apn`.
 
 ```ruby

@@ -34,6 +34,8 @@ module Noticed
           context.instance_exec(&option)
         elsif option.is_a?(Symbol) && context.respond_to?(option)
           context.send(option)
+        elsif option.is_a?(Symbol) && context.event.respond_to?(option)
+          context.event.send(option)
         else
           option
         end

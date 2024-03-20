@@ -4,7 +4,7 @@ module Noticed
       required_options :mailer, :method
 
       def deliver
-        mailer = fetch_constant(:mailer)
+        mailer = evaluate_option(:mailer)
         email = evaluate_option(:method)
         args = evaluate_option(:args) || []
         mail = mailer.with(params).send(email, *args)

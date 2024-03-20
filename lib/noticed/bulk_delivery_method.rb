@@ -29,7 +29,7 @@ module Noticed
 
     def fetch_constant(name)
       option = config[name]
-      option.is_a?(String) ? option.constantize : option
+      option.is_a?(String) ? option.constantize : evaluate_option(option)
     end
 
     def evaluate_option(name)

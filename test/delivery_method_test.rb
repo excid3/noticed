@@ -12,7 +12,7 @@ class DeliveryMethodTest < ActiveSupport::TestCase
 
   test "fetch_constant looks up constants from proc that returns String" do
     @delivery_method = Noticed::DeliveryMethod.new
-    set_config(mailer: ->{ "UserMailer" })
+    set_config(mailer: -> { "UserMailer" })
     assert_equal UserMailer, @delivery_method.fetch_constant(:mailer)
   end
 

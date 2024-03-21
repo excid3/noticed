@@ -38,8 +38,8 @@ module Noticed
     end
 
     def fetch_constant(name)
-      option = config[name]
-      option.is_a?(String) ? option.constantize : evaluate_option(option)
+      option = evaluate_option(name)
+      option.is_a?(String) ? option.constantize : option
     end
 
     def evaluate_option(name)

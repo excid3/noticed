@@ -4,9 +4,15 @@ class DeliveryMethodTest < ActiveSupport::TestCase
   class InheritedDeliveryMethod < Noticed::DeliveryMethods::ActionCable
   end
 
-  test "fetch_constant looks up constants" do
+  test "fetch_constant looks up constants from String" do
     @delivery_method = Noticed::DeliveryMethod.new
     set_config(mailer: "UserMailer")
+    assert_equal UserMailer, @delivery_method.fetch_constant(:mailer)
+  end
+
+  test "fetch_constant looks up constants from proc that returns String" do
+    @delivery_method = Noticed::DeliveryMethod.new
+    set_config(mailer: ->{ "UserMailer" })
     assert_equal UserMailer, @delivery_method.fetch_constant(:mailer)
   end
 

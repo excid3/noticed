@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.2.2
+
+* `fetch_constant` will now constantize Strings returned from procs or method calls
+
 ### 2.2.1
 
 * `fetch_constant` used by Email and ActionCable delivery methods now support procs and method calls with symbols like other options

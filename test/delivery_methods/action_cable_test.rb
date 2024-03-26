@@ -22,9 +22,21 @@ class ActionCableDeliveryMethodTest < ActiveSupport::TestCase
     end
   end
 
+  test "default channel" do
+    set_config({})
+    assert_equal Noticed::NotificationChannel, @delivery_method.channel
+  end
+
+  test "default stream" do
+    notification = noticed_notifications(:one)
+    set_config({})
+    @delivery_method.instance_variable_set :@notification, notification
+    assert_equal notification.recipient, @delivery_method.stream
+  end
+
   private
 
   def set_config(config)
-    @delivery_method.instance_variable_set :@config, ActiveSupport::HashWithIndifferentAccess.new(config)
+    @delivery_method.instance_variable_set :@config, ActiveSupport::OrderedOptions.new.merge(config)
   end
 end

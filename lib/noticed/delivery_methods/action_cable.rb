@@ -4,11 +4,15 @@ module Noticed
       required_options :message
 
       def deliver
-        channel = fetch_constant(:channel) || Noticed::NotificationChannel
-        stream = evaluate_option(:stream) || recipient
-        message = evaluate_option(:message)
+        channel.broadcast_to stream, evaluate_option(:message)
+      end
 
-        channel.broadcast_to stream, message
+      def channel
+        fetch_constant(:channel) || Noticed::NotificationChannel
+      end
+
+      def stream
+        evaluate_option(:stream) || recipient
       end
     end
   end

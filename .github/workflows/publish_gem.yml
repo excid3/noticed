@@ -1,3 +1,4 @@
+name: Publish gem
 on: workflow_dispatch
 
 jobs:

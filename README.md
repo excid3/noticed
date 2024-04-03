@@ -72,7 +72,7 @@ Noticed operates with a few constructs: Notifiers, delivery methods, and Notific
 To start, generate a Notifier:
 
 ```bash
-rails generate noticed:notifier NewCommentNotifier
+rails generate noticed:notification NewCommentNotifier
 ```
 
 ### Usage Contents

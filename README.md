@@ -331,6 +331,7 @@ class IosNotifier < Noticed::Event
     config.before_enqueue = ->{ throw(:abort) unless recipient.registered_ios? }
   end
 end
+```
 
 #### Tip: Extracting Delivery Method Configurations
 

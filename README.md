@@ -72,7 +72,7 @@ Noticed operates with a few constructs: Notifiers, delivery methods, and Notific
 To start, generate a Notifier:
 
 ```bash
-rails generate noticed:notifier NewCommentNotifier
+rails generate noticed:notification NewCommentNotifier
 ```
 
 ### Usage Contents
@@ -331,6 +331,7 @@ class IosNotifier < Noticed::Event
     config.before_enqueue = ->{ throw(:abort) unless recipient.registered_ios? }
   end
 end
+```
 
 #### Tip: Extracting Delivery Method Configurations
 

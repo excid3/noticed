@@ -693,12 +693,6 @@ user.notifications.mark_as_unread
 
 #### Instance methods
 
-Convert back into a Noticed notifier object:
-
-```ruby
-@notification.to_notifier
-```
-
 Mark notification as read / unread:
 
 ```ruby

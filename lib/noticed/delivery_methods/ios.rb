@@ -21,7 +21,7 @@ module Noticed
               # Allow notification to cleanup invalid iOS device tokens
               notification.instance_exec(device_token, &config[:invalid_token])
             elsif !response.ok?
-              raise "Request failed #{response.body}"
+              raise "Request failed #{response.status} #{response.body}"
             end
           end
         end
@@ -47,8 +47,10 @@ module Noticed
       end
 
       def bad_token?(response)
-        response.status == "410" || (response.status == "400" && response.body["reason"] == "BadDeviceToken")
+        response.status == "410" || (response.status == "400" && response.body["reason"] == "BadDeviceToken") || response.body["reason"] == "Unregistered"
       end
+
+      def unregistered?(response)
 
       def development_pool
         self.class.development_connection_pool ||= new_connection_pool(development: true)

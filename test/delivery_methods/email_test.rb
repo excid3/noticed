@@ -5,6 +5,7 @@ class EmailTest < ActiveSupport::TestCase
 
   setup do
     @delivery_method = Noticed::DeliveryMethods::Email.new
+    @notification = noticed_notifications(:one)
   end
 
   test "sends email" do
@@ -34,22 +35,23 @@ class EmailTest < ActiveSupport::TestCase
 
   test "includes notification in params" do
     set_config(mailer: "UserMailer", method: "new_comment")
-    assert @delivery_method.params.has_key?(:notification)
+    assert_equal @notification, @delivery_method.params.fetch(:notification)
   end
 
   test "includes record in params" do
     set_config(mailer: "UserMailer", method: "new_comment")
-    assert @delivery_method.params.has_key?(:record)
+    assert_equal @notification.record, @delivery_method.params.fetch(:record)
   end
 
   test "includes recipient in params" do
     set_config(mailer: "UserMailer", method: "new_comment")
-    assert @delivery_method.params.has_key?(:recipient)
+    assert_equal @notification.recipient, @delivery_method.params.fetch(:recipient)
   end
 
   private
 
   def set_config(config)
     @delivery_method.instance_variable_set :@config, ActiveSupport::HashWithIndifferentAccess.new(config)
+    @delivery_method.instance_variable_set :@notification, @notification
   end
 end

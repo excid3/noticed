@@ -44,7 +44,7 @@ Notification.find_each do |notification|
 
   # Extract related record to `belongs_to :record` association
   # This allows ActiveRecord associations instead of querying the JSON data
-  # attributes[:record] = params.delete(:user) || params.delete(:account)
+  # attributes[:record] = attributes[:params].delete(:user) || attributes[:params].delete(:account)
 
   attributes[:notifications_attributes] = [{
     type: "#{attributes[:type]}::Notification",

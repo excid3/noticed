@@ -37,4 +37,8 @@ class Noticed::EventTest < ActiveSupport::TestCase
     event = ExampleNotifier.with(message: "test", record: account).deliver
     assert_equal account, event.record
   end
+
+  test "deserialize_error?" do
+    assert noticed_events(:missing_account).deserialize_error?
+  end
 end

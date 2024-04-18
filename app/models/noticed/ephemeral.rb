@@ -29,6 +29,10 @@ module Noticed
       notifier.const_set :Notification, Class.new(Noticed::Ephemeral::Notification)
     end
 
+    def self.notification_methods(&block)
+      const_get(:Notification).class_eval(&block)
+    end
+
     def deliver(recipients)
       recipients = Array.wrap(recipients)
       bulk_delivery_methods.each do |_, deliver_by|
@@ -44,10 +48,6 @@ module Noticed
 
     def record
       params[:record]
-    end
-
-    def notification_methods(&block)
-      const_get(:Notification).class_eval(&block)
     end
   end
 end

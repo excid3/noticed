@@ -1,5 +1,5 @@
 class UserMailer < ApplicationMailer
-  def new_comment(args)
+  def new_comment(*args)
     mail(body: "new comment")
   end
 

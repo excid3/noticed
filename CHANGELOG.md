@@ -1,5 +1,38 @@
 ### Unreleased
 
+### 2.2.2
+
+* `fetch_constant` will now constantize Strings returned from procs or method calls
+
+### 2.2.1
+
+* `fetch_constant` used by Email and ActionCable delivery methods now support procs and method calls with symbols like other options
+
+### 2.2.0
+
+* Add `config.before_enqueue` callback
+  This callback can be used to skip enqueuing delivery methods:
+
+```ruby
+class CommentNotifier < Noticed::Event
+  deliver_by :email do |config|
+    config.before_enqueue = ->{ throw(:abort) unless recipient.email_notifications? }
+  end
+end
+```
+
+* Fix iOS `format` option with Symbols. This now passes the `notification` and `apn` objects instead of just the `apn`.
+
+```ruby
+config.format = :ios_format
+
+# ...
+def ios_format(notification, apn)
+end
+```
+
+* Re-add `deserialize_error?` to `Noticed::Event`
+
 ### 2.1.3
 
 * Stringify keys for Twilio Messaging json

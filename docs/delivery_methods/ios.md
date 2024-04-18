@@ -19,7 +19,7 @@ https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_
 ## Usage
 
 ```ruby
-class CommentNotification
+class CommentNotifier < ApplicationNotifier
   deliver_by :ios do |config|
     config.device_tokens = -> { recipient.notification_tokens.where(platform: :iOS).pluck(:token) }
     config.format = ->(apn) {
@@ -83,11 +83,52 @@ end
 Apple Push Notifications may fail delivery if the user has removed the app from their device. Noticed allows you
 
 ```ruby
-class CommentNotification
+class CommentNotifier < ApplicationNotifier
   deliver_by :ios do |config|
     config.invalid_token = ->(token) { NotificationToken.where(token: token).destroy_all }
   end
 end
+```
+
+## Updating the iOS app badge
+
+If you're managing the iOS app badge, you can pass it along in the format
+
+```ruby
+class CommentNotifier < ApplicationNotifier
+  deliver_by :ios do |config|
+    config.format = ->(apn) {
+      apn.alert = "Hello world"
+      apn.custom_payload = {url: root_url(host: "example.org")}
+      apn.badge = recipient.notifications.unread.count
+    }
+  end
+end
+```
+
+Another common action is to update the badge after a user reads a notification. 
+
+This is a great use of the Noticed::Ephemeral class. Since it's all in-memory, it will perform the job and not touch the database.
+
+```ruby
+class NativeBadgeNotifier < Noticed::Ephemeral
+  deliver_by :ios do |config|
+    config.format = ->(apn) {
+      # Setting the alert text to nil will deliver the notification in
+      # the background. This is used to update the app badge on the iOS home screen
+      apn.alert = nil
+      apn.custom_payload = {}
+      apn.badge = recipient.notifications.unread.count
+    }
+  end
+end
+```
+
+Then you can simply deliver this notifier to update the badge when you mark the notification as read
+
+```ruby
+notification.mark_as_read!
+NativeBadgeNotifier.with(record: notification).deliver(notification.recipient)
 ```
 
 ## Delivering to Sandboxes and real devices

@@ -71,7 +71,7 @@ Noticed operates with a few constructs: Notifiers, delivery methods, and Notific
 
 To start, generate a Notifier:
 
-```sh
+```bash
 rails generate noticed:notifier NewCommentNotifier
 ```
 
@@ -202,12 +202,12 @@ class CommentNotifier < Noticed::Event
   end
 end
 
-class Recipent < ApplicationRecord # or whatever your recipient model is
+class Recipient < ApplicationRecord # or whatever your recipient model is
   has_many :ios_device_tokens
 
-    def send_ios_notification?
-        # some logic
-    end
+  def send_ios_notification?
+    # some logic
+  end
 end
 ```
 </details>
@@ -297,16 +297,16 @@ Will look for the following translation path:
 
 en:
   notifiers:
-  	new_comment_notifier:
-  	  notification:
-            message: "Someone posted a new comment!"
+    new_comment_notifier:
+      notification:
+        message: "Someone posted a new comment!"
 ```
 
 Or, if you have your Notifier within another module, such as `Admin::NewCommentNotifier`, the resulting lookup path will be `en.notifiers.admin.new_comment_notifier.notification.message` (modules become nesting steps).
 
 #### Tip: Capture User Preferences
 
-You can use the `if:` and `unless: ` options on your delivery methods to check the user's preferences and skip processing if they have disabled that type of notification.
+You can use the `if:` and `unless:` options on your delivery methods to check the user's preferences and skip processing if they have disabled that type of notification.
 
 For example:
 
@@ -319,6 +319,20 @@ class CommentNotifier < Noticed::Event
   end
 end
 ```
+
+If you would like to skip the delivery job altogether, for example if you know that a user doesn't support the platform and you would like to save resources by not enqueuing the job, you can use `before_enqueue`.
+
+For example:
+
+```ruby
+class IosNotifier < Noticed::Event
+  deliver_by :ios do |config|
+    # ...
+    config.before_enqueue = ->{ throw(:abort) unless recipient.registered_ios? }
+  end
+end
+```
+
 #### Tip: Extracting Delivery Method Configurations
 
 If you want to reuse delivery method configurations across multiple Notifiers, you can extract them into a module and include them in your Notifiers.
@@ -348,7 +362,7 @@ module IosNotifier
       config.key_id = Rails.application.credentials.dig(:ios, :key_id)
       config.team_id = Rails.application.credentials.dig(:ios, :team_id)
       config.apns_key = Rails.application.credentials.dig(:ios, :apns_key)
-      config.if = ->(recipient) { recipient.ios_notifications? }
+      config.if = -> { recipient.ios_notifications? }
     end
   end
 end
@@ -361,8 +375,8 @@ Each of these options are available for every delivery method (individual or bul
 * `config.if` — Intended for a lambda or method; runs after the `wait` if configured; cancels the delivery method if returns falsey
 * `config.unless`  — Intended for a lambda or method; runs after the `wait` if configured; cancels the delivery method if returns truthy
 * `config.wait` — (Should yield an `ActiveSupport::Duration`) Delays the job that runs this delivery method for the given duration of time
-* `config.wait_until` — (Should yield a specific time object) Delays the job that runs this delivery method until the specific time specified
-* `config.queue` — Sets the ActiveJob queue name to be used for the job that runs this delivery method
+* `config.wait_until` — (Should yield a specific time object) Delays the job that runs this delivery method until the specific time specified
+* `config.queue` — Sets the ActiveJob queue name to be used for the job that runs this delivery method
 
 ### 📨 Sending Notifications
 
@@ -387,7 +401,7 @@ This invocation will create a single `Noticed::Event` record and a `Noticed::Not
 
 ### Custom Noticed Model Methods
 
-In order to extend the Noticed models you'll need to use a concern an a to_prepare block:
+In order to extend the Noticed models you'll need to use a concern and a to_prepare block:
 
 ```ruby
 # config/initializers/noticed.rb
@@ -395,7 +409,7 @@ module NotificationExtensions
   extend ActiveSupport::Concern
 
   included do
-    belongs_to :organisation
+    belongs_to :organization
 
     scope :filter_by_type, ->(type) { where(type:) }
     scope :exclude_type, ->(type) { where.not(type:) }
@@ -489,7 +503,7 @@ Sending a notification is entirely an internal-to-your-app function. Delivery me
 A common pattern is to deliver a notification via a real (or real-ish)-time service, then, after some time has passed, email the user if they have not yet read the notification. You can implement this functionality by combining multiple delivery methods, the `wait` option, and the conditional `if` / `unless` option.
 
 ```ruby
-class NewCommentNotifier< Noticed::Event
+class NewCommentNotifier < Noticed::Event
   deliver_by :action_cable
   deliver_by :email do |config|
     config.mailer = "CommentMailer"
@@ -544,6 +558,7 @@ See the [Custom Noticed Model Methods](#custom-noticed-model-methods) section fo
 
 ```ruby
 # app/notifiers/delivery_methods/turbo_stream.rb
+
 class DeliveryMethods::TurboStream < ApplicationDeliveryMethod
   def deliver
     return unless recipient.is_a?(User)
@@ -557,6 +572,7 @@ end
 
 ```ruby
 # app/models/concerns/noticed/notification_extensions.rb
+
 module Noticed::NotificationExtensions
   extend ActiveSupport::Concern
 
@@ -592,12 +608,12 @@ end
 
 Delivery methods have access to the following methods and attributes:
 
-* `event` — The `Noticed::Event` record that spawned the notification object currently being delivered
-* `record` — The object originally passed into the Notifier as the `record:` param (see the ✨ note above)
-* `notification` — The `Noticed::Notification` instance being delivered. All notification helper methods are available on this object
-* `recipient` — The individual recipient object being delivered to for this notification (remember that each recipient gets their own instance of the Delivery Method `#deliver`)
-* `config` — The hash of configuration options declared by the Notifier that generated this notification and delivery
-* `params` — The parameters given to the Notifier in the invocation (via `.with()`)
+* `event` — The `Noticed::Event` record that spawned the notification object currently being delivered
+* `record` — The object originally passed into the Notifier as the `record:` param (see the ✨ note above)
+* `notification` — The `Noticed::Notification` instance being delivered. All notification helper methods are available on this object
+* `recipient` — The individual recipient object being delivered to for this notification (remember that each recipient gets their own instance of the Delivery Method `#deliver`)
+* `config` — The hash of configuration options declared by the Notifier that generated this notification and delivery
+* `params` — The parameters given to the Notifier in the invocation (via `.with()`)
 
 #### Validating config options passed to Custom Delivery methods
 
@@ -628,7 +644,7 @@ class DeliveryMethods::WhatsApp < Noticed::DeliveryMethod
 
   def deliver
     # ...
-		config.day #=> #<Proc:0x000f7c8 (lambda)>
+    config.day #=> #<Proc:0x000f7c8 (lambda)>
     evaluate_option(config.day) #=> "Tuesday"
   end
 end
@@ -677,12 +693,6 @@ user.notifications.mark_as_unread
 ```
 
 #### Instance methods
-
-Convert back into a Noticed notifier object:
-
-```ruby
-@notification.to_notifier
-```
 
 Mark notification as read / unread:
 
@@ -766,7 +776,7 @@ class CreateNoticedTables < ActiveRecord::Migration[7.1]
       t.jsonb :params
 
       # Custom Fields
-      t.string :organisation_id, type: :uuid, as: "((params ->> 'organisation_id')::uuid)", stored: true
+      t.string :organization_id, type: :uuid, as: "((params ->> 'organization_id')::uuid)", stored: true
       t.virtual :action_type, type: :string, as: "((params ->> 'action_type'))", stored: true
       t.virtual :url, type: :string, as: "((params ->> 'url'))", stored: true
 
@@ -803,4 +813,5 @@ DATABASE_URL=postgres://127.0.0.1/noticed_test rails test
 ```
 
 ## 📝 License
+
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

@@ -50,8 +50,6 @@ module Noticed
         response.status == "410" || (response.status == "400" && response.body["reason"] == "BadDeviceToken") || response.body["reason"] == "Unregistered"
       end
 
-      def unregistered?(response)
-
       def development_pool
         self.class.development_connection_pool ||= new_connection_pool(development: true)
       end

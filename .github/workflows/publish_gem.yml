@@ -8,7 +8,11 @@ on:
         type: string
 
 jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
   push:
+    needs: test
     runs-on: ubuntu-latest
 
     permissions:
@@ -27,9 +31,8 @@ jobs:
       - name: Update version
         run: |
           sed -i 's/".*"/"${{ inputs.version }}"/' lib/noticed/version.rb
-          bundle config set frozen false
+          bundle config set --local deployment 'false'
           bundle
-          bundle exec appraisal
           git config user.name 'GitHub Actions'
           git config user.email github-actions@github.com
           git add Gemfile.lock gemfiles lib

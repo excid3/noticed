@@ -33,6 +33,7 @@ jobs:
           sed -i 's/".*"/"${{ inputs.version }}"/' lib/noticed/version.rb
           bundle config set --local deployment 'false'
           bundle
+          bundle exec appraisal
           git config user.name 'GitHub Actions'
           git config user.email github-actions@github.com
           git add Gemfile.lock gemfiles lib

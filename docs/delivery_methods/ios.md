@@ -74,7 +74,7 @@ Here, the recipient `has_many :notification_tokens` with columns `platform` and 
 
 ```ruby
 deliver_by :ios do |config|
-  config.device_tokens = ->(recipient) { recipient.notification_tokens.where(platform: :iOS).pluck(:token) }
+  config.device_tokens = -> { recipient.notification_tokens.where(platform: :iOS).pluck(:token) }
 end
 ```
 

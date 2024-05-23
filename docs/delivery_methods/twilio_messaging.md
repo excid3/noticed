@@ -40,6 +40,8 @@ end
 
 ## Error Handling
 
+Twilio provides a full list of error codes that can be handled as needed. See https://www.twilio.com/docs/api/errors
+
 ```ruby
 deliver_by :twilio_messaging do |config|
   config.error_handler = lambda do |twilio_error_response|

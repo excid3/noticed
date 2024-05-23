@@ -293,7 +293,7 @@ DEPENDENCIES
   noticed!
   pg
   rails!
-  sqlite3
+  sqlite3 (~> 2.0)
   standard
   trilogy
   webmock

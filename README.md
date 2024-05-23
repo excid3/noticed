@@ -645,7 +645,7 @@ class DeliveryMethods::WhatsApp < Noticed::DeliveryMethod
   def deliver
     # ...
     config.day #=> #<Proc:0x000f7c8 (lambda)>
-    evaluate_option(config.day) #=> "Tuesday"
+    evaluate_option(:day) #=> "Tuesday"
   end
 end
 ```

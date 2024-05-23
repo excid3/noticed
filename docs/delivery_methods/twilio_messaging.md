@@ -38,6 +38,25 @@ deliver_by :twilio_messaging do |config|
 end
 ```
 
+## Error Handling
+
+Twilio provides a full list of error codes that can be handled as needed. See https://www.twilio.com/docs/api/errors
+
+```ruby
+deliver_by :twilio_messaging do |config|
+  config.error_handler = lambda do |twilio_error_response|
+    error_hash = JSON.parse(twilio_error_response.body)
+    case error_hash["code"]
+    when 21211
+      # The 'To' number is not a valid phone number.
+      # Write your error handling code
+    else
+      raise "Unhandled Twilio error: #{error_hash}"
+    end
+  end
+end
+```
+
 ## Options
 
 * `json` - *Optional*

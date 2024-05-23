@@ -50,7 +50,7 @@ Customize the Firebase Cloud Messaging notification object. This can be a Lambda
   
 The callable object will be given the device token as an argument.
 
-There are lots of options of now to structure a FCM notification message. See https://firebase.google.com/docs/cloud-messaging/concept-options for more details.
+There are lots of options of how to structure a FCM notification message. See https://firebase.google.com/docs/cloud-messaging/concept-options for more details.
 
 ### `credentials`
 The location of your Firebase Cloud Messaging credentials.

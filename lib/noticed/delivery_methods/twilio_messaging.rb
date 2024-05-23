@@ -3,6 +3,12 @@ module Noticed
     class TwilioMessaging < DeliveryMethod
       def deliver
         post_request url, basic_auth: {user: account_sid, pass: auth_token}, form: json.stringify_keys
+      rescue Noticed::ResponseUnsuccessful => exception
+        if exception.response.code.start_with?("4") && config[:error_handler]
+          notification.instance_exec(exception.response, &config[:error_handler])
+        else
+          raise
+        end
       end
 
       def json

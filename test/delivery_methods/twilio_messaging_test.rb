@@ -3,7 +3,7 @@ require "test_helper"
 class TwilioMessagingTest < ActiveSupport::TestCase
   setup do
     @delivery_method = Noticed::DeliveryMethods::TwilioMessaging.new
-    set_config(
+    @config = {
       account_sid: "acct_1234",
       auth_token: "token",
       json: -> {
@@ -13,7 +13,8 @@ class TwilioMessagingTest < ActiveSupport::TestCase
           Body: "Hello world"
         }
       }
-    )
+    }
+    set_config(@config)
   end
 
   test "sends sms" do
@@ -36,6 +37,26 @@ class TwilioMessagingTest < ActiveSupport::TestCase
     assert_raises Noticed::ResponseUnsuccessful do
       @delivery_method.deliver
     end
+  end
+
+  test "passes error to notification instance if error_handler is configured" do
+    @delivery_method = Noticed::DeliveryMethods::TwilioMessaging.new(
+      "delivery_method_name",
+      noticed_notifications(:one)
+    )
+
+    error_handler_called = false
+    @config[:error_handler] = lambda do |twilio_error_message|
+      error_handler_called = true
+    end
+    set_config(@config)
+
+    stub_request(:post, "https://api.twilio.com/2010-04-01/Accounts/acct_1234/Messages.json").to_return(status: 422)
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
+
+    assert(error_handler_called, "Handler is called if status is 4xx")
   end
 
   private

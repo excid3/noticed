@@ -13,4 +13,8 @@ class EphemeralNotifierTest < ActiveSupport::TestCase
       perform_enqueued_jobs
     end
   end
+
+  test "ephemeral has record shortcut" do
+    assert_equal :foo, EphemeralNotifier.with(record: :foo).record
+  end
 end

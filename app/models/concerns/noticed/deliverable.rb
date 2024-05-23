@@ -70,8 +70,12 @@ module Noticed
       end
 
       def with(params)
-        record = params.delete(:record)
-        new(params: params, record: record)
+        if self < Ephemeral
+          new(params: params)
+        else
+          record = params.delete(:record)
+          new(params: params, record: record)
+        end
       end
 
       def deliver(recipients = nil, **options)

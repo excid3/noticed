@@ -1,5 +1,10 @@
 ### Unreleased
 
+### 2.3.0
+
+* Add `error_handler` to Twilio delivery method #444
+* Fix `record` being removed for `Ephemeral` notifications #448
+
 ### 2.2.2
 
 * `fetch_constant` will now constantize Strings returned from procs or method calls

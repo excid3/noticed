@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.3.1
+
+* Skip `ApplicationNotifier` in generator if it already exists
+
 ### 2.3.0
 
 * Add `error_handler` to Twilio delivery method #444

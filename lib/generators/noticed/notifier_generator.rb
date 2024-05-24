@@ -13,8 +13,12 @@ module Noticed
 
       desc "Generates a notification with the given NAME."
 
-      def generate_notification
+      def generate_abstract_class
+        return if File.exist?("app/notifiers/application_notifier.rb")
         template "application_notifier.rb", "app/notifiers/application_notifier.rb"
+      end
+
+      def generate_notification
         template "notifier.rb", "app/notifiers/#{file_path}_notifier.rb"
       end
 

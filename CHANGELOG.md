@@ -1,5 +1,8 @@
 ### Unreleased
 
+* Set `:json` type on `:params` column with default to better integrate with ActiveRecord.
+  This fixes sqlserver (and probably other databases). #451
+
 ### 2.3.1
 
 * Skip `ApplicationNotifier` in generator if it already exists

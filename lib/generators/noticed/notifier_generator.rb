@@ -16,15 +16,6 @@ module Noticed
       def generate_abstract_class
         return if File.exist?("app/notifiers/application_notifier.rb")
         template "application_notifier.rb", "app/notifiers/application_notifier.rb"
-
-        if ActiveRecord::Base.connection_db_config.adapter == "sqlserver"
-          inject_into_class "app/notifiers/application_notifier.rb", "ApplicationNotifier" do
-            <<~CODE
-              attribute :params, ActiveRecord::Type::SQLServer::Json.new
-              serialize :params, coder: Noticed::Coder
-            CODE
-          end
-        end
       end
 
       def generate_notification

@@ -6,17 +6,6 @@ module Noticed
       class_attribute :bulk_delivery_methods, instance_writer: false, default: {}
       class_attribute :delivery_methods, instance_writer: false, default: {}
       class_attribute :required_param_names, instance_writer: false, default: []
-
-      attribute :params, default: {}
-
-      # Ephemeral notifiers cannot serialize params since they aren't ActiveRecord backed
-      if respond_to? :serialize
-        if Rails.gem_version >= Gem::Version.new("7.1.0.alpha")
-          serialize :params, coder: Coder
-        else
-          serialize :params, Coder
-        end
-      end
     end
 
     class_methods do

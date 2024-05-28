@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 2.3.2
+
 * Set `:json` type on `:params` column with default to better integrate with ActiveRecord.
   This fixes sqlserver (and probably other databases). #451
 

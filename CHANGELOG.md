@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Use `public_send` for Email delivery so it doesn't accidentally call private methods.
+
 ### 2.3.2
 
 * Set `:json` type on `:params` column with default to better integrate with ActiveRecord.

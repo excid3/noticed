@@ -7,7 +7,7 @@ module Noticed
         mailer = fetch_constant(:mailer)
         email = evaluate_option(:method)
         args = evaluate_option(:args) || []
-        mail = mailer.with(params).send(email, *args)
+        mail = mailer.with(params).public_send(email, *args)
         (!!evaluate_option(:enqueue)) ? mail.deliver_later : mail.deliver_now
       end
 

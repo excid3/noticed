@@ -21,7 +21,7 @@ end
 
   The mailer that should send the email
 
-- `method: :invoice_paid` - _Optional_
+- `method: :invoice_paid` - **Required**
 
   Used to customize the method on the mailer that is called
 

@@ -131,14 +131,8 @@ Firebase Cloud Messaging Notifications may fail delivery if the user has removed
 
 ```ruby
 class CommentNotification
-  deliver_by :fcm
-
-  # Remove invalid device tokens
-  #
-  # token - the device token from iOS or FCM
-  # platform - "iOS" or "fcm"
-  def cleanup_device_token(token:, platform:)
-    NotificationToken.where(token: token, platform: platform).destroy_all
+  deliver_by :fcm do |config|
+    config.invalid_token = ->(device_token) { device_token.destroy }
   end
 end
 ```

@@ -3,6 +3,18 @@ require "test_helper"
 class NotifierTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
+  class RecipientsLambda < Noticed::Event
+    recipients -> { params.fetch(:recipients) }
+  end
+
+  class RecipientsMethod < Noticed::Event
+    recipients :recipients
+
+    def recipients
+      params.fetch(:recipients)
+    end
+  end
+
   test "includes Rails urls" do
     assert_equal "http://localhost:3000/", SimpleNotifier.new.url
   end
@@ -38,6 +50,18 @@ class NotifierTest < ActiveSupport::TestCase
     notifier = RecordNotifier.with({})
     refute notifier.valid?
     assert_equal ["can't be blank"], notifier.errors[:record]
+  end
+
+  test "recipients lambda" do
+    assert_equal [:foo, :bar], RecipientsLambda.with(recipients: [:foo, :bar]).evaluate_recipients
+  end
+
+  test "recipients" do
+    assert_equal [:foo, :bar], RecipientsMethod.with(recipients: [:foo, :bar]).evaluate_recipients
+  end
+
+  test "deliver without recipients" do
+    ReceiptNotifier.deliver
   end
 
   test "deliver creates an event" do

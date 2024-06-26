@@ -1,5 +1,14 @@
 ### Unreleased
 
+* Add `recipients` feature to let Notifiers determine their recipients
+
+```ruby
+class CommentNotifier < ApplicationNotifier
+  # Notify all the commenters on this post except the new comment author
+  recipients ->{ params[:comment].post.commenters.uniq - params[:comment.user] }
+end
+```
+
 ### 2.3.3
 
 * Use `public_send` for Email delivery so it doesn't accidentally call private methods.

@@ -40,8 +40,8 @@ module Noticed
         delivery_methods[name] = DeliverBy.new(name, config)
       end
 
-      def recipients(option=nil, &block)
-        self._recipients = block_given? ? block : option
+      def recipients(option = nil, &block)
+        self._recipients = block || option
       end
 
       def required_params(*names)

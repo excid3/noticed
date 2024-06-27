@@ -5,7 +5,21 @@
 ```ruby
 class CommentNotifier < ApplicationNotifier
   # Notify all the commenters on this post except the new comment author
-  recipients ->{ params[:comment].post.commenters.uniq - params[:comment.user] }
+
+  # Can be given a lambda or Proc
+  recipients ->{ params[:comment].post.commenters.excluding(params[:comment].user).distinct }
+
+  # Can be given a block
+  recipients do
+    params[:comment].post.commenters.excluding(params[:comment].user).distinct
+  end
+
+  # Or can call a method
+  recipients :fetch_recipients
+
+  def fetch_recipients
+    params[:comment].post.commenters.excluding(params[:comment].user).distinct
+  end
 end
 ```
 

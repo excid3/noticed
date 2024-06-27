@@ -3,6 +3,12 @@ require "test_helper"
 class NotifierTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
 
+  class RecipientsBlock < Noticed::Event
+    recipients do
+      params.fetch(:recipients)
+    end
+  end
+
   class RecipientsLambda < Noticed::Event
     recipients -> { params.fetch(:recipients) }
   end
@@ -50,6 +56,10 @@ class NotifierTest < ActiveSupport::TestCase
     notifier = RecordNotifier.with({})
     refute notifier.valid?
     assert_equal ["can't be blank"], notifier.errors[:record]
+  end
+
+  test "recipients block" do
+    assert_equal [:foo, :bar], RecipientsBlock.with(recipients: [:foo, :bar]).evaluate_recipients
   end
 
   test "recipients lambda" do

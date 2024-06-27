@@ -1,4 +1,6 @@
 class CommentNotifier < ApplicationNotifier
+  recipients -> { params[:recipients] }
+
   deliver_by :test
 
   # delivery_by :email, mailer: "UserMailer", method: "new_comment"

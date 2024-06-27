@@ -6,6 +6,7 @@ module Noticed
       class_attribute :bulk_delivery_methods, instance_writer: false, default: {}
       class_attribute :delivery_methods, instance_writer: false, default: {}
       class_attribute :required_param_names, instance_writer: false, default: []
+      class_attribute :_recipients, instance_writer: false
     end
 
     class_methods do
@@ -37,6 +38,10 @@ module Noticed
         config = ActiveSupport::OrderedOptions.new.merge(options)
         yield config if block_given?
         delivery_methods[name] = DeliverBy.new(name, config)
+      end
+
+      def recipients(option = nil, &block)
+        self._recipients = block || option
       end
 
       def required_params(*names)
@@ -79,6 +84,8 @@ module Noticed
     # CommentNotifier.deliver(User.all, wait: 5.minutes)
     # CommentNotifier.deliver(User.all, wait_until: 1.hour.from_now)
     def deliver(recipients = nil, enqueue_job: true, **options)
+      recipients ||= evaluate_recipients
+
       validate!
 
       transaction do
@@ -107,6 +114,16 @@ module Noticed
       self
     end
     alias_method :deliver_later, :deliver
+
+    def evaluate_recipients
+      return unless _recipients
+
+      if _recipients.respond_to?(:call)
+        instance_exec(&_recipients)
+      elsif _recipients.is_a?(Symbol) && respond_to?(_recipients)
+        send(_recipients)
+      end
+    end
 
     def recipient_attributes_for(recipient)
       {

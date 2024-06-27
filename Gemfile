@@ -15,7 +15,7 @@ gem "standard"
 gem "webmock"
 
 gem "pg"
-gem "sqlite3"
+gem "sqlite3", "~> 1.7"
 
 # To use a debugger
 gem "byebug", group: [:development, :test]

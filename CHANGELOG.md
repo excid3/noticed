@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 2.4.0
+
 * Add `recipients` feature to let Notifiers determine their recipients
 
 ```ruby

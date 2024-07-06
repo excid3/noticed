@@ -85,7 +85,7 @@ rails generate noticed:notifier NewCommentNotifier
   - [Tip: Capture User Preferences](#tip-capture-user-preferences)
   - [Tip: Extracting Delivery Method Configurations](#tip-extracting-delivery-method-configurations)
   - [Shared Delivery Method Options](#shared-delivery-method-options)
-- [Sending Notifications](#sending-notifications)
+- [Sending Notifications](#-sending-notifications)
 - [Custom Noticed Model Methods](#custom-noticed-model-methods)
 
 ### Notifier Objects

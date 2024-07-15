@@ -528,7 +528,7 @@ If you want to build your own delivery method to deliver notifications to a spec
 This will generate a new `DeliveryMethods::Discord` class inside the `app/notifiers/delivery_methods` folder, which can be used to deliver notifications to Discord.
 
 ```ruby
-class DeliveryMethods::Discord < ApplicationDeliveryMethod
+class DeliveryMethods::Discord < Noticed::DeliveryMethod
   # Specify the config options your delivery method requires in its config block
   required_options # :foo, :bar
 
@@ -559,7 +559,7 @@ See the [Custom Noticed Model Methods](#custom-noticed-model-methods) section fo
 ```ruby
 # app/notifiers/delivery_methods/turbo_stream.rb
 
-class DeliveryMethods::TurboStream < ApplicationDeliveryMethod
+class DeliveryMethods::TurboStream < Noticed::DeliveryMethod
   def deliver
     return unless recipient.is_a?(User)
 

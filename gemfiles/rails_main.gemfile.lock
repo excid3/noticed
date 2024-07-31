@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 6045f257fbbff039edb2542c9859488cec0dcaa9
+  revision: e7e25874b971e81978285eb1fbae6d82b6276d58
   branch: main
   specs:
     actioncable (8.0.0.alpha)
@@ -98,7 +98,7 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (2.4.0)
+    noticed (2.4.1)
       rails (>= 6.1.0)
 
 GEM
@@ -127,9 +127,10 @@ GEM
     date (3.3.4)
     drb (2.2.1)
     erubi (1.13.0)
-    faraday (2.9.2)
+    faraday (2.10.1)
       faraday-net_http (>= 2.0, < 3.2)
-    faraday-net_http (3.1.0)
+      logger
+    faraday-net_http (3.1.1)
       net-http
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -148,7 +149,7 @@ GEM
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
     io-console (0.7.2)
-    irb (1.13.2)
+    irb (1.14.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.7.2)
@@ -167,7 +168,7 @@ GEM
       net-smtp
     marcel (1.0.4)
     mini_mime (1.1.5)
-    minitest (5.24.0)
+    minitest (5.24.1)
     multi_json (1.15.0)
     net-http (0.4.1)
       uri
@@ -183,23 +184,23 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     nio4r (2.7.3)
-    nokogiri (1.16.6-arm64-darwin)
+    nokogiri (1.16.7-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.6-x86_64-darwin)
+    nokogiri (1.16.7-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.6-x86_64-linux)
+    nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     os (1.1.4)
     parallel (1.25.1)
-    parser (3.3.3.0)
+    parser (3.3.4.0)
       ast (~> 2.4.1)
       racc
-    pg (1.5.6)
+    pg (1.5.7)
     psych (5.1.2)
       stringio
-    public_suffix (6.0.0)
-    racc (1.8.0)
-    rack (3.1.4)
+    public_suffix (6.0.1)
+    racc (1.8.1)
+    rack (3.1.7)
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -221,7 +222,7 @@ GEM
     regexp_parser (2.9.2)
     reline (0.5.9)
       io-console (~> 0.5)
-    rexml (3.3.1)
+    rexml (3.3.2)
       strscan
     rubocop (1.64.1)
       json (~> 2.3)
@@ -245,10 +246,10 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    sqlite3 (2.0.2-arm64-darwin)
-    sqlite3 (2.0.2-x86_64-darwin)
-    sqlite3 (2.0.2-x86_64-linux-gnu)
-    standard (1.39.0)
+    sqlite3 (2.0.3-arm64-darwin)
+    sqlite3 (2.0.3-x86_64-darwin)
+    sqlite3 (2.0.3-x86_64-linux-gnu)
+    standard (1.39.2)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
       rubocop (~> 1.64.0)
@@ -278,7 +279,7 @@ GEM
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.6.16)
+    zeitwerk (2.6.17)
 
 PLATFORMS
   arm64-darwin-22
@@ -302,4 +303,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.5.3
+   2.5.16

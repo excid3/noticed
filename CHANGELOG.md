@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.4.1
+
+* Include private methods when checking if respond_to?(:method). Fixes #475
+
 ### 2.4.0
 
 * Add `recipients` feature to let Notifiers determine their recipients

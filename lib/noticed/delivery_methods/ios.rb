@@ -34,7 +34,7 @@ module Noticed
 
         method = config[:format]
         # Call method on Notifier if defined
-        if method&.is_a?(Symbol) && event.respond_to?(method)
+        if method&.is_a?(Symbol) && event.respond_to?(method, true)
           event.send(method, notification, apn)
         # If Proc, evaluate it on the Notification
         elsif method&.respond_to?(:call)

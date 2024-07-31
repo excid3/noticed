@@ -40,7 +40,7 @@ module Noticed
         event.instance_exec(&option)
 
       # Call method if symbol and matching method
-      elsif option.is_a?(Symbol) && event.respond_to?(option)
+      elsif option.is_a?(Symbol) && event.respond_to?(option, true)
         event.send(option)
 
       # Return the value

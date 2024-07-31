@@ -32,7 +32,7 @@ module Noticed
 
         if option.respond_to?(:call)
           context.instance_exec(&option)
-        elsif option.is_a?(Symbol) && context.respond_to?(option)
+        elsif option.is_a?(Symbol) && context.respond_to?(option, true)
           context.send(option)
         else
           option

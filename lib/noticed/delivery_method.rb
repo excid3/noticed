@@ -50,7 +50,7 @@ module Noticed
         notification.instance_exec(&option)
 
       # Call method if symbol and matching method on Notifier
-      elsif option.is_a?(Symbol) && event.respond_to?(option)
+      elsif option.is_a?(Symbol) && event.respond_to?(option, true)
         event.send(option, notification)
 
       # Return the value

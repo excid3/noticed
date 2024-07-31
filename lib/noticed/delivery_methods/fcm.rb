@@ -25,7 +25,7 @@ module Noticed
 
       def format_notification(device_token)
         method = config[:json]
-        if method.is_a?(Symbol) && event.respond_to?(method)
+        if method.is_a?(Symbol) && event.respond_to?(method, true)
           event.send(method, device_token)
         else
           notification.instance_exec(device_token, &method)

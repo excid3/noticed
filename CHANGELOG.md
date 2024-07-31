@@ -1,5 +1,34 @@
 ### Unreleased
 
+### 2.4.0
+
+* Add `recipients` feature to let Notifiers determine their recipients
+
+```ruby
+class CommentNotifier < ApplicationNotifier
+  # Notify all the commenters on this post except the new comment author
+
+  # Can be given a lambda or Proc
+  recipients ->{ params[:comment].post.commenters.excluding(params[:comment].user).distinct }
+
+  # Can be given a block
+  recipients do
+    params[:comment].post.commenters.excluding(params[:comment].user).distinct
+  end
+
+  # Or can call a method
+  recipients :fetch_recipients
+
+  def fetch_recipients
+    params[:comment].post.commenters.excluding(params[:comment].user).distinct
+  end
+end
+```
+
+### 2.3.3
+
+* Use `public_send` for Email delivery so it doesn't accidentally call private methods.
+
 ### 2.3.2
 
 * Set `:json` type on `:params` column with default to better integrate with ActiveRecord.

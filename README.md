@@ -341,7 +341,7 @@ If you want to reuse delivery method configurations across multiple Notifiers, y
 # /app/notifiers/notifiers/comment_notifier.rb
 class CommentNotifier < Noticed::Event
   include IosNotifier
-  include AndriodNotifer
+  include AndroidNotifier
   include EmailNotifier
 
   validates :record, presence: true

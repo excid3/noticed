@@ -399,6 +399,34 @@ This invocation will create a single `Noticed::Event` record and a `Noticed::Not
 - An individual delivery job for `:email` method to the second thread author
 - Etc...
 
+#### Tip: Define recipients inside the notifier
+
+Recipients can also be computed inside a notifier:
+
+```ruby
+class NewCommentNotifier < ApplicationNotifier
+  recipients ->{ params[:record].thread.all_authors }
+
+  # or 
+  recipients do 
+    params[:record].thread.all_authors
+  end
+
+  # or
+  recipients :fetch_recipients
+
+  def fetch_recipients
+     # ...
+  end
+end
+```
+
+This makes the code for sending a notification neater:
+
+```ruby
+NewCommentNotifier.with(record: @comment, foo: "bar").deliver
+```
+
 ### Custom Noticed Model Methods
 
 In order to extend the Noticed models you'll need to use a concern and a to_prepare block:

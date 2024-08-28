@@ -1,7 +1,5 @@
 module Noticed
   class ApplicationJob < ActiveJob::Base
-    queue_as :default
-    
     # Automatically retry jobs that encountered a deadlock
     # retry_on ActiveRecord::Deadlocked
 

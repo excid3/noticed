@@ -1,7 +1,5 @@
 module Noticed
-  class EventJob < ApplicationJob
-    queue_as :default
-
+  class EventJob < Noticed.parent_class.constantize
     def perform(event)
       # Enqueue bulk deliveries
       event.bulk_delivery_methods.each_value do |deliver_by|

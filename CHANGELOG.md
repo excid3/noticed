@@ -1,5 +1,7 @@
 ### Unreleased
 
+* The `parent_class` configuration now also changes the parent class for `Noticed::EventJob`.
+
 ### 2.4.1
 
 * Include private methods when checking if respond_to?(:method). Fixes #475

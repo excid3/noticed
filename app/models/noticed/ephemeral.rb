@@ -10,6 +10,7 @@ module Noticed
     class Notification
       include ActiveModel::Model
       include ActiveModel::Attributes
+      include Noticed::Translation
 
       attribute :recipient
       attribute :event

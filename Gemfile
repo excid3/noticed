@@ -11,16 +11,11 @@ gemspec
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
-gem "standard"
-gem "webmock"
-
+gem "appraisal"
 gem "pg"
 gem "sqlite3", "~> 1.7"
-
-# To use a debugger
-gem "byebug", group: [:development, :test]
-gem "appraisal"
-gem "net-smtp"
+gem "standard"
+gem "webmock"
 
 # iOS notifications
 gem "apnotic", "~> 1.7"

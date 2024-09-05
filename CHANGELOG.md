@@ -1,6 +1,9 @@
 ### Unreleased
 
-* The `parent_class` configuration now also changes the parent class for `Noticed::EventJob`.
+* 2.4.2
+
+* The `parent_class` configuration now also changes the parent class for `Noticed::EventJob`. #483
+* Include translation support in Ephemeral notifications #484
 
 ### 2.4.1
 

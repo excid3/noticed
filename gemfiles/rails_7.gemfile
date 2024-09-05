@@ -2,13 +2,11 @@
 
 source "https://rubygems.org"
 
-gem "standard"
-gem "webmock"
+gem "appraisal"
 gem "pg"
 gem "sqlite3", "~> 1.7"
-gem "byebug", group: [:development, :test]
-gem "appraisal"
-gem "net-smtp"
+gem "standard"
+gem "webmock"
 gem "apnotic", "~> 1.7"
 gem "googleauth", "~> 1.1"
 gem "rails", "~> 7.0.0"

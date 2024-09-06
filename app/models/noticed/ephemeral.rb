@@ -3,6 +3,7 @@ module Noticed
     include ActiveModel::Model
     include ActiveModel::Attributes
     include Noticed::Deliverable
+    include Noticed::Translation
 
     attribute :record
     attribute :params, default: {}

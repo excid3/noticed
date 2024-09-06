@@ -58,4 +58,12 @@ class TranslationTest < ActiveSupport::TestCase
     block = I18nExample.delivery_methods[:test].config[:message]
     assert_equal "Hello world", noticed_notifications(:one).instance_exec(&block)
   end
+
+  test "ephemeral translations" do
+    assert_equal "Hello world", EphemeralNotifier.new.t("hello")
+  end
+
+  test "ephemeral notification translations" do
+    assert_equal "Hello world", EphemeralNotifier::Notification.new.t("hello")
+  end
 end

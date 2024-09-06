@@ -74,4 +74,12 @@ class Noticed::NotificationTest < ActiveSupport::TestCase
   test "unseen?" do
     assert_not noticed_notifications(:one).unseen?
   end
+
+  test "notification url helpers" do
+    assert_equal "http://localhost:3000/", CommentNotifier::Notification.new.root_url
+  end
+
+  test "ephemeral notification url helpers" do
+    assert_equal "http://localhost:3000/", EphemeralNotifier::Notification.new.root_url
+  end
 end

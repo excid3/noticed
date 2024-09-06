@@ -17,4 +17,8 @@ class EphemeralNotifierTest < ActiveSupport::TestCase
   test "ephemeral has record shortcut" do
     assert_equal :foo, EphemeralNotifier.with(record: :foo).record
   end
+
+  test "ephemeral notifier includes Rails urls" do
+    assert_equal "http://localhost:3000/", EphemeralNotifier.new.root_url
+  end
 end

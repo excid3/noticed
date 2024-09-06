@@ -11,7 +11,9 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
 
   test "sends a message" do
     stub_request(:post, "https://teams.microsoft.com").with(body: "{\"foo\":\"bar\"}")
-    @delivery_method.deliver
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "raises error on failure" do

@@ -8,7 +8,9 @@ class VonageSmsTest < ActiveSupport::TestCase
   test "sends sms" do
     set_config(json: {foo: :bar})
     stub_request(:post, Noticed::DeliveryMethods::VonageSms::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}").to_return(status: 200, body: "{\"messages\":[{\"status\":\"0\"}]}")
-    @delivery_method.deliver
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "raises error on failure" do

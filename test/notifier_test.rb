@@ -71,7 +71,9 @@ class NotifierTest < ActiveSupport::TestCase
   end
 
   test "deliver without recipients" do
-    ReceiptNotifier.deliver
+    assert_nothing_raised do
+      ReceiptNotifier.deliver
+    end
   end
 
   test "deliver creates an event" do

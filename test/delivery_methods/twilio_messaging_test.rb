@@ -29,7 +29,10 @@ class TwilioMessagingTest < ActiveSupport::TestCase
         Body: "Hello world"
       }
     ).to_return(status: 200)
-    @delivery_method.deliver
+
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "raises error on failure" do

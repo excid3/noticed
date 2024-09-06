@@ -8,7 +8,9 @@ class SlackTest < ActiveSupport::TestCase
 
   test "sends a slack message" do
     stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}")
-    @delivery_method.deliver
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "raises error on failure" do

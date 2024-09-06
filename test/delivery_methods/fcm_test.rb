@@ -37,7 +37,9 @@ class FcmTest < ActiveSupport::TestCase
     stub_request(:post, "https://fcm.googleapis.com/v1/projects/p_1234/messages:send").with(body: "{\"message\":{\"token\":\"a\",\"notification\":{\"title\":\"Title\",\"body\":\"Body\"}}}")
     stub_request(:post, "https://fcm.googleapis.com/v1/projects/p_1234/messages:send").with(body: "{\"message\":{\"token\":\"b\",\"notification\":{\"title\":\"Title\",\"body\":\"Body\"}}}")
 
-    @delivery_method.deliver
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "notifies of invalid tokens for clean up" do

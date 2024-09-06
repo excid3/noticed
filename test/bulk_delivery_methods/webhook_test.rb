@@ -12,7 +12,9 @@ class WebhookBulkDeliveryMethodTest < ActiveSupport::TestCase
     )
     stub_request(:post, "https://example.org/webhook").with(body: "{\"foo\":\"bar\"}")
 
-    @delivery_method.deliver
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "webhook with form payload" do
@@ -21,7 +23,9 @@ class WebhookBulkDeliveryMethodTest < ActiveSupport::TestCase
       form: {foo: :bar}
     )
     stub_request(:post, "https://example.org/webhook").with(headers: {"Content-Type" => /application\/x-www-form-urlencoded/})
-    @delivery_method.deliver
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "webhook with basic auth" do
@@ -30,7 +34,9 @@ class WebhookBulkDeliveryMethodTest < ActiveSupport::TestCase
       basic_auth: {user: "username", pass: "password"}
     )
     stub_request(:post, "https://example.org/webhook").with(headers: {"Authorization" => "Basic dXNlcm5hbWU6cGFzc3dvcmQ="})
-    @delivery_method.deliver
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "webhook with headers" do
@@ -39,7 +45,10 @@ class WebhookBulkDeliveryMethodTest < ActiveSupport::TestCase
       headers: {"Content-Type" => "application/json"}
     )
     stub_request(:post, "https://example.org/webhook").with(headers: {"Content-Type" => "application/json"})
-    @delivery_method.deliver
+
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "webhook raises error with unsuccessful status codes" do

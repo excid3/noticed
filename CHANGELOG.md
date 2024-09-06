@@ -1,6 +1,10 @@
 ### Unreleased
 
-* 2.4.2
+### 2.4.3
+
+* Add translation and URL helpers to Ephemeral notifiers & notifications #485
+
+### 2.4.2
 
 * The `parent_class` configuration now also changes the parent class for `Noticed::EventJob`. #483
 * Include translation support in Ephemeral notifications #484

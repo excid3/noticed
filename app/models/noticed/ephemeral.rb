@@ -4,6 +4,7 @@ module Noticed
     include ActiveModel::Attributes
     include Noticed::Deliverable
     include Noticed::Translation
+    include Rails.application.routes.url_helpers
 
     attribute :record
     attribute :params, default: {}
@@ -12,6 +13,7 @@ module Noticed
       include ActiveModel::Model
       include ActiveModel::Attributes
       include Noticed::Translation
+      include Rails.application.routes.url_helpers
 
       attribute :recipient
       attribute :event

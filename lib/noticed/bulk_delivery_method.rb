@@ -3,6 +3,9 @@ module Noticed
     include ApiClient
     include RequiredOptions
 
+    extend ActiveModel::Callbacks
+    define_model_callbacks :deliver
+
     class_attribute :logger, default: Rails.logger
 
     attr_reader :config, :event
@@ -20,7 +23,9 @@ module Noticed
       return false if config.has_key?(:if) && !evaluate_option(:if)
       return false if config.has_key?(:unless) && evaluate_option(:unless)
 
-      deliver
+      run_callbacks :deliver do
+        deliver
+      end
     end
 
     def deliver

@@ -142,6 +142,16 @@ class NotifierTest < ActiveSupport::TestCase
     end
   end
 
+  test "creates jobs for bulk ephemeral deliveries" do
+    assert_enqueued_jobs 1, only: Noticed::BulkDeliveryMethods::Test do
+      EphemeralNotifier.deliver
+    end
+
+    assert_difference("Noticed::BulkDeliveryMethods::Test.delivered.length" => 1) do
+      perform_enqueued_jobs
+    end
+  end
+
   test "deliver wait" do
     freeze_time
     assert_enqueued_with job: Noticed::EventJob, at: 5.minutes.from_now do

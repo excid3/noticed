@@ -69,8 +69,24 @@ class DeliveryMethodTest < ActiveSupport::TestCase
     end
   end
 
+  class CallbackBulkDeliveryMethod < Noticed::BulkDeliveryMethod
+    before_deliver :set_message
+    attr_reader :message
+
+    def set_message
+      @message = "new message"
+    end
+
+    def deliver
+    end
+  end
+
   class CallbackNotifier < Noticed::Event
     deliver_by :test
+  end
+
+  class CallbackBulkNotifier < Noticed::Event
+    bulk_deliver_by :test
   end
 
   test "calls callbacks" do
@@ -78,6 +94,13 @@ class DeliveryMethodTest < ActiveSupport::TestCase
     notification = Noticed::Notification.create(recipient: User.first, event: event)
     delivery_method = CallbackDeliveryMethod.new
     delivery_method.perform(:test, notification)
+    assert_equal delivery_method.message, "new message"
+  end
+
+  test "calls callbacks for bulk delivery" do
+    event = CallbackBulkNotifier.with(message: "test")
+    delivery_method = CallbackBulkDeliveryMethod.new
+    delivery_method.perform(:test, event)
     assert_equal delivery_method.message, "new message"
   end
 

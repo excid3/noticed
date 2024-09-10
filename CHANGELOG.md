@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Support callbacks in bulk delivery methods.
+
 ### 2.4.3
 
 * Add translation and URL helpers to Ephemeral notifiers & notifications #485

@@ -6,7 +6,7 @@ Send a webhook request to bulk notify users in a channel.
 
 ```ruby
 class CommentNotification
-  deliver_by :webhook do |config|
+  bulk_deliver_by :webhook do |config|
     config.url = "https://example.org..."
     config.json = -> {
       {

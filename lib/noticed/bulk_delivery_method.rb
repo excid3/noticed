@@ -10,10 +10,10 @@ module Noticed
 
     attr_reader :config, :event
 
-    def perform(delivery_method_name, event, recipients: nil, params: {}, overrides: {})
+    def perform(delivery_method_name, event, recipient: nil, params: {}, overrides: {})
       # Ephemeral notifications
       if event.is_a? String
-        @event = @notification.event
+        @event = event.constantize.new_with_params(recipient, params)
         @config = overrides
       else
         @event = event

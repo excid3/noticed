@@ -1,10 +1,10 @@
 module Noticed
   module BulkDeliveryMethods
-    class Test < DeliveryMethod
+    class Test < BulkDeliveryMethod
       class_attribute :delivered, default: []
 
       def deliver
-        delivered << notification
+        delivered << event
       end
     end
   end

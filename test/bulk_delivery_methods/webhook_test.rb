@@ -1,8 +1,17 @@
 require "test_helper"
 
 class WebhookBulkDeliveryMethodTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   setup do
     @delivery_method = Noticed::BulkDeliveryMethods::Webhook.new
+  end
+
+  test "end to end" do
+    stub_request(:post, "https://example.org/bulk")
+    perform_enqueued_jobs do
+      BulkNotifier.deliver
+    end
   end
 
   test "webhook with json payload" do

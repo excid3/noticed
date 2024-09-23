@@ -37,8 +37,10 @@ module Noticed
       const_get(:Notification).class_eval(&block)
     end
 
-    def deliver(recipients)
+    def deliver(recipients = nil)
+      recipients ||= evaluate_recipients
       recipients = Array.wrap(recipients)
+
       bulk_delivery_methods.each do |_, deliver_by|
         deliver_by.ephemeral_perform_later(self.class.name, recipients, params)
       end
@@ -48,6 +50,8 @@ module Noticed
           deliver_by.ephemeral_perform_later(self.class.name, recipient, params)
         end
       end
+
+      self
     end
 
     def record

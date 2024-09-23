@@ -7,18 +7,26 @@ class NotifierTest < ActiveSupport::TestCase
     recipients do
       params.fetch(:recipients)
     end
+    deliver_by :test
   end
 
   class RecipientsLambda < Noticed::Event
     recipients -> { params.fetch(:recipients) }
+    deliver_by :test
   end
 
   class RecipientsMethod < Noticed::Event
+    deliver_by :test
     recipients :recipients
 
     def recipients
       params.fetch(:recipients)
     end
+  end
+
+  class RecipientsLambdaEphemeral < Noticed::Ephemeral
+    recipients -> { params.fetch(:recipients) }
+    deliver_by :test
   end
 
   test "includes Rails urls" do
@@ -59,15 +67,33 @@ class NotifierTest < ActiveSupport::TestCase
   end
 
   test "recipients block" do
-    assert_equal [:foo, :bar], RecipientsBlock.with(recipients: [:foo, :bar]).evaluate_recipients
+    event = RecipientsBlock.with(recipients: [User.create!(email: "foo"), User.create!(email: "bar")]).deliver
+    assert_equal 2, event.notifications.count
+    assert_equal User.find_by(email: "foo"), event.notifications.first.recipient
   end
 
   test "recipients lambda" do
-    assert_equal [:foo, :bar], RecipientsLambda.with(recipients: [:foo, :bar]).evaluate_recipients
+    event = RecipientsLambda.with(recipients: [User.create!(email: "foo"), User.create!(email: "bar")]).deliver
+    assert_equal 2, event.notifications.count
+    assert_equal User.find_by(email: "foo"), event.notifications.first.recipient
   end
 
   test "recipients" do
-    assert_equal [:foo, :bar], RecipientsMethod.with(recipients: [:foo, :bar]).evaluate_recipients
+    event = RecipientsMethod.with(recipients: [User.create!(email: "foo"), User.create!(email: "bar")]).deliver
+    assert_equal 2, event.notifications.count
+    assert_equal User.find_by(email: "foo"), event.notifications.first.recipient
+
+    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last]) do
+      perform_enqueued_jobs
+    end
+  end
+
+  test "recipients ephemeral" do
+    users = [User.create!(email: "foo"), User.create!(email: "bar")]
+
+    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, "NotifierTest::RecipientsLambdaEphemeral::Notification", {recipient: User.find_by(email: "foo"), params: {recipients: users}}]) do
+      RecipientsLambdaEphemeral.with(recipients: users).deliver
+    end
   end
 
   test "deliver without recipients" do

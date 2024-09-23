@@ -89,9 +89,9 @@ class NotifierTest < ActiveSupport::TestCase
   end
 
   test "recipients ephemeral" do
-    users = [ User.create!(email: "foo"), User.create!(email: "bar") ]
+    users = [User.create!(email: "foo"), User.create!(email: "bar")]
 
-    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, "NotifierTest::RecipientsLambdaEphemeral::Notification", { recipient: User.find_by(email: "foo"), params: { recipients: users } }]) do
+    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, "NotifierTest::RecipientsLambdaEphemeral::Notification", {recipient: User.find_by(email: "foo"), params: {recipients: users}}]) do
       RecipientsLambdaEphemeral.with(recipients: users).deliver
     end
   end

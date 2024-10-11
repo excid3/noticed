@@ -378,6 +378,32 @@ Each of these options are available for every delivery method (individual or bul
 * `config.wait_until` — (Should yield a specific time object) Delays the job that runs this delivery method until the specific time specified
 * `config.queue` — Sets the ActiveJob queue name to be used for the job that runs this delivery method
 
+If you want to select the queue based on the event, for example to deliver message notifications in a high priority queue, 
+you can add a method to your notifier that returns the queue name. However the queue is evalutated in the context of the notification so you
+must wrap it in a `notification_methods` block.
+
+```ruby
+# app/notifiers/application_notifier.rb
+class ApplicationNotifier < Noticed::Event
+  notification_methods do
+    def queue
+      "default"
+    end
+  end
+end
+# app/notifiers/message_notifier.rb
+class MessageNotifier < Noticed::Event
+  deliver_by :delivery_method do |config|
+    config.queue = :queue
+  end
+  notification_methods do
+    def queue
+      "high_priority"
+    end
+  end
+end
+```
+
 ### 📨 Sending Notifications
 
 Following the `NewCommentNotifier` example above, here’s how we might invoke the Notifier to send notifications to every author in the thread about a new comment being added:

@@ -374,28 +374,22 @@ Each of these options are available for every delivery method (individual or bul
 
 * `config.if` — Intended for a lambda or method; runs after the `wait` if configured; cancels the delivery method if returns falsey
 * `config.unless`  — Intended for a lambda or method; runs after the `wait` if configured; cancels the delivery method if returns truthy
+
+The following are evaluated in the context of the Notification so it can be customize to the recipient:
+
 * `config.wait` — (Should yield an `ActiveSupport::Duration`) Delays the job that runs this delivery method for the given duration of time
 * `config.wait_until` — (Should yield a specific time object) Delays the job that runs this delivery method until the specific time specified
-* `config.queue` — Sets the ActiveJob queue name to be used for the job that runs this delivery method
+* `config.queue` — Sets the ActiveJob queue name to be used for the job that runs this delivery method.
 
-If you want to select the queue based on the event, for example to deliver message notifications in a high priority queue, 
-you can add a method to your notifier that returns the queue name. However the queue is evalutated in the context of the notification so you
-must wrap it in a `notification_methods` block.
+When using a symbol, the matching method must be defined inside the `notification_methods` block:
 
 ```ruby
-# app/notifiers/application_notifier.rb
-class ApplicationNotifier < Noticed::Event
-  notification_methods do
-    def queue
-      "default"
-    end
-  end
-end
 # app/notifiers/message_notifier.rb
 class MessageNotifier < Noticed::Event
   deliver_by :delivery_method do |config|
     config.queue = :queue
   end
+
   notification_methods do
     def queue
       "high_priority"

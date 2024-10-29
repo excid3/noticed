@@ -4,7 +4,7 @@ Sends a notification to the browser via websockets (ActionCable channel by defau
 
 ```ruby
 deliver_by :action_cable do |config|
-  config.channel = "Noticed::NotificationsChannel"
+  config.channel = "Noticed::NotificationChannel"
   config.stream = ->{ recipient }
   config.message = ->{ params.merge( user_id: recipient.id) }
 end

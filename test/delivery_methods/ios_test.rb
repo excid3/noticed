@@ -18,6 +18,9 @@ class IosTest < ActiveSupport::TestCase
       @deliveries.push(apn)
       @response
     end
+
+    def close
+    end
   end
 
   class FakeResponse

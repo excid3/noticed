@@ -30,6 +30,7 @@ class CommentNotifier < ApplicationNotifier
     config.key_id = Rails.application.credentials.dig(:ios, :key_id)
     config.team_id = Rails.application.credentials.dig(:ios, :team_id)
     config.apns_key = Rails.application.credentials.dig(:ios, :apns_key)
+    config.error_handler = ->(exception) { ... }
   end
 end
 ```
@@ -65,6 +66,9 @@ end
 * `development` - *Optional*
 
   Set this to `true` to use the APNS sandbox environment for sending notifications. This is required when running the app to your device via Xcode. Running the app via TestFlight or the App Store should not use development.
+
+* `error_handler` - *Optional*
+  A lambda to allow your app to handle Apnotic errors.
 
 ## Gathering Notification Tokens
 
@@ -106,7 +110,7 @@ class CommentNotifier < ApplicationNotifier
 end
 ```
 
-Another common action is to update the badge after a user reads a notification. 
+Another common action is to update the badge after a user reads a notification.
 
 This is a great use of the Noticed::Ephemeral class. Since it's all in-memory, it will perform the job and not touch the database.
 

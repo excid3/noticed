@@ -16,6 +16,7 @@ module Noticed
           connection_pool.with do |connection|
             response = connection.push(apn)
             raise "Timeout sending iOS push notification" unless response
+            connection.close
 
             if bad_token?(response) && config[:invalid_token]
               # Allow notification to cleanup invalid iOS device tokens
@@ -62,6 +63,9 @@ module Noticed
         handler = proc do |connection|
           connection.on(:error) do |exception|
             Rails.logger.info "Apnotic exception raised: #{exception}"
+            if config[:error_handler].respond_to?(:call)
+              notification.instance_exec(exception, &config[:error_handler])
+            end
           end
         end
 

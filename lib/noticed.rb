@@ -20,6 +20,7 @@ module Noticed
   autoload :Translation, "noticed/translation"
 
   module BulkDeliveryMethods
+    autoload :Bluesky, "noticed/bulk_delivery_methods/bluesky"
     autoload :Discord, "noticed/bulk_delivery_methods/discord"
     autoload :Slack, "noticed/bulk_delivery_methods/slack"
     autoload :Test, "noticed/bulk_delivery_methods/test"

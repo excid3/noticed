@@ -41,6 +41,7 @@ Delivery methods we officially support:
 
 Bulk delivery methods we support:
 
+* [Bluesky](docs/bulk_delivery_methods/bluesky.md)
 * [Discord](docs/bulk_delivery_methods/discord.md)
 * [Slack](docs/bulk_delivery_methods/slack.md)
 * [Webhook](docs/bulk_delivery_methods/webhook.md)
@@ -427,8 +428,8 @@ Recipients can also be computed inside a notifier:
 class NewCommentNotifier < ApplicationNotifier
   recipients ->{ params[:record].thread.all_authors }
 
-  # or 
-  recipients do 
+  # or
+  recipients do
     params[:record].thread.all_authors
   end
 
@@ -526,6 +527,7 @@ Individual delivery methods:
 
 Bulk delivery methods:
 
+* [Bluesky](docs/bulk_delivery_methods/bluesky.md)
 * [Discord](docs/bulk_delivery_methods/discord.md)
 * [Slack](docs/bulk_delivery_methods/slack.md)
 * [Webhook](docs/bulk_delivery_methods/webhook.md)

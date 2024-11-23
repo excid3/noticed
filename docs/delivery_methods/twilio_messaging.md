@@ -1,4 +1,4 @@
-# Twilio Messaaging Delivery Method
+# Twilio Messaging Delivery Method
 
 Sends an SMS or Whatsapp message via Twilio Messaging.
 

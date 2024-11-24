@@ -22,3 +22,6 @@ gem "apnotic", "~> 1.7"
 
 # firebase notifications
 gem "googleauth", "~> 1.1"
+
+# kafka notifications
+gem "karafka"

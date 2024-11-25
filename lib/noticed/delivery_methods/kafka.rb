@@ -5,7 +5,7 @@ module Noticed
       required_options :client_id, :brokers, :username, :password, :topic, :message
 
       def deliver
-        brokers = evaluate_option(:brokers)
+        _brokers = evaluate_option(:brokers)
         topic = evaluate_option(:topic)
         message = evaluate_option(:message)
 
@@ -18,7 +18,7 @@ module Noticed
         client_id = evaluate_option(:client_id)
         brokers = evaluate_option(:brokers)
 
-        ::WaterDrop::Producer.new do |config|
+        KarafkaApp::WaterDrop::Producer.new do |config|
           config.deliver = true
           config.kafka = {
             'client.id': client_id,

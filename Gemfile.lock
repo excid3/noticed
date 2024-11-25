@@ -130,12 +130,6 @@ GEM
     json (2.7.2)
     jwt (2.8.2)
       base64
-    karafka (2.4.13)
-      base64 (~> 0.2)
-      karafka-core (>= 2.4.4, < 2.5.0)
-      karafka-rdkafka (>= 0.17.2)
-      waterdrop (>= 2.7.3, < 3.0.0)
-      zeitwerk (~> 2.3)
     karafka-core (2.4.5)
       karafka-rdkafka (>= 0.17.6, < 0.18.0)
     karafka-rdkafka (0.17.6)
@@ -304,11 +298,11 @@ DEPENDENCIES
   apnotic (~> 1.7)
   appraisal
   googleauth (~> 1.1)
-  karafka (~> 2.4)
   noticed!
   pg
   sqlite3 (~> 1.7)
   standard
+  waterdrop
   webmock
 
 BUNDLED WITH

@@ -24,4 +24,4 @@ gem "apnotic", "~> 1.7"
 gem "googleauth", "~> 1.1"
 
 # kafka notifications
-gem "karafka", "~> 2.4"
+gem "waterdrop"

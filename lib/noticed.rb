@@ -35,6 +35,7 @@ module Noticed
     autoload :Email, "noticed/delivery_methods/email"
     autoload :Fcm, "noticed/delivery_methods/fcm"
     autoload :Ios, "noticed/delivery_methods/ios"
+    autoload :Kafka, "noticed/delivery_methods/kafka"
     autoload :MicrosoftTeams, "noticed/delivery_methods/microsoft_teams"
     autoload :Slack, "noticed/delivery_methods/slack"
     autoload :Test, "noticed/delivery_methods/test"

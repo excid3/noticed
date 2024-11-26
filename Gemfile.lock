@@ -104,9 +104,6 @@ GEM
       logger
     faraday-net_http (3.3.0)
       net-http
-    ffi (1.17.0-arm64-darwin)
-    ffi (1.17.0-x86_64-darwin)
-    ffi (1.17.0-x86_64-linux-gnu)
     globalid (1.2.1)
       activesupport (>= 6.1)
     google-cloud-env (2.2.0)
@@ -130,12 +127,6 @@ GEM
     json (2.7.2)
     jwt (2.8.2)
       base64
-    karafka-core (2.4.5)
-      karafka-rdkafka (>= 0.17.6, < 0.18.0)
-    karafka-rdkafka (0.17.6)
-      ffi (~> 1.15)
-      mini_portile2 (~> 2.6)
-      rake (> 12)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
     logger (1.6.1)
@@ -149,7 +140,6 @@ GEM
       net-smtp
     marcel (1.0.4)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.8)
     minitest (5.25.1)
     multi_json (1.15.0)
     net-http (0.4.1)
@@ -273,10 +263,6 @@ GEM
     unicode-display_width (2.5.0)
     uri (0.13.1)
     useragent (0.16.10)
-    waterdrop (2.8.0)
-      karafka-core (>= 2.4.3, < 3.0.0)
-      karafka-rdkafka (>= 0.17.5)
-      zeitwerk (~> 2.3)
     webmock (3.23.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
@@ -302,7 +288,6 @@ DEPENDENCIES
   pg
   sqlite3 (~> 1.7)
   standard
-  waterdrop
   webmock
 
 BUNDLED WITH

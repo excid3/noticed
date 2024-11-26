@@ -1,42 +1,16 @@
-
 module Noticed
   module DeliveryMethods
     class Kafka < DeliveryMethod
-      required_options :client_id, :brokers, :username, :password, :topic, :message
+      required_options :url, :topic, :headers, :message
 
       def deliver
-        _brokers = evaluate_option(:brokers)
         topic = evaluate_option(:topic)
-        message = evaluate_option(:message)
+        url = [evaluate_option(:url), 'topics', topic].join('/')
 
-        producer.produce_async(topic: topic, payload: message.to_json)
-      ensure
-        producer.shutdown
+        post_request url, headers: evaluate_option(:headers), json: evaluate_option(:message)
+      rescue => e
+        puts e.backtrace
       end
-
-      def producer
-        client_id = evaluate_option(:client_id)
-        brokers = evaluate_option(:brokers)
-
-        KarafkaApp::WaterDrop::Producer.new do |config|
-          config.deliver = true
-          config.kafka = {
-            'client.id': client_id,
-            'bootstrap.servers': brokers.split(','),
-            'request.required.acks': 1
-          }
-        end
-      end
-    end
-
-    def settings
-      {
-        'bootstrap.servers': evaluate_option(:brokers),
-        'sasl.mechanism': 'PLAIN',
-        'security.protocol': 'SASL_PLAINTEXT',
-        'sasl.username': ENV.fetch('KAFKA_USERNAME', 'default'),
-        'sasl.password': ENV.fetch('KAFKA_PASSWORD', 'default')
-      }
     end
   end
 end

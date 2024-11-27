@@ -17,7 +17,7 @@ module Noticed
       http.use_ssl = true if uri.instance_of? URI::HTTPS
 
       headers = args.delete(:headers) || {}
-      headers["Content-Type"] = "application/json" if args.has_key?(:json)
+      # headers["Content-Type"] = "application/json" if args.has_key?(:json) && headers["Content-Type"].blank?
 
       request = Net::HTTP::Post.new(uri.request_uri, headers)
 

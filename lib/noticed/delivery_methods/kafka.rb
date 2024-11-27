@@ -1,15 +1,15 @@
 module Noticed
   module DeliveryMethods
     class Kafka < DeliveryMethod
-      required_options :url, :topic, :headers, :message
+      required_options :url, :headers, :message
 
       def deliver
-        topic = evaluate_option(:topic)
-        url = [evaluate_option(:url), 'topics', topic].join('/')
+        url = evaluate_option(:url)
+        message = evaluate_option(:message)
 
-        post_request url, headers: evaluate_option(:headers), json: evaluate_option(:message)
-      rescue => e
-        puts e.backtrace
+        json = { records: [{ key: message[:key], value: message[:value] }] }
+
+        post_request url, headers: evaluate_option(:headers), json: json
       end
     end
   end

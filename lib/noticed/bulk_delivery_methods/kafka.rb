@@ -1,6 +1,6 @@
 module Noticed
-  module DeliveryMethods
-    class Kafka < DeliveryMethod
+  module BulkDeliveryMethods
+    class Kafka < BulkDeliveryMethod
       required_options :url, :headers, :message
 
       def deliver

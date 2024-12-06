@@ -578,7 +578,7 @@ If you want to build your own delivery method to deliver notifications to a spec
 This will generate a new `ApplicationDeliveryMethod` and `DeliveryMethods::Discord` class inside the `app/notifiers/delivery_methods` folder, which can be used to deliver notifications to Discord.
 
 ```ruby
-class DeliveryMethods::Discord < ApplicationDeliveryMethod
+class DeliveryMethods::Discord < Noticed::DeliveryMethod
   # Specify the config options your delivery method requires in its config block
   required_options # :foo, :bar
 
@@ -602,7 +602,7 @@ end
 
 A common custom delivery method in the Rails world might be to Delivery to the web via turbo stream.
 
-Note: This example users custom methods that extend the `Noticed::Notification` class.
+Note: This example uses custom methods that extend the `Noticed::Notification` class.
 
 See the [Custom Noticed Model Methods](#custom-noticed-model-methods) section for more information.
 

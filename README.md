@@ -578,7 +578,7 @@ If you want to build your own delivery method to deliver notifications to a spec
 This will generate a new `ApplicationDeliveryMethod` and `DeliveryMethods::Discord` class inside the `app/notifiers/delivery_methods` folder, which can be used to deliver notifications to Discord.
 
 ```ruby
-class DeliveryMethods::Discord < Noticed::DeliveryMethod
+class DeliveryMethods::Discord < ApplicationDeliveryMethod
   # Specify the config options your delivery method requires in its config block
   required_options # :foo, :bar
 

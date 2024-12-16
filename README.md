@@ -602,7 +602,7 @@ end
 
 A common custom delivery method in the Rails world might be to Delivery to the web via turbo stream.
 
-Note: This example users custom methods that extend the `Noticed::Notification` class.
+Note: This example uses custom methods that extend the `Noticed::Notification` class.
 
 See the [Custom Noticed Model Methods](#custom-noticed-model-methods) section for more information.
 

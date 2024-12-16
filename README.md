@@ -108,7 +108,7 @@ class NewCommentNotifier < Noticed::Event
 
   deliver_by :email do |config|
     config.mailer = "CommentMailer"
-    config.if = ->(recipient) { !!recipient.preferences[:email] }
+    config.if = -> { !!recipient.preferences[:email] }
   end
 
   bulk_deliver_by :discord do |config|

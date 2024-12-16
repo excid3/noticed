@@ -474,7 +474,7 @@ Rails.application.config.to_prepare do
 end
 ```
 
-The `NotificationExtensions` class could be separated into it's own file and live somewhere like `app/models/concerns/noticed/notification_extensions.rb`.
+The `NotificationExtensions` class could be separated into it's own file and live somewhere like `app/models/concerns/notification_extensions.rb`.
 
 If you do this, the `to_prepare` block will need to be in `application.rb` instead of an initializer.
 
@@ -486,8 +486,8 @@ module MyApp
     # ...
 
     config.to_prepare do
-      Noticed::Event.include Noticed::EventExtensions
-      Noticed::Notification.include Noticed::NotificationExtensions
+      Noticed::Event.include EventExtensions
+      Noticed::Notification.include NotificationExtensions
     end
   end
 end

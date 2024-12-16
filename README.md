@@ -486,8 +486,8 @@ module MyApp
     # ...
 
     config.to_prepare do
-      Noticed::Event.include Noticed::EventExtensions
-      Noticed::Notification.include Noticed::NotificationExtensions
+      Noticed::Event.include EventExtensions
+      Noticed::Notification.include NotificationExtensions
     end
   end
 end

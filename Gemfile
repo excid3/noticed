@@ -13,7 +13,7 @@ gemspec
 
 gem "appraisal"
 gem "pg"
-gem "sqlite3", "~> 1.7"
+gem "sqlite3"
 gem "standard"
 gem "webmock"
 

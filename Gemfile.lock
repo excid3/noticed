@@ -244,9 +244,9 @@ GEM
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    sqlite3 (1.7.3-arm64-darwin)
-    sqlite3 (1.7.3-x86_64-darwin)
-    sqlite3 (1.7.3-x86_64-linux)
+    sqlite3 (2.4.1-arm64-darwin)
+    sqlite3 (2.4.1-x86_64-darwin)
+    sqlite3 (2.4.1-x86_64-linux-gnu)
     standard (1.43.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
@@ -292,7 +292,7 @@ DEPENDENCIES
   googleauth (~> 1.1)
   noticed!
   pg
-  sqlite3 (~> 1.7)
+  sqlite3
   standard
   webmock
 

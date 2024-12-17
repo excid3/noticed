@@ -232,4 +232,8 @@ class NotifierTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "inherits notification_methods from application notifier" do
+    assert SimpleNotifier::Notification.new.respond_to?(:inherited_method)
+  end
 end

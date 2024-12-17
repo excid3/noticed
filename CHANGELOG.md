@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Inherit Notification from parent class Notification.
 * Support callbacks in bulk delivery methods.
 
 ### 2.4.3

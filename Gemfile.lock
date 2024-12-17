@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    noticed (2.4.3)
+    noticed (2.5.0)
       rails (>= 6.1.0)
 
 GEM

@@ -13,6 +13,7 @@ class CommentNotification
         # ...
       }
     }
+    config.raise_on_failure = true # fail if response is 2xx but body['ok'] is false
   end
 end
 ```

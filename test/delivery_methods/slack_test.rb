@@ -28,7 +28,6 @@ class SlackTest < ActiveSupport::TestCase
     end
   end
 
-
   test "raises error on 200 status code request with raise_on_failure true" do
     @delivery_method.config[:fail_on_error] = true
     stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}").to_return(status: 200, body: "{\"ok\": false}")

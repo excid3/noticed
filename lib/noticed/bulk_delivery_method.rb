@@ -1,5 +1,5 @@
 module Noticed
-  class BulkDeliveryMethod < ApplicationJob
+  class BulkDeliveryMethod < Noticed.parent_class.constantize
     include ApiClient
     include RequiredOptions
 

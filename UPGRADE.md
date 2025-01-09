@@ -30,13 +30,14 @@ rails db:migrate
 To migrate your data to the new tables, loop through your existing notifications and create new records for each one. You can do this in a Rake task or in the Rails console:
 
 ```ruby
-# Temporarily define the Notification model to access the old table
-class Notification < ActiveRecord::Base
+# Temporarily define the model to access the old table
+class TempNotification < ActiveRecord::Base
   self.inheritance_column = nil
+  self.table_name = "notifications"
 end
 
 # Migrate each record to the new tables
-Notification.find_each do |notification|
+TempNotification.find_each do |notification|
   attributes = notification.attributes.slice("type", "created_at", "updated_at").with_indifferent_access
   attributes[:type] = attributes[:type].sub("Notification", "Notifier")
   attributes[:params] = Noticed::Coder.load(notification.params)

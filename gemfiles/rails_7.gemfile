@@ -11,5 +11,8 @@ gem "apnotic", "~> 1.7"
 gem "googleauth", "~> 1.1"
 gem "rails", "~> 7.0.0"
 gem "activerecord-trilogy-adapter"
+gem "bigdecimal"
+gem "drb"
+gem "mutex_m"
 
 gemspec path: "../"

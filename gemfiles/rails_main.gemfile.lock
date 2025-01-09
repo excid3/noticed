@@ -100,7 +100,7 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (2.5.0)
+    noticed (2.5.1)
       rails (>= 6.1.0)
 
 GEM

@@ -2,12 +2,22 @@ appraise "rails-6-1" do
   gem "rails", "~> 6.1.0"
   gem "sqlite3", "~> 1.7"
   gem "activerecord-trilogy-adapter"
+
+  # Ruby 3.4 drops these default gems
+  gem "bigdecimal"
+  gem "drb"
+  gem "mutex_m"
 end
 
 appraise "rails-7" do
   gem "rails", "~> 7.0.0"
   gem "sqlite3", "~> 1.7"
   gem "activerecord-trilogy-adapter"
+
+  # Ruby 3.4 drops these default gems
+  gem "bigdecimal"
+  gem "drb"
+  gem "mutex_m"
 end
 
 appraise "rails-7-1" do

@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.5.1
+
+* Slack delivery methods now verify the `{ok: true/false}` response to catch errors correctly #515
+
 ### 2.5.0
 
 * Inherit Notification from parent class Notification.

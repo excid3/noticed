@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    noticed (2.5.0)
+    noticed (2.5.1)
       rails (>= 6.1.0)
 
 GEM
@@ -95,6 +95,7 @@ GEM
       rexml
     crass (1.0.6)
     date (3.4.1)
+    drb (2.2.1)
     erubi (1.13.1)
     faraday (2.12.2)
       faraday-net_http (>= 2.0, < 3.5)
@@ -140,6 +141,7 @@ GEM
     mini_portile2 (2.8.8)
     minitest (5.25.4)
     multi_json (1.15.0)
+    mutex_m (0.3.0)
     net-http (0.6.0)
       uri
     net-http2 (0.18.5)
@@ -268,7 +270,10 @@ DEPENDENCIES
   activerecord-trilogy-adapter
   apnotic (~> 1.7)
   appraisal
+  bigdecimal
+  drb
   googleauth (~> 1.1)
+  mutex_m
   noticed!
   pg
   rails (~> 7.0.0)

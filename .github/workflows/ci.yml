@@ -14,12 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['3.2', '3.3']
+        ruby: ['3.2', '3.3', '3.4']
         gemfile:
           - rails_6_1
           - rails_7
           - rails_7_1
           - rails_7_2
+          - rails_8_0
           - rails_main
 
     env:
@@ -52,12 +53,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['3.2', '3.3']
+        ruby: ['3.2', '3.3', '3.4']
         gemfile:
           - rails_6_1
           - rails_7
           - rails_7_1
           - rails_7_2
+          - rails_8_0
           - rails_main
 
     env:
@@ -99,12 +101,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: ['3.2', '3.3']
+        ruby: ['3.2', '3.3', '3.4']
         gemfile:
           - rails_6_1
           - rails_7
           - rails_7_1
           - rails_7_2
+          - rails_8_0
           - rails_main
 
     env:

@@ -22,6 +22,12 @@ appraise "rails-7-2" do
   gem "trilogy"
 end
 
+appraise "rails-8-0" do
+  gem "rails", "~> 8.0.0"
+  gem "sqlite3", "~> 2.0"
+  gem "trilogy"
+end
+
 appraise "rails-main" do
   gem "rails", github: "rails/rails", branch: "main"
   gem "sqlite3", "~> 2.0"

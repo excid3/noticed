@@ -7,7 +7,7 @@ class SlackTest < ActiveSupport::TestCase
   end
 
   test "sends a slack message" do
-    stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}")
+    stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}").to_return(status: 200, body: {ok: true}.to_json)
     assert_nothing_raised do
       @delivery_method.deliver
     end
@@ -20,17 +20,17 @@ class SlackTest < ActiveSupport::TestCase
     end
   end
 
-  test "doesnt raise error on failed 200 status code request with raise_on_failure false" do
-    @delivery_method.config[:raise_on_failure] = false
-    stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}").to_return(status: 200, body: "{\"ok\": false}")
+  test "doesnt raise error on failed 200 status code request with raise_if_not_ok false" do
+    @delivery_method.config[:raise_if_not_ok] = false
+    stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}").to_return(status: 200, body: {ok: false}.to_json)
     assert_nothing_raised do
       @delivery_method.deliver
     end
   end
 
-  test "raises error on 200 status code request with raise_on_failure true" do
-    @delivery_method.config[:raise_on_failure] = true
-    stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}").to_return(status: 200, body: "{\"ok\": false}")
+  test "raises error on 200 status code request with raise_if_not_ok true" do
+    @delivery_method.config[:raise_if_not_ok] = true
+    stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL).with(body: "{\"foo\":\"bar\"}").to_return(status: 200, body: {ok: false}.to_json)
     assert_raises Noticed::ResponseUnsuccessful do
       @delivery_method.deliver
     end

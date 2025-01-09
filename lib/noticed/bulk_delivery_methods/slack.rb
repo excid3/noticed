@@ -8,12 +8,10 @@ module Noticed
       def deliver
         headers = evaluate_option(:headers)
         json = evaluate_option(:json)
-
         response = post_request url, headers: headers, json: json
 
-        if raise_on_failure? && response.body
-          parsed_response = JSON.parse(response.body)
-          raise ResponseUnsuccessful.new(response, url, {headers: headers, json: json}) unless parsed_response["ok"]
+        if raise_if_not_ok?
+          raise ResponseUnsuccessful.new(response, url, {headers: headers, json: json}) unless JSON.parse(response.body)["ok"]
         end
 
         response
@@ -23,8 +21,9 @@ module Noticed
         evaluate_option(:url) || DEFAULT_URL
       end
 
-      def raise_on_failure?
-        evaluate_option(:raise_on_failure) || false
+      def raise_if_not_ok?
+        value = evaluate_option(:raise_if_not_ok)
+        value.nil? ? true : value
       end
     end
   end

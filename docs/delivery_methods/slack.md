@@ -13,6 +13,9 @@ class CommentNotification
         # ...
       }
     }
+
+    # Slack's chat.postMessage endpoint returns a 200 with {ok: true/false}. Disable this check by setting to false
+    # config.raise_if_not_ok = true
   end
 end
 ```

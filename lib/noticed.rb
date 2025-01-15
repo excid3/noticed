@@ -22,7 +22,7 @@ module Noticed
   module BulkDeliveryMethods
     autoload :Bluesky, "noticed/bulk_delivery_methods/bluesky"
     autoload :Discord, "noticed/bulk_delivery_methods/discord"
-    autoload :Kafka, "noticed/bulk_delivery_methods/kafka"
+    autoload :KafkaRest, "noticed/bulk_delivery_methods/kafka_rest"
     autoload :Slack, "noticed/bulk_delivery_methods/slack"
     autoload :Test, "noticed/bulk_delivery_methods/test"
     autoload :Webhook, "noticed/bulk_delivery_methods/webhook"

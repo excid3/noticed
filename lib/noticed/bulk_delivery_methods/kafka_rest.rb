@@ -1,6 +1,6 @@
 module Noticed
   module BulkDeliveryMethods
-    class Kafka < BulkDeliveryMethod
+    class KafkaRest < BulkDeliveryMethod
       required_options :url, :headers, :message
 
       def deliver

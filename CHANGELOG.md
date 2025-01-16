@@ -1,5 +1,10 @@
 ### Unreleased
 
+### 2.6.0
+
+* Add `mark_as_read_and_seen` and `mark_as_unread_and_unseen` class methods to `Noticed::Notification`
+* Add support for extra kwargs to `mark_as` class methods on `Noticed::Notification`
+
 ### 2.5.1
 
 * Slack delivery methods now verify the `{ok: true/false}` response to catch errors correctly #515

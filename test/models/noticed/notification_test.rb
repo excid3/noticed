@@ -59,6 +59,24 @@ class Noticed::NotificationTest < ActiveSupport::TestCase
     assert_equal 0, Noticed::Notification.seen.count
   end
 
+  test "mark_as_read_and_seen" do
+    Noticed::Notification.update_all(read_at: nil, seen_at: nil)
+    assert_equal 0, Noticed::Notification.read.count
+    assert_equal 0, Noticed::Notification.seen.count
+    Noticed::Notification.mark_as_read_and_seen
+    assert_equal 4, Noticed::Notification.read.count
+    assert_equal 4, Noticed::Notification.seen.count
+  end
+
+  test "mark_as_unread_and_unseen" do
+    Noticed::Notification.update_all(read_at: Time.current, seen_at: Time.current)
+    assert_equal 4, Noticed::Notification.read.count
+    assert_equal 4, Noticed::Notification.seen.count
+    Noticed::Notification.mark_as_unread_and_unseen
+    assert_equal 0, Noticed::Notification.read.count
+    assert_equal 0, Noticed::Notification.seen.count
+  end
+
   test "read?" do
     assert noticed_notifications(:one).read?
   end

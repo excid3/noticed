@@ -10,20 +10,28 @@ module Noticed
     end
 
     class_methods do
-      def mark_as_read
-        update_all(read_at: Time.current, updated_at: Time.current)
+      def mark_as_read_and_seen(**kwargs)
+        update_all(**kwargs.with_defaults(read_at: Time.current, seen_at: Time.current, updated_at: Time.current))
       end
 
-      def mark_as_unread
-        update_all(read_at: nil, updated_at: Time.current)
+      def mark_as_unread_and_unseen(**kwargs)
+        update_all(**kwargs.with_defaults(read_at: nil, seen_at: nil, updated_at: Time.current))
       end
 
-      def mark_as_seen
-        update_all(seen_at: Time.current, updated_at: Time.current)
+      def mark_as_read(**kwargs)
+        update_all(**kwargs.with_defaults(read_at: Time.current, updated_at: Time.current))
       end
 
-      def mark_as_unseen
-        update_all(seen_at: nil, updated_at: Time.current)
+      def mark_as_unread(**kwargs)
+        update_all(**kwargs.with_defaults(read_at: nil, updated_at: Time.current))
+      end
+
+      def mark_as_seen(**kwargs)
+        update_all(**kwargs.with_defaults(seen_at: Time.current, updated_at: Time.current))
+      end
+
+      def mark_as_unseen(**kwargs)
+        update_all(**kwargs.with_defaults(seen_at: nil, updated_at: Time.current))
       end
     end
 

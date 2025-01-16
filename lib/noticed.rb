@@ -22,7 +22,8 @@ module Noticed
   module BulkDeliveryMethods
     autoload :Bluesky, "noticed/bulk_delivery_methods/bluesky"
     autoload :Discord, "noticed/bulk_delivery_methods/discord"
-    autoload :KafkaRest, "noticed/bulk_delivery_methods/kafka_rest"
+    autoload :KafkaRestProxy, "noticed/bulk_delivery_methods/kafka_rest_proxy"
+    autoload :ConfluentRestApi, "noticed/bulk_delivery_methods/confluent_rest_api"
     autoload :Slack, "noticed/bulk_delivery_methods/slack"
     autoload :Test, "noticed/bulk_delivery_methods/test"
     autoload :Webhook, "noticed/bulk_delivery_methods/webhook"

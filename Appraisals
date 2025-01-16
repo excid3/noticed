@@ -7,6 +7,9 @@ appraise "rails-6-1" do
   gem "bigdecimal"
   gem "drb"
   gem "mutex_m"
+
+  # Fixes uninitialized constant ActiveSupport::LoggerThreadSafeLevel::Logger (NameError)
+  gem "concurrent-ruby", "< 1.3.5"
 end
 
 appraise "rails-7" do
@@ -18,6 +21,9 @@ appraise "rails-7" do
   gem "bigdecimal"
   gem "drb"
   gem "mutex_m"
+
+  # Fixes uninitialized constant ActiveSupport::LoggerThreadSafeLevel::Logger (NameError)
+  gem "concurrent-ruby", "< 1.3.5"
 end
 
 appraise "rails-7-1" do

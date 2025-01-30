@@ -243,7 +243,7 @@ end
 
 #### Notification Model Methods
 
-In order to extend the Noticed models you'll need to use a concern an a to_prepare block:
+In order to extend the Noticed models you'll need to use a concern and a to_prepare block:
 
 ```ruby
 # config/initializers/noticed.rb

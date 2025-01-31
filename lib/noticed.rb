@@ -36,6 +36,7 @@ module Noticed
     autoload :Fcm, "noticed/delivery_methods/fcm"
     autoload :Ios, "noticed/delivery_methods/ios"
     autoload :MicrosoftTeams, "noticed/delivery_methods/microsoft_teams"
+    autoload :OneSignal, "noticed/delivery_methods/one_signal"
     autoload :Slack, "noticed/delivery_methods/slack"
     autoload :Test, "noticed/delivery_methods/test"
     autoload :TwilioMessaging, "noticed/delivery_methods/twilio_messaging"

@@ -4,11 +4,16 @@ module Noticed
       required_options :include_aliases
 
       def deliver
-        post_request url, headers:, json:
-      rescue Noticed::ResponseUnsuccessful => exception
+        response = post_request(url, headers:, json:)
+        parsed_response = JSON.parse(response.body)
+
         # OneSignal might returns 200 with errors
         # - "All included devices are not subscribed"
         # - Invalid aliases
+        if parsed_response.key?("errors")
+          raise ResponseUnsuccessful.new(response, url, headers:, json:)
+        end
+      rescue Noticed::ResponseUnsuccessful => exception
         if exception.response.code.start_with?("4") && config[:error_handler]
           notification.instance_exec(exception.response, &config[:error_handler])
         else

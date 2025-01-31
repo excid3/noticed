@@ -6,13 +6,13 @@ class OneSignalTest < ActiveSupport::TestCase
     @config = {
       app_id: "123456",
       api_key: "key",
+      target_channel: "push",
       json: -> {
         {
           include_aliases: {
             external_id: "1234567890"
           },
-          contents: "Hello world",
-          target_channel: "push"
+          contents: "Hello world"
         }
       }
     }

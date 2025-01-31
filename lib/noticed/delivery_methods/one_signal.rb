@@ -4,14 +4,14 @@ module Noticed
       required_options :include_aliases, :target_channel
 
       def deliver
-        response = post_request(url, headers:, json:)
+        response = post_request(url, headers: headers, json: json)
         parsed_response = JSON.parse(response.body)
 
         # OneSignal might returns 200 with errors
         # - "All included devices are not subscribed"
         # - Invalid aliases
         if parsed_response.key?("errors")
-          raise ResponseUnsuccessful.new(response, url, headers:, json:)
+          raise ResponseUnsuccessful.new(response, url, headers: headers, json: json)
         end
       rescue Noticed::ResponseUnsuccessful => exception
         if exception.response.code.start_with?("4") && config[:error_handler]
@@ -22,11 +22,11 @@ module Noticed
       end
 
       def json
-        evaluate_option(:json).merge({app_id:, target_channel:}) || {
-          app_id:,
-          include_aliases:,
+        evaluate_option(:json).merge({app_id: app_id, target_channel: target_channel}) || {
+          app_id: app_id,
+          include_aliases: include_aliases,
           contents: params.fetch(:contents),
-          target_channel:
+          target_channel: target_channel
         }
       end
 

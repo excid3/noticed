@@ -1,7 +1,7 @@
 module Noticed
   module DeliveryMethods
     class OneSignal < DeliveryMethod
-      required_options :include_aliases, :target_channel
+      required_options :target_channel
 
       def deliver
         response = post_request(url, headers: headers, json: json)
@@ -22,7 +22,11 @@ module Noticed
       end
 
       def json
-        evaluate_option(:json).merge({app_id: app_id, target_channel: target_channel}) || {
+        evaluate_option(:json).merge({
+          app_id: app_id,
+          include_aliases: include_aliases,
+          target_channel: target_channel
+        }) || {
           app_id: app_id,
           include_aliases: include_aliases,
           contents: params.fetch(:contents),

@@ -14,7 +14,7 @@ module Noticed
           raise ResponseUnsuccessful.new(response, url, headers: headers, json: json)
         end
       rescue Noticed::ResponseUnsuccessful => exception
-        if exception.response.code.start_with?("4") && config[:error_handler]
+        if config[:error_handler]
           notification.instance_exec(exception.response, &config[:error_handler])
         else
           raise

@@ -166,11 +166,21 @@ GEM
     nokogiri (1.18.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.18.2-aarch64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.2-aarch64-linux-musl)
+      racc (~> 1.4)
+    nokogiri (1.18.2-arm-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.2-arm-linux-musl)
+      racc (~> 1.4)
     nokogiri (1.18.2-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.2-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.2-x86_64-linux-gnu)
+      racc (~> 1.4)
+    nokogiri (1.18.2-x86_64-linux-musl)
       racc (~> 1.4)
     os (1.1.4)
     parallel (1.26.3)
@@ -255,7 +265,10 @@ GEM
       multi_json (~> 1.10)
     sqlite3 (1.7.3)
       mini_portile2 (~> 2.8.0)
+    sqlite3 (1.7.3-aarch64-linux)
+    sqlite3 (1.7.3-arm-linux)
     sqlite3 (1.7.3-arm64-darwin)
+    sqlite3 (1.7.3-x86-linux)
     sqlite3 (1.7.3-x86_64-darwin)
     sqlite3 (1.7.3-x86_64-linux)
     standard (1.45.0)
@@ -292,10 +305,19 @@ GEM
     zeitwerk (2.7.1)
 
 PLATFORMS
+  aarch64-linux
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm-linux
+  arm-linux-gnu
+  arm-linux-musl
   arm64-darwin
   ruby
+  x86-linux
   x86_64-darwin
   x86_64-linux
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
   apnotic (~> 1.7)

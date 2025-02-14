@@ -11,5 +11,5 @@ end
 ```
 
 ```ruby
-Noticed::DeliveryMethods::Test.deliveries #=> []
+Noticed::DeliveryMethods::Test.delivered #=> []
 ```

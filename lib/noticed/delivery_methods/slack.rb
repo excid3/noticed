@@ -11,7 +11,12 @@ module Noticed
         response = post_request url, headers: headers, json: json
 
         if raise_if_not_ok?
-          raise ResponseUnsuccessful.new(response, url, {headers: headers, json: json}) unless JSON.parse(response.body)["ok"]
+          is_successful_json = response.content_type == "application/json" && response.is_a?(Net::HTTPSuccess)
+          is_successful_html = response.content_type == "text/html" && response.is_a?(Net::HTTPSuccess)
+
+          unless is_successful_json || is_successful_html
+            raise ResponseUnsuccessful.new(response, url, {headers: headers, json: json})
+          end
         end
 
         response

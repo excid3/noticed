@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Handle 400 errors for FCM deliveries #532
+
 ### 2.6.0
 
 * Add `mark_as_read_and_seen` and `mark_as_unread_and_unseen` class methods to `Noticed::Notification`

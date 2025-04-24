@@ -70,6 +70,34 @@ class FcmTest < ActiveSupport::TestCase
     assert_equal 2, cleanups
   end
 
+  test "notifies of unregistered tokens for clean up" do
+    cleanups = 0
+
+    set_config(
+      authorizer: FakeAuthorizer,
+      credentials: {
+        "type" => "service_account",
+        "project_id" => "p_1234",
+        "private_key_id" => "private_key"
+      },
+      device_tokens: [:a, :b],
+      json: ->(device_token) {
+        {
+          message: {
+            token: device_token,
+            notification: {title: "Title", body: "Body"}
+          }
+        }
+      },
+      invalid_token: ->(device_token) { cleanups += 1 }
+    )
+
+    stub_request(:post, "https://fcm.googleapis.com/v1/projects/p_1234/messages:send").to_return(status: 400, body: "", headers: {})
+
+    @delivery_method.deliver
+    assert_equal 2, cleanups
+  end
+
   private
 
   def set_config(config)

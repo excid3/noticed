@@ -32,7 +32,7 @@ class OneSignalTest < ActiveSupport::TestCase
         contents: "Hello world",
         target_channel: "push",
         app_id: "123456"
-      }
+      }.to_json
     ).to_return(status: 200, body: '{"id": "UUID"}')
 
     assert_nothing_raised do

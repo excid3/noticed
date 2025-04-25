@@ -12,7 +12,7 @@ appraise "rails-6-1" do
   gem "concurrent-ruby", "< 1.3.5"
 end
 
-appraise "rails-7" do
+appraise "rails-7-0" do
   gem "rails", "~> 7.0.0"
   gem "sqlite3", "~> 1.7"
   gem "activerecord-trilogy-adapter"

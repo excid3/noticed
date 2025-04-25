@@ -10,8 +10,8 @@ module Noticed
         json = evaluate_option(:json)
         response = post_request url, headers: headers, json: json
 
-        if raise_if_not_ok?
-          raise ResponseUnsuccessful.new(response, url, {headers: headers, json: json}) unless JSON.parse(response.body)["ok"]
+        if raise_if_not_ok? && !success?(response)
+          raise ResponseUnsuccessful.new(response, url, {headers: headers, json: json})
         end
 
         response
@@ -23,7 +23,16 @@ module Noticed
 
       def raise_if_not_ok?
         value = evaluate_option(:raise_if_not_ok)
-        value.nil? ? true : value
+        value.nil? || value
+      end
+
+      def success?(response)
+        if response.content_type == "application/json"
+          JSON.parse(response.body).dig("ok")
+        else
+          # https://api.slack.com/changelog/2016-05-17-changes-to-errors-for-incoming-webhooks
+          response.is_a?(Net::HTTPSuccess)
+        end
       end
     end
   end

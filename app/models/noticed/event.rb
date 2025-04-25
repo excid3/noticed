@@ -24,3 +24,5 @@ module Noticed
     end
   end
 end
+
+ActiveSupport.run_load_hooks :noticed_ephemeral, Noticed::Event

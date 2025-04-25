@@ -16,7 +16,7 @@ module Noticed
           headers: {authorization: "Bearer #{access_token}"},
           json: format_notification(device_token))
       rescue Noticed::ResponseUnsuccessful => exception
-        if exception.response.code == "404" && config[:invalid_token]
+        if bad_token?(exception.response) && config[:invalid_token]
           notification.instance_exec(device_token, &config[:invalid_token])
         else
           raise
@@ -30,6 +30,10 @@ module Noticed
         else
           notification.instance_exec(device_token, &method)
         end
+      end
+
+      def bad_token?(response)
+        response.code == "404" || response.code == "400"
       end
 
       def credentials

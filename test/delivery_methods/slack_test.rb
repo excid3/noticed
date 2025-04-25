@@ -6,22 +6,21 @@ class SlackTest < ActiveSupport::TestCase
     set_config(json: {foo: :bar})
   end
 
-
   test "sends a slack message with application/json content type" do
     stub_request(:post, Noticed::DeliveryMethods::Slack::DEFAULT_URL)
       .with(
         body: "{\"foo\":\"bar\"}",
         headers: {"Content-Type" => "application/json"}
       )
-        .to_return(
-          status: 200,
-          body: {ok: true}.to_json,
-          headers: {"Content-Type" => "application/json"}
-        )
+      .to_return(
+        status: 200,
+        body: {ok: true}.to_json,
+        headers: {"Content-Type" => "application/json"}
+      )
 
-      assert_nothing_raised do
-        @delivery_method.deliver
-      end
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "sends a slack message with text/html content type" do
@@ -30,15 +29,15 @@ class SlackTest < ActiveSupport::TestCase
         body: "{\"foo\":\"bar\"}",
         headers: {"Content-Type" => "application/json"}
       )
-        .to_return(
-          status: 200,
-          body: "<html><body>ok</body></html>",
-          headers: {"Content-Type" => "text/html"}
-        )
+      .to_return(
+        status: 200,
+        body: "<html><body>ok</body></html>",
+        headers: {"Content-Type" => "text/html"}
+      )
 
-      assert_nothing_raised do
-        @delivery_method.deliver
-      end
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
   end
 
   test "raises error on failure" do

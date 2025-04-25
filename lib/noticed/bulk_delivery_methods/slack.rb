@@ -23,7 +23,7 @@ module Noticed
 
       def raise_if_not_ok?
         value = evaluate_option(:raise_if_not_ok)
-        value.nil? ? true : value
+        value.nil? || value
       end
 
       def success?(response)

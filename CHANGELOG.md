@@ -1,6 +1,10 @@
 ### Unreleased
 
+### 2.6.1
+
+* Handle text/html and application/json responses from Slack #531
 * Handle 400 errors for FCM deliveries #532
+* Add lazy load hooks for models
 
 ### 2.6.0
 

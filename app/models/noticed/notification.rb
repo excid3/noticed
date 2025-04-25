@@ -12,3 +12,5 @@ module Noticed
     delegate :params, :record, to: :event
   end
 end
+
+ActiveSupport.run_load_hooks :noticed_ephemeral, Noticed::Notification

@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.6.2
+
+* Fix lazy load hook names
+
 ### 2.6.1
 
 * Handle text/html and application/json responses from Slack #531

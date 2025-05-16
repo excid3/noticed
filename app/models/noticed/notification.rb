@@ -13,4 +13,4 @@ module Noticed
   end
 end
 
-ActiveSupport.run_load_hooks :noticed_ephemeral, Noticed::Notification
+ActiveSupport.run_load_hooks :noticed_notification, Noticed::Notification

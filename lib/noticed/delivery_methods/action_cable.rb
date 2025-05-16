@@ -17,3 +17,5 @@ module Noticed
     end
   end
 end
+
+ActiveSupport.run_load_hooks :noticed_delivery_methods_action_cable, Noticed::DeliveryMethods::ActionCable

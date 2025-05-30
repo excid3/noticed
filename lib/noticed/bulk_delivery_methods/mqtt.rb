@@ -39,7 +39,7 @@ module Noticed
         client.publish(
           topic: message.fetch(:topic),
           payload: serialise_payload(message.fetch(:payload)),
-          qos: message.fetch(:qos, 0).to_i.clamp(*AWS_IOT_QOS_RANGE),
+          qos: message.fetch(:qos, 0).to_i.clamp(AWS_IOT_QOS_RANGE.begin, AWS_IOT_QOS_RANGE.end),
           retain: message.fetch(:retain, false)
         )
       end
@@ -62,7 +62,7 @@ module Noticed
             message.fetch(:topic),
             serialise_payload(message.fetch(:payload)),
             message.fetch(:retain, false),
-            message.fetch(:qos, 0).to_i.clamp(*DEFAULT_QOS_RANGE)
+            message.fetch(:qos, 0).to_i.clamp(DEFAULT_QOS_RANGE.begin, DEFAULT_QOS_RANGE.end)
           )
         end
       end

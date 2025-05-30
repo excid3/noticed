@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     noticed (2.4.3)
+      aws-sdk-iotdataplane (~> 1.75)
       mqtt (~> 0.6.0)
       rails (>= 6.1.0)
 
@@ -88,6 +89,20 @@ GEM
       rake
       thor (>= 0.14.0)
     ast (2.4.2)
+    aws-eventstream (1.3.2)
+    aws-partitions (1.1108.0)
+    aws-sdk-core (3.224.1)
+      aws-eventstream (~> 1, >= 1.3.0)
+      aws-partitions (~> 1, >= 1.992.0)
+      aws-sigv4 (~> 1.9)
+      base64
+      jmespath (~> 1, >= 1.6.1)
+      logger
+    aws-sdk-iotdataplane (1.75.0)
+      aws-sdk-core (~> 3, >= 3.216.0)
+      aws-sigv4 (~> 1.5)
+    aws-sigv4 (1.11.0)
+      aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
     bigdecimal (3.1.8)
     builder (3.3.0)
@@ -125,6 +140,7 @@ GEM
     irb (1.14.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    jmespath (1.6.2)
     json (2.7.2)
     jwt (2.8.2)
       base64

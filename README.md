@@ -493,6 +493,27 @@ module MyApp
 end
 ```
 
+#### Tip: Custom properties on a notification per recipient
+
+In order to have recipient-specific settings on the notification, override the `recipient_attributes_for(recipient)` method in your notifier:
+
+```ruby
+class CommentNotifier < ApplicationNotifier
+  #...
+  def recipient_attributes_for(recipient)
+    data = super
+    data[:priority] = if recipient.participant?
+      "high"
+    else
+      "low"
+    end
+    data
+  end
+end
+```
+
+Assuming you have a `priority` column in the `noticed_notifications` table, it will be set to the value from the hash here. The default properties of the hash are `recipient_type` and `recipient_id`.
+
 ## ✅ Best Practices
 
 ### Renaming Notifiers

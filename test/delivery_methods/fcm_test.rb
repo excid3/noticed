@@ -98,6 +98,60 @@ class FcmTest < ActiveSupport::TestCase
     assert_equal 2, cleanups
   end
 
+  test "notifies error handler if exists for other errors" do
+    error_notifications = 0
+
+    set_config(
+      authorizer: FakeAuthorizer,
+      credentials: {
+        "type" => "service_account",
+        "project_id" => "p_1234",
+        "private_key_id" => "private_key"
+      },
+      device_tokens: [:a, :b],
+      json: ->(device_token) {
+        {
+          message: {
+            token: device_token,
+            notification: {title: "Title", body: "Body"}
+          }
+        }
+      },
+      error_handler: ->(response) { error_notifications += 1 }
+    )
+
+    stub_request(:post, "https://fcm.googleapis.com/v1/projects/p_1234/messages:send").to_return(status: 403, body: "", headers: {})
+
+    @delivery_method.deliver
+    assert_equal 2, error_notifications
+  end
+
+  test "re-raises errors if there is no error handler" do
+    set_config(
+      authorizer: FakeAuthorizer,
+      credentials: {
+        "type" => "service_account",
+        "project_id" => "p_1234",
+        "private_key_id" => "private_key"
+      },
+      device_tokens: [:a, :b],
+      json: ->(device_token) {
+        {
+          message: {
+            token: device_token,
+            notification: {title: "Title", body: "Body"}
+          }
+        }
+      }
+    )
+
+    stub_request(:post, "https://fcm.googleapis.com/v1/projects/p_1234/messages:send").to_return(status: 403, body: "", headers: {})
+
+    assert_raises(Noticed::ResponseUnsuccessful) do
+      @delivery_method.deliver
+    end
+  end
+
   private
 
   def set_config(config)

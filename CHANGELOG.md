@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 2.7.1
+
 * Fix `recipients :symbol` ignored when pointing to a private method
 
 ### 2.7.0

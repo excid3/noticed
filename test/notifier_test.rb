@@ -19,6 +19,8 @@ class NotifierTest < ActiveSupport::TestCase
     deliver_by :test
     recipients :recipients
 
+    private
+
     def recipients
       params.fetch(:recipients)
     end

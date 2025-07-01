@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.6.2
+
+* Fix `recipients :symbol` pointing to a private method
+
 ### 2.6.1
 
 * Handle text/html and application/json responses from Slack #531

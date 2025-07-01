@@ -118,9 +118,9 @@ module Noticed
     def evaluate_recipients
       return unless _recipients
 
-      if _recipients.respond_to?(:call)
+      if _recipients.respond_to?(:call, true)
         instance_exec(&_recipients)
-      elsif _recipients.is_a?(Symbol) && respond_to?(_recipients)
+      elsif _recipients.is_a?(Symbol) && respond_to?(_recipients, true)
         send(_recipients)
       end
     end

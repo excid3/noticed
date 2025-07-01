@@ -46,11 +46,19 @@ end
 ## Options
 
 ### `json`
-Customize the Firebase Cloud Messaging notification object. This can be a Lambda or Symbol of a method name on the notifier. 
-  
+Customize the Firebase Cloud Messaging notification object. This can be a Lambda or Symbol of a method name on the notifier.
+
 The callable object will be given the device token as an argument.
 
 There are lots of options of how to structure a FCM notification message. See https://firebase.google.com/docs/cloud-messaging/concept-options for more details.
+
+### `invalid_token` - *Optional*
+A lambda to allow your app to clean up invalid tokens.
+
+### `error_handler` - *Optional*
+A lambda to allow your app to handle other errors with FCM, such as incorrect configuration.
+Can be useful to squash intermittent errors you don't want polluting your error collection service
+or perform other clean up actions.
 
 ### `credentials`
 The location of your Firebase Cloud Messaging credentials.
@@ -60,7 +68,7 @@ The location of your Firebase Cloud Messaging credentials.
 Internally, this string is passed to `Rails.root.join()` as an argument so there is no need to do this beforehand.
 
 ```ruby
-deliver_by :fcm do |config| 
+deliver_by :fcm do |config|
   config.credentials = "config/credentials/fcm.json"
 end
 ```
@@ -70,7 +78,7 @@ end
 The Pathname object can point to any location where you are storing your credentials.
 
 ```ruby
-deliver_by :fcm do |config| 
+deliver_by :fcm do |config|
   config.credentials = Rails.root.join("config/credentials/fcm.json")
 end
 ```
@@ -80,8 +88,8 @@ end
 A Hash which contains your credentials
 
 ```ruby
-deliver_by :fcm do |config| 
-  config.credentials = credentials_hash 
+deliver_by :fcm do |config|
+  config.credentials = credentials_hash
 end
 
 credentials_hash = {
@@ -94,12 +102,12 @@ credentials_hash = {
 
 #### When a Symbol
 
-Points to a method which can return a Hash of your credentials, Pathname, or String to your credentials like the examples above. 
+Points to a method which can return a Hash of your credentials, Pathname, or String to your credentials like the examples above.
 
 We pass the notification object as an argument to the method. If you don't need to use it you can use the splat operator `(*)` to ignore it.
 
 ```ruby
-deliver_by :fcm do |config| 
+deliver_by :fcm do |config|
   config.credentials = :fcm_credentials
   config.json = :format_notification
 end
@@ -128,11 +136,24 @@ end
 ## Handling Failures
 
 Firebase Cloud Messaging Notifications may fail delivery if the user has removed the app from their device.
+In this case, FCM will return a [400 or 404 HTTP Status Code](https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode)
+and the delivery method will call the `invalid_token` handler, if you configure one.
 
 ```ruby
 class CommentNotification
   deliver_by :fcm do |config|
     config.invalid_token = ->(device_token) { NotificationToken.find_by(token: device_token).destroy }
+  end
+end
+```
+
+In case of other errors, the delivery method call the `error_handler` handler, if you configure one,
+or otherwise simply raise `Noticed::ResponseUnsuccessful` and the job can be retried.
+
+```ruby
+class CommentNotification
+  deliver_by :fcm do |config|
+    config.error_handler = ->(response) { Rails.logger.error(response.inspect) }
   end
 end
 ```

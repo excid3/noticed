@@ -1,8 +1,14 @@
 ### Unreleased
 
+* Fix `recipients :symbol` ignored when pointing to a private method
+
+### 2.7.0
+
+* Add lazy load hooks for delivery methods
+
 ### 2.6.2
 
-* Fix `recipients :symbol` pointing to a private method
+* Fix lazy load hook names
 
 ### 2.6.1
 

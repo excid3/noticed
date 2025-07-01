@@ -18,6 +18,8 @@ module Noticed
       rescue Noticed::ResponseUnsuccessful => exception
         if bad_token?(exception.response) && config[:invalid_token]
           notification.instance_exec(device_token, &config[:invalid_token])
+        elsif config[:error_handler]
+          notification.instance_exec(exception.response, &config[:error_handler])
         else
           raise
         end
@@ -66,3 +68,5 @@ module Noticed
     end
   end
 end
+
+ActiveSupport.run_load_hooks :noticed_delivery_methods_fcm, Noticed::DeliveryMethods::Fcm

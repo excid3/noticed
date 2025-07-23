@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Add `--bulk` option for generating bulk delivery methods
+
 ### 2.7.1
 
 * Fix `recipients :symbol` ignored when pointing to a private method

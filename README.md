@@ -594,7 +594,9 @@ You can mix and match the options and delivery methods to suit your application 
 
 If you want to build your own delivery method to deliver notifications to a specific service or medium that Noticed doesn’t (or doesn’t _yet_) support, you’re welcome to do so! To generate a custom delivery method, simply run
 
-`rails generate noticed:delivery_method Discord`
+```bash
+rails generate noticed:delivery_method Discord
+```
 
 This will generate a new `ApplicationDeliveryMethod` and `DeliveryMethods::Discord` class inside the `app/notifiers/delivery_methods` folder, which can be used to deliver notifications to Discord.
 
@@ -607,7 +609,6 @@ class DeliveryMethods::Discord < ApplicationDeliveryMethod
     # Logic for sending the notification
   end
 end
-
 ```
 
 You can use the custom delivery method thus created by adding a `deliver_by` line with a unique name and `class` option in your notification class.
@@ -616,6 +617,12 @@ You can use the custom delivery method thus created by adding a `deliver_by` lin
 class MyNotifier < Noticed::Event
   deliver_by :discord, class: "DeliveryMethods::Discord"
 end
+```
+
+You can also generate bulk delivery methods with the `--bulk` flag:
+
+```bash
+rails generate noticed:delivery_method Discord --bulk
 ```
 
 <details>

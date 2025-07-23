@@ -1,8 +1,8 @@
-class DeliveryMethods::<%= class_name %> < ApplicationDeliveryMethod
+class BulkDeliveryMethods::<%= class_name %> < ApplicationBulkDeliveryMethod
   # To use this delivery method, specify the class option in your notifier.
   #
   #   class MyNotifer < ApplicationNotifier
-  #     deliver_by :<%= file_path %>, class: "<%= class_name %>"
+  #     bulk_deliver_by :<%= file_path %>, class: "<%= class_name %>"
   #   end
 
   # Specify the config options your delivery method requires in its config block

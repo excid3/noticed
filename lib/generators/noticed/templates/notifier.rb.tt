@@ -21,4 +21,10 @@ class <%= class_name %>Notifier < ApplicationNotifier
   # Add required params
   #
   # required_param :message
+
+  # Compute recipients without having to pass them in
+  #
+  # recipients do
+  #   params[:record].thread.all_authors
+  # end
 end

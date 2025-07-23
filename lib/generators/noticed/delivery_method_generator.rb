@@ -11,9 +11,16 @@ module Noticed
 
       desc "Generates a class for a custom delivery method with the given NAME."
 
+      class_option :bulk, desc: "Generate as a bulk delivery method", type: :boolean, default: false
+
       def generate_notification
-        template "application_delivery_method.rb", "app/notifiers/application_delivery_method.rb"
-        template "delivery_method.rb", "app/notifiers/delivery_methods/#{singular_name}.rb"
+        if options[:bulk]
+          template "application_bulk_delivery_method.rb", "app/notifiers/application_bulk_delivery_method.rb"
+          template "bulk_delivery_method.rb", "app/notifiers/bulk_delivery_methods/#{singular_name}.rb"
+        else
+          template "application_delivery_method.rb", "app/notifiers/application_delivery_method.rb"
+          template "delivery_method.rb", "app/notifiers/delivery_methods/#{singular_name}.rb"
+        end
       end
     end
   end

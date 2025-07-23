@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    noticed (2.7.1)
+    noticed (2.8.0)
       rails (>= 6.1.0)
 
 GEM
@@ -317,4 +317,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.6.8
+   2.7.1

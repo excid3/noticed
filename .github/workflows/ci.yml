@@ -21,6 +21,7 @@ jobs:
           - rails_7_1
           - rails_7_2
           - rails_8_0
+          - rails_8_1
           - rails_main
         exclude:
           # sqlite3 ~> 1.7 is not compatible with Ruby 3.4+
@@ -70,6 +71,7 @@ jobs:
           - rails_7_1
           - rails_7_2
           - rails_8_0
+          - rails_8_1
           - rails_main
         exclude:
           # sqlite3 ~> 1.7 is not compatible with Ruby 3.4+
@@ -128,6 +130,7 @@ jobs:
           - rails_7_1
           - rails_7_2
           - rails_8_0
+          - rails_8_1
           - rails_main
         exclude:
           # sqlite3 ~> 1.7 is not compatible with Ruby 3.4+

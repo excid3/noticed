@@ -1,5 +1,11 @@
 ### Unreleased
 
+### 2.8.1
+
+* Fix Coder support for arguments with Rails 8.1
+
+### 2.8.0
+
 * Add `--bulk` option for generating bulk delivery methods
 
 ### 2.7.1

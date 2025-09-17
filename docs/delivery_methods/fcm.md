@@ -1,5 +1,8 @@
 # Firebase Cloud Messaging Delivery Method
 
+> [!WARNING]
+> Deprecated. Please use Action Push Native instead.
+
 Send Device Notifications using the Google Firebase Cloud Messaging service and the `googleauth` gem. FCM supports Android, iOS, and web clients.
 
 ```bash

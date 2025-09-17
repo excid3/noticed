@@ -1,5 +1,8 @@
 # iOS Notification Delivery Method
 
+> [!WARNING]
+> Deprecated. Please use Action Push Native instead.
+
 Send Apple Push Notifications with HTTP2 using the `apnotic` gem. The benefit of HTTP2 is that we can receive feedback for invalid device tokens without running a separate feedback service like RPush does.
 
 ```bash

@@ -9,7 +9,8 @@ module Noticed
           basic_auth: evaluate_option(:basic_auth),
           headers: evaluate_option(:headers),
           json: evaluate_option(:json),
-          form: evaluate_option(:form)
+          form: evaluate_option(:form),
+          body: evaluate_option(:body)
         )
       end
     end

@@ -29,6 +29,17 @@ class WebhookDeliveryMethodTest < ActiveSupport::TestCase
     end
   end
 
+  test "webhook with body payload" do
+    set_config(
+      url: "https://example.org/webhook",
+      body: "ANYTHING"
+    )
+    stub_request(:post, "https://example.org/webhook").with(body: "ANYTHING")
+    assert_nothing_raised do
+      @delivery_method.deliver
+    end
+  end
+
   test "webhook with basic auth" do
     set_config(
       url: "https://example.org/webhook",

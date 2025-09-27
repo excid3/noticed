@@ -29,6 +29,8 @@ module Noticed
         request.body = json.to_json
       elsif (form = args.delete(:form))
         request.form_data = form
+      elsif (body = args.delete(:body))
+        request.body = body
       end
 
       logger.debug("POST #{url}")

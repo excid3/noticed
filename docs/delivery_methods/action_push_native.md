@@ -22,6 +22,9 @@ class CommentNotifier < ApplicationNotifier
     config.google_data = -> {
       { }
     }
+    config.with_data = -> {
+      { }
+    }
   end
 end
 ```
@@ -36,15 +39,15 @@ end
 
   Should return a `Hash` of [Notification attributes](https://github.com/rails/action_push_native/tree/main?tab=readme-ov-file#actionpushnativenotification-attributes)
 
-* `data`
+* `with_data`
 
-  Should return a `Hash` of custom data to be sent with the notification to all platforms
+  Should return a `Hash` of custom data to be sent with the notification to all platforms.
 
-* `apple_data`
+* `with_apple`
 
   Should return a `Hash` of APNs specific data
 
-* `google_data`
+* `with_google`
 
   Should return a `Hash` of FCM specific data
 

@@ -7,9 +7,9 @@ module Noticed
         notification = evaluate_option(:silent) ? notification_class : notification_class.silent
 
         notification
-          .with_apple(evaluate_option(:apple_data))
-          .with_google(evaluate_option(:google_data))
-          .with_data(evaluate_option(:data))
+          .with_apple(evaluate_option(:with_apple))
+          .with_google(evaluate_option(:with_google))
+          .with_data(evaluate_option(:with_data))
           .new(**evaluate_option(:format))
 
         notification.deliver_later_to(evaluate_option(:devices))

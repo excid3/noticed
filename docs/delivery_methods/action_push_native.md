@@ -13,13 +13,12 @@ class CommentNotifier < ApplicationNotifier
         title: "Hello world, #{recipient.first_name}!",
         body: "Welcome to Noticed with Action Push Native.",
         badge: 1,
-        data: { foo: :bar }
       }
     }
-    config.apple_data = -> {
+    config.with_apple = -> {
       { category: "observable" }
     }
-    config.google_data = -> {
+    config.with_google = -> {
       { }
     }
     config.with_data = -> {

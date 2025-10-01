@@ -12,7 +12,8 @@ class CommentNotifier < ApplicationNotifier
       {
         title: "Hello world, #{recipient.first_name}!",
         body: "Welcome to Noticed with Action Push Native.",
-        badge: 1
+        badge: 1,
+        data: { foo: :bar }
       }
     }
     config.apple_data = -> {
@@ -37,12 +38,16 @@ end
 
 * `data`
 
-  Should return a `Hash` of custom data to be sent with the notification
+  Should return a `Hash` of custom data to be sent with the notification to all platforms
 
 * `apple_data`
 
-  Should return a `Hash` of APNS specific data
+  Should return a `Hash` of APNs specific data
 
 * `google_data`
 
   Should return a `Hash` of FCM specific data
+
+* `silent`
+
+  Should return a `Boolean` if notification should be silent

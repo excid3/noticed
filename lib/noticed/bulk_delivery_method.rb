@@ -4,6 +4,7 @@ module Noticed
     include RequiredOptions
 
     extend ActiveModel::Callbacks
+
     define_model_callbacks :deliver
 
     class_attribute :logger, default: Rails.logger

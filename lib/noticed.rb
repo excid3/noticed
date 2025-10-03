@@ -18,6 +18,7 @@ module Noticed
 
   module DeliveryMethods
     include ActiveSupport::Deprecation::DeprecatedConstantAccessor
+
     deprecate_constant :Base, "Noticed::DeliveryMethod", deprecator: Noticed.deprecator
   end
 

@@ -11,10 +11,10 @@ module Noticed
 
     def self.dump(data)
       return if data.nil?
-      if Rails.gem_version >= Gem::Version.new("8.1.0.beta1")
-        ActiveJob::Arguments.serialize(data)
-      else
+      if ActiveJob::Arguments.respond_to?(:serialize_argument, true)
         ActiveJob::Arguments.send(:serialize_argument, data)
+      else
+        ActiveJob::Arguments.serialize(data)
       end
     end
   end

@@ -11,8 +11,7 @@ module Noticed
           .with_google(evaluate_option(:with_google))
           .with_data(evaluate_option(:with_data))
           .new(**evaluate_option(:format))
-
-        notification.deliver_later_to(evaluate_option(:devices))
+          .deliver_later_to(evaluate_option(:devices))
       end
 
       def notification_class

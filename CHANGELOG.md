@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Add Action Push Native delivery method
+
 ### 2.8.1
 
 * Fix Coder support for arguments with Rails 8.1

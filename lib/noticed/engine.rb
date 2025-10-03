@@ -2,6 +2,10 @@ module Noticed
   class Engine < ::Rails::Engine
     isolate_namespace Noticed
 
+    initializer "noticed.deprecator" do |app|
+      app.deprecators[:noticed] = Noticed.deprecator if app.respond_to?(:deprecators)
+    end
+
     initializer "noticed.has_notifications" do
       ActiveSupport.on_load(:active_record) do
         include Noticed::HasNotifications

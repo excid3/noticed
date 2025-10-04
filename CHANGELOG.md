@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.9.1
+
+* [Bugfix] Don't eager load delivery methods. These should be only lazy loaded.
+
 ### 2.9.0
 
 * Add Action Push Native delivery method

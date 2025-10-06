@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.9.2
+
+* [Bugfix] Don't eager load `NotificationChannel`
+
 ### 2.9.1
 
 * [Bugfix] Don't eager load delivery methods. These should be only lazy loaded.

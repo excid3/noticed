@@ -7,6 +7,7 @@ loader = Zeitwerk::Loader.for_gem(warn_on_extra_files: false)
 loader.ignore("#{__dir__}/generators")
 loader.do_not_eager_load("#{__dir__}/noticed/bulk_delivery_methods")
 loader.do_not_eager_load("#{__dir__}/noticed/delivery_methods")
+loader.do_not_eager_load("#{__dir__}/noticed/notification_channel.rb")
 loader.setup
 
 module Noticed

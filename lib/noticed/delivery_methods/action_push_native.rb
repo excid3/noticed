@@ -4,7 +4,7 @@ module Noticed
       required_options :devices, :format
 
       def deliver
-        notification = evaluate_option(:silent) ? notification_class : notification_class.silent
+        notification = (!!evaluate_option(:silent)) ? notification_class.silent : notification_class
 
         notification
           .with_apple(evaluate_option(:with_apple))

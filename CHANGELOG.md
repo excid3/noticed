@@ -1,5 +1,9 @@
 ### Unreleased
 
+### 2.9.3
+
+* [Bugfix] Silent was opposite for Action Push Native notifications #560
+
 ### 2.9.2
 
 * [Bugfix] Don't eager load `NotificationChannel`

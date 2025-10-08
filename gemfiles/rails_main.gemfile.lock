@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: b164bb832e8e11e7fb10f3c47d93ba29a98f2a94
+  revision: 82d39b5f52a6f6fd08bdbd92585cec03dfedaa14
   branch: main
   specs:
     actioncable (8.1.0.beta1)
@@ -70,6 +70,7 @@ GIT
       connection_pool (>= 2.2.5)
       drb
       i18n (>= 1.6, < 2)
+      json
       logger (>= 1.4.2)
       minitest (>= 5.1)
       securerandom (>= 0.3)
@@ -102,7 +103,7 @@ GIT
 PATH
   remote: ..
   specs:
-    noticed (2.9.2)
+    noticed (2.9.3)
       rails (>= 6.1.0)
 
 GEM
@@ -122,7 +123,7 @@ GEM
     ast (2.4.3)
     base64 (0.3.0)
     benchmark (0.4.1)
-    bigdecimal (3.2.3)
+    bigdecimal (3.3.0)
     builder (3.3.0)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.4)
@@ -132,7 +133,7 @@ GEM
     crass (1.0.6)
     date (3.4.1)
     drb (2.2.3)
-    erb (5.0.2)
+    erb (5.0.3)
     erubi (1.13.1)
     faraday (2.14.0)
       faraday-net_http (>= 2.0, < 3.5)
@@ -163,7 +164,7 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.15.0)
+    json (2.15.1)
     jwt (3.1.2)
       base64
     language_server-protocol (3.17.0.5)
@@ -179,7 +180,7 @@ GEM
       net-smtp
     marcel (1.1.0)
     mini_mime (1.1.5)
-    minitest (5.25.5)
+    minitest (5.26.0)
     multi_json (1.17.0)
     net-http (0.6.0)
       uri
@@ -232,7 +233,7 @@ GEM
       stringio
     public_suffix (6.0.2)
     racc (1.8.1)
-    rack (3.2.1)
+    rack (3.2.2)
     rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -312,7 +313,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
-    uri (1.0.3)
+    uri (1.0.4)
     useragent (0.16.11)
     webmock (3.25.1)
       addressable (>= 2.8.0)

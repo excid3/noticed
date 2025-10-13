@@ -1,6 +1,6 @@
 # Discord Bulk Delivery Method
 
-Send a Discord message to builk notify users in a channel.
+Send a Discord message to bulk notify users in a channel.
 
 We recommend using [Discohook](https://discohook.org) to design your messages.
 

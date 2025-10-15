@@ -27,6 +27,7 @@ Bulk deliveries are typically used to push notifications to other platforms wher
 Delivery methods we officially support:
 
 * [ActionCable](docs/delivery_methods/action_cable.md)
+* [Action Push Native](docs/delivery_methods/action_push_native.md)
 * [Apple Push Notification Service](docs/delivery_methods/ios.md)
 * [Email](docs/delivery_methods/email.md)
 * [Firebase Cloud Messaging](docs/delivery_methods/fcm.md) (iOS, Android, and web clients)

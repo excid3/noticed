@@ -3,6 +3,10 @@ class UserMailer < ApplicationMailer
     mail(body: "new comment")
   end
 
+  def greeting(body:, subject: "Hello")
+    mail(body: body, subject: subject)
+  end
+
   def receipt
     mail(body: "receipt")
   end

@@ -7,7 +7,20 @@ module Noticed
         mailer = fetch_constant(:mailer)
         email = evaluate_option(:method)
         args = evaluate_option(:args) || []
-        mail = mailer.with(params).public_send(email, *args)
+        kwargs = evaluate_option(:kwargs) || {}
+
+        if args.present? && kwargs.present?
+          raise ArgumentError, "`args` and `kwargs` cannot both be provided."
+        end
+
+        mailer_instance = mailer.with(params)
+
+        mail = if kwargs.present?
+          mailer_instance.public_send(email, **kwargs)
+        else
+          mailer_instance.public_send(email, *args)
+        end
+
         (!!evaluate_option(:enqueue)) ? mail.deliver_later : mail.deliver_now
       end
 

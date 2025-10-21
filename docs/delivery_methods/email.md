@@ -15,6 +15,21 @@ deliver_by :email do |config|
 end
 ```
 
+Mailer methods with keyword arguments are also supported.
+
+```ruby
+deliver_by :email do |config|
+  config.mailer = "UserMailer"
+  config.method = :greeting
+  config.params = ->{ params }
+  config.kwargs = ->{ {body: "Hey there", subject: "Thanks for joining"} }
+
+  # Enqueues a separate job for sending the email using deliver_later.
+  # Deliveries already happen in jobs so this is typically unnecessary.
+  # config.enqueue = false
+end
+```
+
 ##### Options
 
 - `mailer` - **Required**
@@ -30,6 +45,12 @@ end
   Use a custom method to define the params sent to the mailer. `recipient` will be merged into the params.
 
 - `args` - _Optional_
+  
+  The arguments for the `method` if it uses **positional arguments** (eg: `def hello(a, b, c=1)`)
+
+- `kwargs` - _Optional_
+
+  The arguments for the `method` if it uses **keyword arguments** (eg: `def hello(a:, b:, c: 1)`)
 
 - `enqueue: false` - _Optional_
 

@@ -35,6 +35,7 @@ Delivery methods we officially support:
 * [Slack](docs/delivery_methods/slack.md)
 * [Twilio Messaging](docs/delivery_methods/twilio_messaging.md) - SMS, Whatsapp
 * [Vonage SMS](docs/delivery_methods/vonage_sms.md)
+* [Telegram](docs/delivery_methods/telegram.md)
 * [Test](docs/delivery_methods/test.md)
 
 Bulk delivery methods we support:
@@ -42,6 +43,7 @@ Bulk delivery methods we support:
 * [Bluesky](docs/bulk_delivery_methods/bluesky.md)
 * [Discord](docs/bulk_delivery_methods/discord.md)
 * [Slack](docs/bulk_delivery_methods/slack.md)
+* [Telegram](docs/bulk_delivery_methods/telegram.md)
 * [Webhook](docs/bulk_delivery_methods/webhook.md)
 
 ## 🎬 Screencast
@@ -542,6 +544,7 @@ Individual delivery methods:
 * [Slack](docs/delivery_methods/slack.md)
 * [Twilio Messaging](docs/delivery_methods/twilio_messaging.md) - SMS, Whatsapp
 * [Vonage SMS](docs/delivery_methods/vonage_sms.md)
+* [Telegram](docs/delivery_methods/telegram.md)
 * [Test](docs/delivery_methods/test.md)
 
 Bulk delivery methods:
@@ -549,6 +552,7 @@ Bulk delivery methods:
 * [Bluesky](docs/bulk_delivery_methods/bluesky.md)
 * [Discord](docs/bulk_delivery_methods/discord.md)
 * [Slack](docs/bulk_delivery_methods/slack.md)
+* [Telegram](docs/bulk_delivery_methods/telegram.md)
 * [Webhook](docs/bulk_delivery_methods/webhook.md)
 
 ### No Delivery Methods

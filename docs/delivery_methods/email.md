@@ -27,7 +27,7 @@ end
 
 - `params` - _Optional_
 
-  Use a custom method to define the params sent to the mailer. `recipient` will be merged into the params.
+  Use a custom method to define the params sent to the mailer. `recipient` and `record` will be merged into the params.
 
 - `args` - _Optional_
 

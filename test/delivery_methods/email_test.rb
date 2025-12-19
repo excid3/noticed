@@ -8,12 +8,82 @@ class EmailTest < ActiveSupport::TestCase
     @notification = noticed_notifications(:one)
   end
 
-  test "sends email" do
+  test "sends email (with args)" do
     set_config(
       mailer: "UserMailer",
       method: "new_comment",
       params: -> { {foo: :bar} },
       args: -> { ["hey"] }
+    )
+
+    assert_emails(1) do
+      @delivery_method.deliver
+    end
+  end
+
+  test "sends email (with kwargs)" do
+    set_config(
+      mailer: "UserMailer",
+      method: "greeting",
+      params: -> { {foo: :bar} },
+      kwargs: -> { {body: "Custom"} }
+    )
+
+    assert_emails(1) do
+      @delivery_method.deliver
+    end
+  end
+
+  test "sends email (with kwargs, replacing default argument)" do
+    set_config(
+      mailer: "UserMailer",
+      method: "greeting",
+      params: -> { {foo: :bar} },
+      kwargs: -> { {body: "Custom", subject: "Testing"} }
+    )
+
+    assert_emails(1) do
+      @delivery_method.deliver
+    end
+  end
+
+  test "raises the underlying ArgumentError if kwargs are missing" do
+    set_config(
+      mailer: "UserMailer",
+      method: "greeting",
+      params: -> { {foo: :bar} },
+      kwargs: -> { {baz: 123} }
+    )
+
+    error = assert_raises ArgumentError do
+      @delivery_method.deliver
+    end
+
+    assert_equal "missing keyword: :body", error.message
+  end
+
+  test "raises the underlying ArgumentError if unknown kwargs are given" do
+    set_config(
+      mailer: "UserMailer",
+      method: "greeting",
+      params: -> { {foo: :bar} },
+      kwargs: -> { {body: "Test", baz: 123} }
+    )
+
+    error = assert_raises ArgumentError do
+      @delivery_method.deliver
+    end
+
+    assert_equal "unknown keyword: :baz", error.message
+  end
+
+  test "accepts both args and kwargs" do
+    set_config(
+      mailer: "UserMailer",
+      method: "greeting",
+      params: -> { {foo: :bar} },
+      args: -> { ["hey"] },
+      kwargs: -> { {body: "Test"} }
     )
 
     assert_emails(1) do

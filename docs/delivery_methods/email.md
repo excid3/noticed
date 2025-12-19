@@ -8,6 +8,7 @@ deliver_by :email do |config|
   config.method = :receipt
   config.params = ->{ params }
   config.args = ->{ [1, 2, 3] }
+  config.kwargs = ->{ {body: "Hey there", subject: "Thanks for joining"} }
 
   # Enqueues a separate job for sending the email using deliver_later.
   # Deliveries already happen in jobs so this is typically unnecessary.
@@ -30,6 +31,12 @@ end
   Use a custom method to define the params sent to the mailer. `recipient` will be merged into the params.
 
 - `args` - _Optional_
+
+  The arguments for the `method` if it uses **positional arguments** (eg: `def hello(a, b, c=1)`)
+
+- `kwargs` - _Optional_
+
+  The arguments for the `method` if it uses **keyword arguments** (eg: `def hello(a:, b:, c: 1)`)
 
 - `enqueue: false` - _Optional_
 

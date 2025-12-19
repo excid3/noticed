@@ -5,7 +5,7 @@ Sends an email to each recipient.
 ```ruby
 deliver_by :email do |config|
   config.mailer = "UserMailer"
-  config.method = :receipt
+  config.method = :invoice_paid
   config.params = ->{ params }
   config.args = ->{ [1, 2, 3] }
   config.kwargs = ->{ {body: "Hey there", subject: "Thanks for joining"} }
@@ -28,7 +28,7 @@ end
 
 - `params` - _Optional_
 
-  Use a custom method to define the params sent to the mailer. `recipient` will be merged into the params.
+  Use a custom method to define the params sent to the mailer. `recipient` and `record` will be merged into the params.
 
 - `args` - _Optional_
 

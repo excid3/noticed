@@ -22,3 +22,6 @@ gem "apnotic", "~> 1.7"
 
 # firebase notifications
 gem "googleauth", "~> 1.1"
+
+# Minitest 6 has breaking changes
+gem "minitest", "< 6.0"

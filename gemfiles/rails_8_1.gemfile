@@ -9,6 +9,7 @@ gem "standard"
 gem "webmock"
 gem "apnotic", "~> 1.7"
 gem "googleauth", "~> 1.1"
+gem "minitest", "< 6.0"
 gem "rails", "~> 8.1.0.beta1"
 gem "trilogy"
 

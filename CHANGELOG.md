@@ -1,5 +1,8 @@
 ### Unreleased
 
+* [Breaking] Drop Rails 6.1 support
+* Add support for mailers with `args` and `kwargs` #565
+
 ### 2.9.3
 
 * [Bugfix] Silent was opposite for Action Push Native notifications #560

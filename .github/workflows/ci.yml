@@ -71,7 +71,6 @@ jobs:
           - rails_main
         exclude:
           # sqlite3 ~> 1.7 is not compatible with Ruby 3.4+
-            ruby: '3.4'
           - gemfile: rails_7_0
             ruby: '3.4'
           - gemfile: rails_7_1

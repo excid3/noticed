@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 3.0.0
+
 * [Breaking] Drop Rails 6.1 support
 * Add support for mailers with `args` and `kwargs` #565
 

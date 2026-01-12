@@ -96,16 +96,7 @@ module Noticed
         self.notifications_count = recipients_attributes.size
         save!
 
-        if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
-          notifications.insert_all!(recipients_attributes, record_timestamps: true) if recipients_attributes.any?
-        else
-          time = Time.current
-          recipients_attributes.each do |attributes|
-            attributes[:created_at] = time
-            attributes[:updated_at] = time
-          end
-          notifications.insert_all!(recipients_attributes) if recipients_attributes.any?
-        end
+        notifications.insert_all!(recipients_attributes, record_timestamps: true) if recipients_attributes.any?
       end
 
       # Enqueue delivery job

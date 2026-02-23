@@ -1,5 +1,7 @@
 ### Unreleased
 
+* [Bugfix] Fix race condition where jobs could run before notifications were committed to the database. Jobs are now enqueued using `after_commit` to ensure all data is persisted before job execution. This also prevents jobs from being enqueued if a transaction is rolled back.
+
 ### 3.0.0
 
 * [Breaking] Drop Rails 6.1 support

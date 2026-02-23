@@ -78,11 +78,41 @@ module Noticed
       alias_method :deliver_later, :deliver
     end
 
-    # CommentNotifier.deliver(User.all)
-    # CommentNotifier.deliver(User.all, priority: 10)
-    # CommentNotifier.deliver(User.all, queue: :low_priority)
-    # CommentNotifier.deliver(User.all, wait: 5.minutes)
-    # CommentNotifier.deliver(User.all, wait_until: 1.hour.from_now)
+    # Deliver notifications to recipients
+    #
+    # Examples:
+    #   CommentNotifier.deliver(User.all)
+    #   CommentNotifier.deliver(User.all, priority: 10)
+    #   CommentNotifier.deliver(User.all, queue: :low_priority)
+    #   CommentNotifier.deliver(User.all, wait: 5.minutes)
+    #   CommentNotifier.deliver(User.all, wait_until: 1.hour.from_now)
+    #
+    # Job enqueuing behavior:
+    #   Jobs are enqueued using after_commit to prevent race conditions and ensure
+    #   notifications are persisted before jobs execute. If a transaction is rolled back,
+    #   jobs will not be enqueued.
+    #
+    # Transaction safety:
+    #   The deliver method creates its own transaction to save the event and notifications.
+    #   When called inside an existing transaction, this creates a nested transaction.
+    #   The after_commit callback waits for the outermost transaction to commit, ensuring:
+    #
+    #     - Jobs are only enqueued if ALL transactions commit successfully
+    #     - If your transaction rolls back, the job will NOT be enqueued
+    #     - Event and notifications are also rolled back with your transaction
+    #     - Safe to call deliver inside your transactions
+    #
+    #   Example - deliver respects your transaction:
+    #     ActiveRecord::Base.transaction do
+    #       user = User.create!(name: "Bob")
+    #       action = Action.create!(user: user)
+    #
+    #       ExampleNotifier.deliver(user) # Creates nested transaction internally
+    #
+    #       raise "Something went wrong!" # Rolls back user, action, event, and notifications
+    #       # Job is NOT enqueued because transaction rolled back
+    #     end
+    #
     def deliver(recipients = nil, enqueue_job: true, **options)
       recipients ||= evaluate_recipients
 
@@ -106,10 +136,19 @@ module Noticed
           end
           notifications.insert_all!(recipients_attributes) if recipients_attributes.any?
         end
-      end
 
-      # Enqueue delivery job
-      EventJob.set(options).perform_later(self) if enqueue_job
+        # Enqueue delivery job after transaction commits to avoid race condition
+        # Rails 7.2+ can automatically defer job enqueuing if configured, otherwise we manually defer
+        if enqueue_job
+          if will_defer_job_enqueuing?
+            EventJob.set(options).perform_later(self)
+          else
+            ActiveRecord::Base.current_transaction.after_commit do
+              EventJob.set(options).perform_later(self)
+            end
+          end
+        end
+      end
 
       self
     end
@@ -152,6 +191,22 @@ module Noticed
     # If a GlobalID record in params is no longer found, the params will default with a noticed_error key
     def deserialize_error?
       !!params[:noticed_error]
+    end
+
+    private
+
+    # Check if Rails will automatically defer job enqueuing until after transaction commit
+    # Returns true for Rails 7.2+ when enqueue_after_transaction_commit is properly configured
+    #
+    # Rails 7.2+ can automatically defer job enqueuing via the enqueue_after_transaction_commit setting.
+    # This method checks three possible values that indicate automatic deferral is enabled:
+    #   - :always - Always defer job enqueuing (recommended for production)
+    #   - :default - Use Rails default behavior (defers in transactions)
+    #   - true - Legacy boolean value for backward compatibility
+    def will_defer_job_enqueuing?
+      EventJob.respond_to?(:enqueue_after_transaction_commit) &&
+        (EventJob.enqueue_after_transaction_commit.in?([:always, :default]) ||
+         EventJob.enqueue_after_transaction_commit == true)
     end
   end
 end

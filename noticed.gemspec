@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.summary = "Notifications for Ruby on Rails applications"
   spec.description = "Database, browser, realtime ActionCable, Email, SMS, Slack notifications, and more for Rails apps"
   spec.license = "MIT"
+  spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 

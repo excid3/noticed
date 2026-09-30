@@ -33,10 +33,10 @@ module Noticed
         request.body = body
       end
 
+      # Bodies aren't logged since they can contain credentials and access tokens
       logger.debug("POST #{url}")
-      logger.debug(request.body)
       response = http.request(request)
-      logger.debug("Response: #{response.code}: #{response.body.inspect}")
+      logger.debug("Response: #{response.code}")
 
       raise ResponseUnsuccessful.new(response, url, args) unless response.code.start_with?("20")
 

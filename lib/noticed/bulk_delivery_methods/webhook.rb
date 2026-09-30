@@ -4,7 +4,6 @@ module Noticed
       required_options :url
 
       def deliver
-        Rails.logger.debug(evaluate_option(:json))
         post_request(
           evaluate_option(:url),
           basic_auth: evaluate_option(:basic_auth),

@@ -1,17 +1,14 @@
 require "test_helper"
 
 class IosTest < ActiveSupport::TestCase
-  class FakeConnectionPool
+  class FakeConnection
     class_attribute :invalid_tokens, default: []
-    attr_reader :deliveries
+    attr_reader :deliveries, :closed
 
     def initialize(response)
       @response = response
       @deliveries = []
-    end
-
-    def with
-      yield self
+      @closed = false
     end
 
     def push(apn)
@@ -20,14 +17,16 @@ class IosTest < ActiveSupport::TestCase
     end
 
     def close
+      @closed = true
     end
   end
 
   class FakeResponse
-    attr_reader :status
+    attr_reader :status, :body
 
     def initialize(status, body = {})
       @status = status
+      @body = body
     end
 
     def ok?
@@ -36,7 +35,7 @@ class IosTest < ActiveSupport::TestCase
   end
 
   setup do
-    FakeConnectionPool.invalid_tokens = []
+    FakeConnection.invalid_tokens = []
 
     @delivery_method = Noticed::DeliveryMethods::Ios.new
     @delivery_method.instance_variable_set :@notification, noticed_notifications(:one)
@@ -51,30 +50,65 @@ class IosTest < ActiveSupport::TestCase
         apn.custom_payload = {url: root_url(host: "example.org")}
       },
       invalid_token: ->(device_token) {
-        FakeConnectionPool.invalid_tokens << device_token
+        FakeConnection.invalid_tokens << device_token
       }
     )
   end
 
   test "notifies each device token" do
-    connection_pool = FakeConnectionPool.new(FakeResponse.new("200"))
-    @delivery_method.stub(:production_pool, connection_pool) do
+    connection = FakeConnection.new(FakeResponse.new("200"))
+    @delivery_method.stub(:new_connection, connection) do
       @delivery_method.deliver
     end
 
-    assert_equal 2, connection_pool.deliveries.count
-    assert_equal 0, FakeConnectionPool.invalid_tokens.count
+    assert_equal 2, connection.deliveries.count
+    assert_equal 0, FakeConnection.invalid_tokens.count
   end
 
   test "notifies of invalid tokens for cleanup" do
-    connection_pool = FakeConnectionPool.new(FakeResponse.new("410"))
-    @delivery_method.stub(:production_pool, connection_pool) do
+    connection = FakeConnection.new(FakeResponse.new("410"))
+    @delivery_method.stub(:new_connection, connection) do
       @delivery_method.deliver
     end
 
-    # Our fake connection pool doesn't understand these wouldn't be delivered in the real world
-    assert_equal 2, connection_pool.deliveries.count
-    assert_equal 2, FakeConnectionPool.invalid_tokens.count
+    # Our fake connection doesn't understand these wouldn't be delivered in the real world
+    assert_equal 2, connection.deliveries.count
+    assert_equal 2, FakeConnection.invalid_tokens.count
+  end
+
+  test "closes the connection after delivery" do
+    connection = FakeConnection.new(FakeResponse.new("200"))
+    @delivery_method.stub(:new_connection, connection) do
+      @delivery_method.deliver
+    end
+
+    assert connection.closed
+  end
+
+  test "closes the connection when delivery fails" do
+    connection = FakeConnection.new(FakeResponse.new("500"))
+    @delivery_method.stub(:new_connection, connection) do
+      assert_raises(RuntimeError) { @delivery_method.deliver }
+    end
+
+    assert connection.closed
+  end
+
+  test "error handler is bound to the notification being delivered" do
+    handled = nil
+    set_config(
+      bundle_identifier: "bundle_id",
+      key_id: "key_id",
+      team_id: "team_id",
+      apns_key: "apns_key",
+      device_tokens: [],
+      error_handler: ->(exception) { handled = [self, exception] }
+    )
+
+    connection = @delivery_method.send(:new_connection)
+    connection.instance_variable_get(:@client).emit(:error, "boom")
+
+    assert_equal [noticed_notifications(:one), "boom"], handled
   end
 
   private

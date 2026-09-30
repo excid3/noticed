@@ -34,8 +34,22 @@ module Noticed
         end
       end
 
+      # FCM returns 404 UNREGISTERED for tokens that are no longer valid. 400 INVALID_ARGUMENT is also
+      # returned for malformed payloads, so only treat it as a bad token when the error points at the token.
+      # https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode
       def bad_token?(response)
-        response.code == "404" || response.code == "400"
+        case response.code
+        when "404"
+          true
+        when "400"
+          error = JSON.parse(response.body).fetch("error", {})
+          violations = error.fetch("details", []).flat_map { |detail| detail.fetch("fieldViolations", []) }
+          violations.any? { |violation| violation["field"] == "message.token" } || error["message"].to_s.match?(/registration token/i)
+        else
+          false
+        end
+      rescue JSON::ParserError
+        false
       end
 
       def credentials
@@ -59,11 +73,14 @@ module Noticed
       end
 
       def access_token
+        @access_token ||= authorizer.fetch_access_token!["access_token"]
+      end
+
+      def authorizer
         @authorizer ||= (evaluate_option(:authorizer) || Google::Auth::ServiceAccountCredentials).make_creds(
           json_key_io: StringIO.new(credentials.to_json),
           scope: "https://www.googleapis.com/auth/firebase.messaging"
         )
-        @authorizer.fetch_access_token!["access_token"]
       end
     end
   end

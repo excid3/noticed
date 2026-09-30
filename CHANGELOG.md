@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 3.1.0
+
 * [Breaking] Drop Rails 7.0 support
 * [Bugfix] Action Push Native's push notification class is configured with `config.notification_class` (`config.class` is reserved for overriding the delivery method class)
 * `deliver_by` with a duplicate name raises `ArgumentError` instead of `NameError`; `recipients :unknown_method` raises `NoMethodError` instead of silently delivering to nobody

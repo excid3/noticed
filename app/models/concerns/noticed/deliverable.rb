@@ -63,11 +63,14 @@ module Noticed
         required_params(*names)
       end
 
+      # Params named after a belongs_to association, like `record:` or an `account:`
+      # you've added to scope events, are assigned to the association instead of stored in params
       def with(params)
         if self < Ephemeral
           new(params: params)
         else
-          new(params: params.except(:record), record: params[:record])
+          associations = params.slice(*reflect_on_all_associations(:belongs_to).map(&:name))
+          new(params: params.except(*associations.keys), **associations)
         end
       end
 

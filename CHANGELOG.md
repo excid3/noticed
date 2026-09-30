@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Params named after a `belongs_to` association on the notifier, such as an `account:` added to scope events, are assigned to the association like `record:` instead of being stored in `params`
+
 ### 3.1.0
 
 * [Breaking] Drop Rails 7.0 support

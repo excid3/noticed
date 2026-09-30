@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2024_01_29_184740) do
     t.string "type"
     t.string "record_type"
     t.integer "record_id"
+    t.integer "account_id"
     if t.respond_to?(:jsonb)
       t.jsonb "params"
     else

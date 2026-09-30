@@ -62,6 +62,13 @@ class NotifierTest < ActiveSupport::TestCase
     assert_empty notifier.params
   end
 
+  test "assigns belongs_to associations from params" do
+    notifier = AccountNotifier.with(account: accounts(:one), record: users(:one), message: "test")
+    assert_equal accounts(:one), notifier.account
+    assert_equal users(:one), notifier.record
+    assert_equal({message: "test"}, notifier.params)
+  end
+
   test "can add validations for record association" do
     notifier = RecordNotifier.with({})
     refute notifier.valid?

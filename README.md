@@ -425,6 +425,8 @@ This instantiates a new `NewCommentNotifier` with params (similar to ActiveJob, 
 
 ✨ The `record:` param is a special param that gets assigned to the `record` polymorphic association in the database. You should try to set the `record:` param where possible. This may be best understood as ‘the record/object this notification is _about_’, and allows for future queries from the record-side: “give me all notifications that were generated from this comment”.
 
+The same goes for any other `belongs_to` association you add to your notifiers. Add `belongs_to :account` to `Noticed::Event` (see [Customizing the Database Models](#customizing-the-database-models)) and `with(account: @account, ...)` assigns the association instead of storing the account in `params`, so you can scope events with `Noticed::Event.where(account: @account)`.
+
 This invocation will create a single `Noticed::Event` record and a `Noticed::Notification` record for each recipient. A background job will then process the Event and fire off a separate background job for each bulk delivery method _and_ each recipient + individual-delivery-method combination. In this case, that’d be the following jobs kicked off from this event:
 
 - A bulk delivery job for `:discord` bulk delivery

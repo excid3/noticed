@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     noticed (3.0.0)
-      rails (>= 6.1.0)
+      rails (>= 7.0.0)
 
 GEM
   remote: https://rubygems.org/

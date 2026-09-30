@@ -16,6 +16,7 @@ module Noticed
 
     # Ephemeral notifiers cannot serialize params since they aren't ActiveRecord backed
     if respond_to? :serialize
+      # The coder: keyword was added in Rails 7.1
       if Rails.gem_version >= Gem::Version.new("7.1.0.alpha")
         serialize :params, coder: Coder
       else

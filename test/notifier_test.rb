@@ -217,13 +217,10 @@ class NotifierTest < ActiveSupport::TestCase
     end
   end
 
-  # assert_enqeued_with doesn't support priority before Rails 7
-  if Rails.gem_version >= Gem::Version.new("7.0.0.alpha1")
-    test "priority delivery method option" do
-      event = PriorityNotifier.deliver(User.first)
-      assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last], priority: 2) do
-        perform_enqueued_jobs
-      end
+  test "priority delivery method option" do
+    event = PriorityNotifier.deliver(User.first)
+    assert_enqueued_with(job: Noticed::DeliveryMethods::Test, args: [:test, event.notifications.last], priority: 2) do
+      perform_enqueued_jobs
     end
   end
 

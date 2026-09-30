@@ -24,7 +24,7 @@ module Noticed
 
       # Ephemeral notifiers aren't persisted, so the notifier name, recipient(s), and params are passed to the job instead.
       # Options like `wait` are evaluated against `context` (the ephemeral Event or Notification), matching the persisted path.
-      def ephemeral_perform_later(notifier, recipient, params, options = {}, context: recipient)
+      def ephemeral_perform_later(notifier, recipient, params, options, context:)
         constant.set(computed_options(options, context))
           .perform_later(name, "#{notifier}::Notification", recipient: recipient, params: params)
       end
@@ -55,6 +55,7 @@ module Noticed
       private
 
       def computed_options(options, context)
+        options = options.dup
         options[:wait] ||= evaluate_option(:wait, context) if config.has_key?(:wait)
         options[:wait_until] ||= evaluate_option(:wait_until, context) if config.has_key?(:wait_until)
         options[:queue] ||= evaluate_option(:queue, context) if config.has_key?(:queue)

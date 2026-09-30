@@ -74,7 +74,10 @@ module Noticed
       def deliver(recipients = nil, **options)
         new.deliver(recipients, **options)
       end
-      alias_method :deliver_later, :deliver
+
+      def deliver_later(...)
+        deliver(...)
+      end
     end
 
     # CommentNotifier.deliver(User.all)
@@ -103,7 +106,10 @@ module Noticed
 
       self
     end
-    alias_method :deliver_later, :deliver
+
+    def deliver_later(...)
+      deliver(...)
+    end
 
     def evaluate_recipients
       return unless _recipients

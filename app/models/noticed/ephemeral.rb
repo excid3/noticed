@@ -44,20 +44,19 @@ module Noticed
       validate!
 
       bulk_delivery_methods.each_value do |deliver_by|
-        deliver_by.ephemeral_perform_later(self.class.name, recipients, params, options.dup, context: self) if deliver_by.perform?(self)
+        deliver_by.ephemeral_perform_later(self.class.name, recipients, params, options, context: self) if deliver_by.perform?(self)
       end
 
       recipients.each do |recipient|
         notification = self.class::Notification.new(recipient: recipient, event: self)
 
         delivery_methods.each_value do |deliver_by|
-          deliver_by.ephemeral_perform_later(self.class.name, recipient, params, options.dup, context: notification) if deliver_by.perform?(notification)
+          deliver_by.ephemeral_perform_later(self.class.name, recipient, params, options, context: notification) if deliver_by.perform?(notification)
         end
       end
 
       self
     end
-    alias_method :deliver_later, :deliver
 
     def record
       params[:record]

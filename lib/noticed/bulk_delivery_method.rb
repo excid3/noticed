@@ -13,11 +13,7 @@ module Noticed
 
     def perform(delivery_method_name, event, recipient: nil, params: {}, overrides: {})
       # Ephemeral notifications
-      @event = if event.is_a? String
-        event.constantize.new_with_params(recipient, params).event
-      else
-        event
-      end
+      @event = event.is_a?(String) ? event.constantize.new_with_params(recipient, params).event : event
 
       # Look up config from Notifier and merge overrides
       @config = @event.bulk_delivery_methods.fetch(delivery_method_name).config.merge(overrides)

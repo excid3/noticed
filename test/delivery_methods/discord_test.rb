@@ -10,10 +10,6 @@ class DiscordDeliveryMethodTest < ActiveSupport::TestCase
     end
   end
 
-  setup do
-    @delivery_method = Noticed::DeliveryMethods::Discord.new
-  end
-
   test "end to end" do
     stub = stub_request(:post, "https://discord.example.org/webhook").with(body: {content: "hello", recipient: users(:one).email}.to_json)
 
@@ -22,23 +18,5 @@ class DiscordDeliveryMethodTest < ActiveSupport::TestCase
     end
 
     assert_requested stub
-  end
-
-  test "discord with json payload" do
-    set_config(
-      url: "https://discord.example.org/webhook",
-      json: {content: "hello"}
-    )
-    stub_request(:post, "https://discord.example.org/webhook").with(body: "{\"content\":\"hello\"}")
-
-    assert_nothing_raised do
-      @delivery_method.deliver
-    end
-  end
-
-  private
-
-  def set_config(config)
-    @delivery_method.instance_variable_set :@config, ActiveSupport::HashWithIndifferentAccess.new(config)
   end
 end

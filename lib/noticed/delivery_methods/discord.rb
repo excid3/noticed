@@ -1,6 +1,6 @@
 module Noticed
   module DeliveryMethods
-    class Discord < BulkDeliveryMethod
+    class Discord < DeliveryMethod
       required_options :json, :url
 
       def deliver

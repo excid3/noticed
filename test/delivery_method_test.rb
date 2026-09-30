@@ -16,6 +16,20 @@ class DeliveryMethodTest < ActiveSupport::TestCase
     assert_equal UserMailer, @delivery_method.fetch_constant(:mailer)
   end
 
+  test "bulk fetch_constant looks up constants from String, proc, and constant" do
+    @delivery_method = Noticed::BulkDeliveryMethod.new
+    @delivery_method.instance_variable_set :@event, BulkNotifier.new
+
+    set_config(mailer: "UserMailer")
+    assert_equal UserMailer, @delivery_method.fetch_constant(:mailer)
+
+    set_config(mailer: -> { "UserMailer" })
+    assert_equal UserMailer, @delivery_method.fetch_constant(:mailer)
+
+    set_config(mailer: UserMailer)
+    assert_equal UserMailer, @delivery_method.fetch_constant(:mailer)
+  end
+
   test "delivery methods inherit required options" do
     assert_equal [:message], InheritedDeliveryMethod.required_option_names
   end

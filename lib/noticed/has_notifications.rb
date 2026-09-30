@@ -5,7 +5,7 @@ module Noticed
     #
     #    class User < ApplicationRecord
     #      has_noticed_notifications
-    #      has_noticed_notifications param_name: :owner, destroy: false, model: "Notification"
+    #      has_noticed_notifications param_name: :owner, destroy: false, model_name: "Notification"
     #    end
     #
     #    @user.notifications_as_user
@@ -17,7 +17,7 @@ module Noticed
       def has_noticed_notifications(param_name: model_name.singular, **options)
         define_method :"notifications_as_#{param_name}" do
           model = options.fetch(:model_name, "Noticed::Event").constantize
-          case current_adapter
+          case model.connection_db_config.adapter
           when "postgresql", "postgis"
             model.where("params @> ?", Noticed::Coder.dump(param_name.to_sym => self).to_json)
           when "mysql2", "trilogy"
@@ -35,14 +35,6 @@ module Noticed
             send(:"notifications_as_#{param_name}").destroy_all
           end
         end
-      end
-    end
-
-    def current_adapter
-      if ActiveRecord::Base.respond_to?(:connection_db_config)
-        ActiveRecord::Base.connection_db_config.adapter
-      else
-        ActiveRecord::Base.connection_config[:adapter]
       end
     end
   end

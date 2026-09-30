@@ -67,15 +67,17 @@ module Noticed
         if self < Ephemeral
           new(params: params)
         else
-          record = params.delete(:record)
-          new(params: params, record: record)
+          new(params: params.except(:record), record: params[:record])
         end
       end
 
       def deliver(recipients = nil, **options)
         new.deliver(recipients, **options)
       end
-      alias_method :deliver_later, :deliver
+
+      def deliver_later(...)
+        deliver(...)
+      end
     end
 
     # CommentNotifier.deliver(User.all)
@@ -104,7 +106,10 @@ module Noticed
 
       self
     end
-    alias_method :deliver_later, :deliver
+
+    def deliver_later(...)
+      deliver(...)
+    end
 
     def evaluate_recipients
       return unless _recipients

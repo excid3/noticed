@@ -13,13 +13,10 @@ module Noticed
 
     def perform(delivery_method_name, event, recipient: nil, params: {}, overrides: {})
       # Ephemeral notifications
-      if event.is_a? String
-        @event = event.constantize.new_with_params(recipient, params)
-        @config = overrides
-      else
-        @event = event
-        @config = event.bulk_delivery_methods.fetch(delivery_method_name).config.merge(overrides)
-      end
+      @event = event.is_a?(String) ? event.constantize.new_with_params(recipient, params).event : event
+
+      # Look up config from Notifier and merge overrides
+      @config = @event.bulk_delivery_methods.fetch(delivery_method_name).config.merge(overrides)
 
       return false if config.has_key?(:if) && !evaluate_option(:if)
       return false if config.has_key?(:unless) && evaluate_option(:unless)
@@ -34,15 +31,15 @@ module Noticed
     end
 
     def fetch_constant(name)
-      option = config[name]
-      option.is_a?(String) ? option.constantize : evaluate_option(option)
+      option = evaluate_option(name)
+      option.is_a?(String) ? option.constantize : option
     end
 
     def evaluate_option(name)
       option = config[name]
 
       # Evaluate Proc within the context of the notifier
-      if option&.respond_to?(:call)
+      if option.respond_to?(:call)
         event.instance_exec(&option)
 
       # Call method if symbol and matching method

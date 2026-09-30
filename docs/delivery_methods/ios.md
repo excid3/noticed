@@ -62,10 +62,6 @@ end
 
   Your APN Team ID
 
-* `pool_size: 5` - *Optional*
-
-  The connection pool size for Apnotic
-
 * `development` - *Optional*
 
   Set this to `true` to use the APNS sandbox environment for sending notifications. This is required when running the app to your device via Xcode. Running the app via TestFlight or the App Store should not use development.

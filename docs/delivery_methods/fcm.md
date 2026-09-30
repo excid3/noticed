@@ -139,8 +139,9 @@ end
 ## Handling Failures
 
 Firebase Cloud Messaging Notifications may fail delivery if the user has removed the app from their device.
-In this case, FCM will return a [400 or 404 HTTP Status Code](https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode)
-and the delivery method will call the `invalid_token` handler, if you configure one.
+In this case, FCM will return a [404 UNREGISTERED or 400 INVALID_ARGUMENT error](https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode)
+and the delivery method will call the `invalid_token` handler, if you configure one. A 400 is only treated as an invalid token
+when the error refers to the registration token; a malformed payload goes to the `error_handler` instead.
 
 ```ruby
 class CommentNotification

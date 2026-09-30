@@ -18,8 +18,13 @@ module Noticed
         end
       end
 
+      # Builds the delivery job without enqueuing it, so jobs can be enqueued in bulk
+      def job(event_or_notification, options = {})
+        constant.new(name, event_or_notification).set(computed_options(options, event_or_notification))
+      end
+
       def perform_later(event_or_notification, options = {})
-        constant.set(computed_options(options, event_or_notification)).perform_later(name, event_or_notification)
+        job(event_or_notification, options).enqueue
       end
 
       # Ephemeral notifiers aren't persisted, so the notifier name, recipient(s), and params are passed to the job instead.

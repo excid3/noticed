@@ -10,7 +10,6 @@ module Noticed
       # end
 
       def deliver
-        Rails.logger.debug(evaluate_option(:json))
         post_request(
           "https://#{host}/xrpc/com.atproto.repo.createRecord",
           headers: {"Authorization" => "Bearer #{token}"},

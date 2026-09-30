@@ -1,5 +1,9 @@
 ### Unreleased
 
+* `Noticed::EventJob` enqueues delivery jobs in batches with `ActiveJob.perform_all_later` (Rails 7.1+) and loads notifications with `find_in_batches`. Note that `perform_all_later` does not run ActiveJob enqueue callbacks.
+* [Bugfix] iOS delivery opens a connection per delivery instead of a shared pool, so `error_handler` runs for the notification actually being delivered and notifiers with different APNs credentials no longer share a connection. The `pool_size` option is removed.
+* [Bugfix] FCM only treats a 400 as an invalid token when the error refers to the registration token, so malformed payloads no longer delete valid tokens. The access token is fetched once per delivery.
+* Request and response bodies are no longer logged by `post_request` since they can contain credentials and access tokens
 * [Bugfix] Support Rails 8.2's `GlobalID::Locator::RecordNotFound` in `Noticed::Coder`
 * [Bugfix] Notifier `Notification` classes no longer inherit from a top-level `Notification` model in the host app
 * [Bugfix] Ephemeral notifiers: bulk delivery methods read their config, `before_enqueue` and `required_params` are honored, `deliver` accepts job options, and `notification_methods` are inherited

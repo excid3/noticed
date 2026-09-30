@@ -51,6 +51,8 @@ Bulk delivery methods we support:
 [Watch Screencast](https://www.youtube.com/watch?v=SzX-aBEqnAc)
 
 ## 🚀 Installation
+Noticed requires Rails 7.1 or newer.
+
 Run the following command to add Noticed to your Gemfile:
 
 ```ruby

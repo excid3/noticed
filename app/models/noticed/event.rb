@@ -12,12 +12,7 @@ module Noticed
 
     attribute :params, :json, default: {}
 
-    # The coder: keyword was added in Rails 7.1
-    if Rails.gem_version >= Gem::Version.new("7.1.0.alpha")
-      serialize :params, coder: Coder
-    else
-      serialize :params, Coder
-    end
+    serialize :params, coder: Coder
   end
 end
 

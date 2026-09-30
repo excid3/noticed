@@ -1,9 +1,10 @@
 ### Unreleased
 
+* [Breaking] Drop Rails 7.0 support
 * [Bugfix] Action Push Native's push notification class is configured with `config.notification_class` (`config.class` is reserved for overriding the delivery method class)
 * `deliver_by` with a duplicate name raises `ArgumentError` instead of `NameError`; `recipients :unknown_method` raises `NoMethodError` instead of silently delivering to nobody
 * Slack and Webhook delivery logic is shared between individual and bulk delivery methods via `Noticed::SlackDelivery` and `Noticed::WebhookDelivery`
-* `Noticed::EventJob` enqueues delivery jobs in batches with `ActiveJob.perform_all_later` (Rails 7.1+) and loads notifications with `find_in_batches`. Note that `perform_all_later` does not run ActiveJob enqueue callbacks.
+* `Noticed::EventJob` enqueues delivery jobs in batches with `ActiveJob.perform_all_later` and loads notifications with `find_in_batches`. Note that `perform_all_later` does not run ActiveJob enqueue callbacks.
 * [Bugfix] iOS delivery opens a connection per delivery instead of a shared pool, so `error_handler` runs for the notification actually being delivered and notifiers with different APNs credentials no longer share a connection. The `pool_size` option is removed.
 * [Bugfix] FCM only treats a 400 as an invalid token when the error refers to the registration token, so malformed payloads no longer delete valid tokens. The access token is fetched once per delivery.
 * Request and response bodies are no longer logged by `post_request` since they can contain credentials and access tokens

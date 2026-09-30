@@ -14,7 +14,7 @@ module Noticed
   include ActiveSupport::Deprecation::DeprecatedConstantAccessor
 
   def self.deprecator # :nodoc:
-    @deprecator ||= ActiveSupport::Deprecation.new("3.0", "Noticed")
+    @deprecator ||= ActiveSupport::Deprecation.new("4.0", "Noticed")
   end
 
   deprecate_constant :Base, "Noticed::Event", deprecator: deprecator

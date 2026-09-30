@@ -2,10 +2,10 @@
 
 module Noticed
   module Generators
-    class ModelGenerator < Rails::Generators::Base
-      include Rails::Generators::ResourceHelpers
-
+    class InstallGenerator < Rails::Generators::Base
       source_root File.expand_path("../templates", __FILE__)
+
+      desc "Copies the Noticed migrations into your application."
 
       def create_migrations
         rails_command "railties:install:migrations FROM=noticed", inline: true

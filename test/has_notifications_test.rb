@@ -5,6 +5,10 @@ class HasNotificationsTest < ActiveSupport::TestCase
     assert User.respond_to?(:has_noticed_notifications)
   end
 
+  test "does not add public helper methods to every model" do
+    refute user.respond_to?(:current_adapter)
+  end
+
   test "noticed notifications association" do
     assert user.respond_to?(:notifications_as_user)
   end

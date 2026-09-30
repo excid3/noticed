@@ -6,7 +6,6 @@ module Noticed
     include Noticed::Translation
     include Rails.application.routes.url_helpers
 
-    attribute :record
     attribute :params, default: {}
 
     class Notification
@@ -27,32 +26,38 @@ module Noticed
       end
     end
 
-    # Dynamically define Notification on each Ephemeral Notifier
+    # Dynamically define Notification on each Ephemeral Notifier, inheriting from the parent Notifier's Notification
     def self.inherited(notifier)
       super
-      notifier.const_set :Notification, Class.new(Noticed::Ephemeral::Notification)
+      notifier.const_set :Notification, Class.new(const_defined?(:Notification, false) ? const_get(:Notification, false) : Noticed::Ephemeral::Notification)
     end
 
     def self.notification_methods(&block)
-      const_get(:Notification).class_eval(&block)
+      const_get(:Notification, false).class_eval(&block)
     end
 
-    def deliver(recipients = nil)
+    # EphemeralNotifier.with(message: "test").deliver(User.all, wait: 5.minutes)
+    def deliver(recipients = nil, **options)
       recipients ||= evaluate_recipients
       recipients = Array.wrap(recipients)
 
-      bulk_delivery_methods.each do |_, deliver_by|
-        deliver_by.ephemeral_perform_later(self.class.name, recipients, params)
+      validate!
+
+      bulk_delivery_methods.each_value do |deliver_by|
+        deliver_by.ephemeral_perform_later(self.class.name, recipients, params, options.dup, context: self) if deliver_by.perform?(self)
       end
 
       recipients.each do |recipient|
-        delivery_methods.each do |_, deliver_by|
-          deliver_by.ephemeral_perform_later(self.class.name, recipient, params)
+        notification = self.class::Notification.new(recipient: recipient, event: self)
+
+        delivery_methods.each_value do |deliver_by|
+          deliver_by.ephemeral_perform_later(self.class.name, recipient, params, options.dup, context: notification) if deliver_by.perform?(notification)
         end
       end
 
       self
     end
+    alias_method :deliver_later, :deliver
 
     def record
       params[:record]

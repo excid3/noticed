@@ -235,4 +235,18 @@ class NotifierTest < ActiveSupport::TestCase
   test "inherits notification_methods from application notifier" do
     assert SimpleNotifier::Notification.new.respond_to?(:inherited_method)
   end
+
+  test "with does not mutate the params hash" do
+    params = {record: users(:one), message: "test"}
+    RecordNotifier.with(params)
+    assert_equal users(:one), params[:record]
+  end
+
+  test "Notification class does not inherit from a top-level Notification model in the host app" do
+    Object.const_set :Notification, Class.new
+    notifier = Class.new(Noticed::Event)
+    assert_equal Noticed::Notification, notifier::Notification.superclass
+  ensure
+    Object.send :remove_const, :Notification
+  end
 end

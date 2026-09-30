@@ -22,6 +22,14 @@ class Noticed::Deliverable::DeliverByTest < ActiveSupport::TestCase
     assert_equal true, TestDelivery.new(:test, config).perform?({})
   end
 
+  test "#validate! only requires options to be set, not present" do
+    deliver_by = Noticed::Deliverable::DeliverBy.new(:action_cable, ActiveSupport::OrderedOptions.new.merge(message: false))
+    assert_nothing_raised { deliver_by.validate! }
+
+    deliver_by = Noticed::Deliverable::DeliverBy.new(:action_cable, ActiveSupport::OrderedOptions.new.merge(message: nil))
+    assert_raises(Noticed::ValidationError) { deliver_by.validate! }
+  end
+
   test "#perform? takes context into account" do
     config = ActiveSupport::OrderedOptions.new.merge({})
     config.before_enqueue = -> { throw :abort if key?(:test_value) }

@@ -1,5 +1,18 @@
 ### Unreleased
 
+* [Bugfix] Rescue `GlobalID::Locator::RecordNotFound` in `Noticed::Coder` for Rails 8.2+ so `deserialize_error?` keeps working
+* [Bugfix] Notifier `Notification` classes no longer inherit from a top-level `Notification` model in the host app
+* [Bugfix] Ephemeral bulk delivery methods now read the notifier's `bulk_deliver_by` config
+* [Bugfix] Ephemeral notifiers now honor `before_enqueue`, validate `required_params` / `required_options`, accept job options (`deliver(recipients, wait: 5.minutes)`), and `deliver_later` works
+* [Bugfix] Ephemeral `notification_methods` are inherited by subclassed notifiers
+* [Breaking] Ephemeral `wait` / `wait_until` / `queue` / `priority` lambdas are now evaluated in the Notification (or Event for bulk) context instead of the recipient, matching persisted notifiers
+* [Bugfix] `Notifier.with(params)` no longer mutates the passed hash
+* [Bugfix] `deliver_by :discord` (per-recipient) inherited from `BulkDeliveryMethod` and crashed
+* [Bugfix] `BulkDeliveryMethod#fetch_constant` returned `nil` for proc and constant values
+* [Bugfix] `DeliverBy#validate!` rejected required options set to `false`
+* [Bugfix] `rails g noticed:install` could not be found (generator class was named `ModelGenerator`)
+* `has_noticed_notifications` no longer adds a public `current_adapter` method to every model and uses the notification model's own database connection
+
 ### 3.0.0
 
 * [Breaking] Drop Rails 6.1 support

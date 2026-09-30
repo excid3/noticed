@@ -67,8 +67,7 @@ module Noticed
         if self < Ephemeral
           new(params: params)
         else
-          record = params.delete(:record)
-          new(params: params, record: record)
+          new(params: params.except(:record), record: params[:record])
         end
       end
 

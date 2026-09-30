@@ -55,7 +55,7 @@ module Noticed
         connection = evaluate_option(:development) ? Apnotic::Connection.development(connection_options) : Apnotic::Connection.new(connection_options)
         connection.on(:error) do |exception|
           Rails.logger.info "Apnotic exception raised: #{exception}"
-          notification.instance_exec(exception, &config[:error_handler]) if config[:error_handler].respond_to?(:call)
+          notification.instance_exec(exception, &config[:error_handler]) if config[:error_handler]
         end
         connection
       end

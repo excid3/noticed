@@ -3,12 +3,16 @@ require "test_helper"
 class IosTest < ActiveSupport::TestCase
   class FakeConnection
     class_attribute :invalid_tokens, default: []
-    attr_reader :deliveries, :closed
+    attr_reader :deliveries, :closed, :error_handler
 
-    def initialize(response)
+    def initialize(response = nil)
       @response = response
       @deliveries = []
       @closed = false
+    end
+
+    def on(event, &block)
+      @error_handler = block if event == :error
     end
 
     def push(apn)
@@ -105,8 +109,11 @@ class IosTest < ActiveSupport::TestCase
       error_handler: ->(exception) { handled = [self, exception] }
     )
 
-    connection = @delivery_method.send(:new_connection)
-    connection.instance_variable_get(:@client).emit(:error, "boom")
+    connection = FakeConnection.new
+    Apnotic::Connection.stub(:new, connection) do
+      @delivery_method.send(:new_connection)
+    end
+    connection.error_handler.call("boom")
 
     assert_equal [noticed_notifications(:one), "boom"], handled
   end

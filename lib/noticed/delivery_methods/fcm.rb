@@ -35,19 +35,14 @@ module Noticed
       end
 
       # FCM returns 404 UNREGISTERED for tokens that are no longer valid. 400 INVALID_ARGUMENT is also
-      # returned for malformed payloads, so only treat it as a bad token when the error points at the token.
+      # returned for malformed payloads, so only treat it as a bad token when the error is about the token.
       # https://firebase.google.com/docs/reference/fcm/rest/v1/ErrorCode
       def bad_token?(response)
-        case response.code
-        when "404"
-          true
-        when "400"
-          error = JSON.parse(response.body).fetch("error", {})
-          violations = error.fetch("details", []).flat_map { |detail| detail.fetch("fieldViolations", []) }
-          violations.any? { |violation| violation["field"] == "message.token" } || error["message"].to_s.match?(/registration token/i)
-        else
-          false
-        end
+        response.code == "404" || (response.code == "400" && token_error?(response))
+      end
+
+      def token_error?(response)
+        JSON.parse(response.body).dig("error", "message").to_s.match?(/registration token/i)
       rescue JSON::ParserError
         false
       end

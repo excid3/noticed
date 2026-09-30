@@ -8,17 +8,17 @@ module Noticed
 
       # Enqueue individual deliveries in batches so large recipient lists don't load into memory all at once
       event.notifications.find_in_batches do |notifications|
-        jobs = notifications.flat_map do |notification|
-          event.delivery_methods.values.filter_map do |deliver_by|
-            deliver_by.job(notification) if deliver_by.perform?(notification)
-          end
-        end
-
-        enqueue_all jobs
+        enqueue_all notifications.flat_map { |notification| delivery_jobs_for(event, notification) }
       end
     end
 
     private
+
+    def delivery_jobs_for(event, notification)
+      event.delivery_methods.values.filter_map do |deliver_by|
+        deliver_by.job(notification) if deliver_by.perform?(notification)
+      end
+    end
 
     # perform_all_later was added in Rails 7.1
     def enqueue_all(jobs)

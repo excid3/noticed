@@ -374,6 +374,20 @@ Each of these options are available for every delivery method (individual or bul
 * `config.if` — Intended for a lambda or method; runs after the `wait` if configured; cancels the delivery method if returns falsey
 * `config.unless`  — Intended for a lambda or method; runs after the `wait` if configured; cancels the delivery method if returns truthy
 
+Lambdas for `if` and `unless` are evaluated in the context of the Notification. A symbol calls a method on the Notifier and passes the notification:
+
+```ruby
+class MessageNotifier < Noticed::Event
+  deliver_by :email do |config|
+    config.if = :email_enabled?
+  end
+
+  def email_enabled?(notification)
+    notification.recipient.email_notifications?
+  end
+end
+```
+
 The following are evaluated in the context of the Notification so it can be customize to the recipient:
 
 * `config.wait` — (Should yield an `ActiveSupport::Duration`) Delays the job that runs this delivery method for the given duration of time

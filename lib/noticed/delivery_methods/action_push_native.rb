@@ -4,7 +4,7 @@ module Noticed
       required_options :devices, :format
 
       def deliver
-        notification = (!!evaluate_option(:silent)) ? notification_class.silent : notification_class
+        notification = evaluate_option(:silent) ? notification_class.silent : notification_class
 
         notification
           .with_apple(evaluate_option(:with_apple))
@@ -14,8 +14,9 @@ module Noticed
           .deliver_later_to(evaluate_option(:devices))
       end
 
+      # `notification_class` rather than `class` since `config.class` is reserved for overriding the delivery method
       def notification_class
-        fetch_constant(:class) || ApplicationPushNotification
+        fetch_constant(:notification_class) || ApplicationPushNotification
       end
     end
   end

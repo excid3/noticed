@@ -18,7 +18,7 @@ module Noticed
       end
 
       def bulk_deliver_by(name, options = {})
-        raise NameError, "#{name} has already been used for this Notifier." if bulk_delivery_methods.has_key?(name)
+        raise ArgumentError, "#{name} has already been used for this Notifier." if bulk_delivery_methods.has_key?(name)
 
         config = ActiveSupport::OrderedOptions.new.merge(options)
         yield config if block_given?
@@ -26,7 +26,7 @@ module Noticed
       end
 
       def deliver_by(name, options = {})
-        raise NameError, "#{name} has already been used for this Notifier." if delivery_methods.has_key?(name)
+        raise ArgumentError, "#{name} has already been used for this Notifier." if delivery_methods.has_key?(name)
 
         if name == :database
           Noticed.deprecator.warn <<-WARNING.squish
@@ -116,7 +116,7 @@ module Noticed
 
       if _recipients.respond_to?(:call, true)
         instance_exec(&_recipients)
-      elsif _recipients.is_a?(Symbol) && respond_to?(_recipients, true)
+      else
         send(_recipients)
       end
     end

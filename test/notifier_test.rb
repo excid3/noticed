@@ -236,6 +236,20 @@ class NotifierTest < ActiveSupport::TestCase
     assert SimpleNotifier::Notification.new.respond_to?(:inherited_method)
   end
 
+  test "recipients with an unknown method name raises" do
+    notifier = Class.new(Noticed::Event) { recipients :nope }
+    assert_raises(NoMethodError) { notifier.new.evaluate_recipients }
+  end
+
+  test "duplicate delivery method names raise" do
+    assert_raises(ArgumentError) do
+      Class.new(Noticed::Event) do
+        deliver_by :test
+        deliver_by :test
+      end
+    end
+  end
+
   test "with does not mutate the params hash" do
     params = {record: users(:one), message: "test"}
     RecordNotifier.with(params)

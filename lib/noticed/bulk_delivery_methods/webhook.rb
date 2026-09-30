@@ -1,18 +1,7 @@
 module Noticed
   module BulkDeliveryMethods
     class Webhook < BulkDeliveryMethod
-      required_options :url
-
-      def deliver
-        post_request(
-          evaluate_option(:url),
-          basic_auth: evaluate_option(:basic_auth),
-          headers: evaluate_option(:headers),
-          json: evaluate_option(:json),
-          form: evaluate_option(:form),
-          body: evaluate_option(:body)
-        )
-      end
+      include WebhookDelivery
     end
   end
 end

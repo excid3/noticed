@@ -53,3 +53,7 @@ end
 * `silent`
 
   Should return a `Boolean` if notification should be silent
+
+* `notification_class` - *Optional*
+
+  The `ActionPushNative::Notification` subclass to deliver with. Defaults to `ApplicationPushNotification`.

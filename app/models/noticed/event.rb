@@ -8,20 +8,15 @@ module Noticed
     belongs_to :record, polymorphic: true, optional: true
     has_many :notifications, dependent: :delete_all
 
-    accepts_nested_attributes_for :notifications
-
     scope :newest_first, -> { order(created_at: :desc) }
 
     attribute :params, :json, default: {}
 
-    # Ephemeral notifiers cannot serialize params since they aren't ActiveRecord backed
-    if respond_to? :serialize
-      # The coder: keyword was added in Rails 7.1
-      if Rails.gem_version >= Gem::Version.new("7.1.0.alpha")
-        serialize :params, coder: Coder
-      else
-        serialize :params, Coder
-      end
+    # The coder: keyword was added in Rails 7.1
+    if Rails.gem_version >= Gem::Version.new("7.1.0.alpha")
+      serialize :params, coder: Coder
+    else
+      serialize :params, Coder
     end
   end
 end

@@ -2,7 +2,7 @@ class DeliveryMethods::<%= class_name %> < ApplicationDeliveryMethod
   # To use this delivery method, specify the class option in your notifier.
   #
   #   class MyNotifer < ApplicationNotifier
-  #     deliver_by :<%= file_path %>, class: "<%= class_name %>"
+  #     deliver_by :<%= file_name %>, class: "DeliveryMethods::<%= class_name %>"
   #   end
 
   # Specify required options for the deliver_by config block

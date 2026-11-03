@@ -26,16 +26,14 @@ class DiscordDeliveryMethodTest < ActiveSupport::TestCase
     stub_request(:post, url).to_return(status: 429)
     delivery_method = Noticed::DeliveryMethods::Discord.new
     delivery_method.instance_variable_set :@config, ActiveSupport::HashWithIndifferentAccess.new(url: url, json: {})
-    log = StringIO.new
-    logger = Noticed::DeliveryMethod.logger
-    Noticed::DeliveryMethod.logger = ActiveSupport::Logger.new(log)
 
-    error = assert_raises(Noticed::ResponseUnsuccessful) { delivery_method.deliver }
+    error = with_captured_log do |log|
+      error = assert_raises(Noticed::ResponseUnsuccessful) { delivery_method.deliver }
+      refute_includes log.string, "SECRET-TOKEN"
+      error
+    end
 
     refute_includes error.message, "SECRET-TOKEN"
-    assert_includes error.message, "https://discord.example.org"
-    refute_includes log.string, "SECRET-TOKEN"
-  ensure
-    Noticed::DeliveryMethod.logger = logger
+    assert_includes error.message, "POST request to https://discord.example.org returned 429"
   end
 end

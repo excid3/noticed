@@ -1,6 +1,6 @@
 ### Unreleased
 
-* [Bugfix] `post_request` and `Noticed::ResponseUnsuccessful` no longer log or show the path and query of the URL, only its scheme and host: for Discord, Slack and Microsoft Teams webhooks the URL is the secret, and it reached logs and error trackers when a delivery failed
+* [Bugfix] Discord, Slack and Microsoft Teams webhook URLs no longer appear in logs or `Noticed::ResponseUnsuccessful` messages, only their origin. The URL is the credential for these services. Other delivery methods still log the full URL. Custom delivery methods can opt in with `post_request(url, redact_url: true, ...)`
 
 ### 3.1.0
 

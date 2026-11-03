@@ -38,9 +38,7 @@ module Noticed
       @url = url
       @args = args
 
-      # Only the host: the path and query of a webhook URL are its secret
-      uri = URI(url)
-      super("POST request to #{uri.scheme}://#{uri.host} returned #{response.code} response:\n#{response.body.inspect}")
+      super("POST request to #{url} returned #{response.code} response:\n#{response.body.inspect}")
     end
   end
 end

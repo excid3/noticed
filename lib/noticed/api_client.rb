@@ -9,10 +9,14 @@ module Noticed
     # Usage:
     #   post_request("http://example.com", basic_auth: {user:, pass:}, headers: {}, json: {}, form: {})
     #
+    # Pass `redact_url: true` when the URL itself is a credential (Discord, Slack and Microsoft Teams
+    # incoming webhooks) so only its origin appears in logs and error messages.
+    #
     def post_request(url, args = {})
       args.compact!
 
       uri = URI(url)
+      logged_url = args.delete(:redact_url) ? uri.origin : url
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if uri.instance_of? URI::HTTPS
 
@@ -33,13 +37,12 @@ module Noticed
         request.body = body
       end
 
-      # Bodies aren't logged since they can contain credentials and access tokens, and neither are the
-      # path and query, which hold the secret of webhook URLs (Discord, Slack, Microsoft Teams)
-      logger.debug("POST #{uri.scheme}://#{uri.host}")
+      # Bodies aren't logged since they can contain credentials and access tokens
+      logger.debug("POST #{logged_url}")
       response = http.request(request)
       logger.debug("Response: #{response.code}")
 
-      raise ResponseUnsuccessful.new(response, url, args) unless response.code.start_with?("20")
+      raise ResponseUnsuccessful.new(response, logged_url, args) unless response.code.start_with?("20")
 
       response
     end

@@ -23,6 +23,21 @@ class MicrosoftTeamsTest < ActiveSupport::TestCase
     end
   end
 
+  test "keeps the webhook URL out of the error and the log" do
+    url = "https://example.webhook.office.com/webhookb2/SECRET-TOKEN"
+    set_config(json: {}, url: url)
+    stub_request(:post, url).to_return(status: 422)
+
+    error = with_captured_log do |log|
+      error = assert_raises(Noticed::ResponseUnsuccessful) { @delivery_method.deliver }
+      refute_includes log.string, "SECRET-TOKEN"
+      error
+    end
+
+    refute_includes error.message, "SECRET-TOKEN"
+    assert_includes error.message, "https://example.webhook.office.com"
+  end
+
   private
 
   def set_config(config)

@@ -12,7 +12,7 @@ module Noticed
     #   Microsoft Teams  https://{tenant}.webhook.office.com/webhookb2/{group}@{tenant}/IncomingWebhook/... (everything after is filtered)
     CREDENTIAL_PATHS = [
       %r{(/webhooks/\d+/)([^/]+)},
-      %r{(/T[^/]+/B[^/]+/)([^/]+)},
+      %r{(hooks\.slack\.com/(?:services/)?T[^/]+/B[^/]+/)([^/]+)},
       %r{(/webhookb2/[^/]+/IncomingWebhook/)(.+)}
     ]
 

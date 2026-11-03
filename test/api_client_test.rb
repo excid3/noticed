@@ -38,5 +38,6 @@ class ApiClientTest < ActiveSupport::TestCase
   test "leaves other URLs alone" do
     assert_equal Noticed::SlackDelivery::DEFAULT_URL, Noticed::ApiClient.filtered_url(Noticed::SlackDelivery::DEFAULT_URL)
     assert_equal "https://fcm.googleapis.com/v1/projects/my-project/messages:send", Noticed::ApiClient.filtered_url("https://fcm.googleapis.com/v1/projects/my-project/messages:send")
+    assert_equal "https://example.org/Tenants/Billing/invoices", Noticed::ApiClient.filtered_url("https://example.org/Tenants/Billing/invoices")
   end
 end

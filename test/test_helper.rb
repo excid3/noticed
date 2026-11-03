@@ -12,3 +12,12 @@ ActiveSupport::TestCase.fixture_paths = [File.expand_path("fixtures", __dir__)]
 ActionDispatch::IntegrationTest.fixture_paths = ActiveSupport::TestCase.fixture_paths
 ActiveSupport::TestCase.file_fixture_path = File.expand_path("fixtures", __dir__) + "/files"
 ActiveSupport::TestCase.fixtures :all
+
+class ActiveSupport::TestCase
+  # Returns what delivery methods logged while the block ran
+  def capture_log
+    log = StringIO.new
+    Noticed::DeliveryMethod.stub(:logger, ActiveSupport::Logger.new(log)) { yield }
+    log.string
+  end
+end

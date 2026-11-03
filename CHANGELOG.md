@@ -1,5 +1,7 @@
 ### Unreleased
 
+* [Bugfix] Filter credentials out of webhook URLs in logs and `Noticed::ResponseUnsuccessful` messages (Discord, Slack, Microsoft Teams)
+
 ### 3.1.0
 
 * [Breaking] Drop Rails 7.0 support

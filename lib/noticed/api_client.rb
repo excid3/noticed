@@ -11,7 +11,7 @@ module Noticed
     #   Slack            https://hooks.slack.com/services/T000/B000/{token}
     #   Microsoft Teams  https://{tenant}.webhook.office.com/webhookb2/{group}@{tenant}/IncomingWebhook/... (everything after is filtered)
     CREDENTIAL_PATHS = [
-      %r{(/webhooks/\d+/)([^/]+)},
+      %r{(discord(?:app)?\.com/api/(?:v\d+/)?webhooks/\d+/)([^/]+)},
       %r{(hooks\.slack\.com/(?:services/)?T[^/]+/B[^/]+/)([^/]+)},
       %r{(/webhookb2/[^/]+/IncomingWebhook/)(.+)}
     ]

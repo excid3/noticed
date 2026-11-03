@@ -1,5 +1,7 @@
 ### Unreleased
 
+* [Bugfix] `post_request` and `Noticed::ResponseUnsuccessful` no longer log or show the path and query of the URL, only its scheme and host: for Discord, Slack and Microsoft Teams webhooks the URL is the secret, and it reached logs and error trackers when a delivery failed
+
 ### 3.1.0
 
 * [Breaking] Drop Rails 7.0 support

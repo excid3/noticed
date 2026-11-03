@@ -33,8 +33,9 @@ module Noticed
         request.body = body
       end
 
-      # Bodies aren't logged since they can contain credentials and access tokens
-      logger.debug("POST #{url}")
+      # Bodies aren't logged since they can contain credentials and access tokens, and neither are the
+      # path and query, which hold the secret of webhook URLs (Discord, Slack, Microsoft Teams)
+      logger.debug("POST #{uri.scheme}://#{uri.host}")
       response = http.request(request)
       logger.debug("Response: #{response.code}")
 

@@ -9,10 +9,10 @@ module Noticed
     #
     #   Discord          https://discord.com/api/webhooks/{id}/{token}[/slack|/github]
     #   Slack            https://hooks.slack.com/services/T000/B000/{token}
-    #   Microsoft Teams  https://{tenant}.webhook.office.com/webhookb2/{group}@{tenant}/IncomingWebhook/{id}/{guid}[/V2/{guid}]
+    #   Microsoft Teams  https://{tenant}.webhook.office.com/webhookb2/{group}@{tenant}/IncomingWebhook/... (everything after is filtered)
     CREDENTIAL_PATHS = [
       %r{(/webhooks/\d+/)([^/]+)},
-      %r{(/T[A-Z0-9]+/B[A-Z0-9]+/)([^/]+)},
+      %r{(/T[^/]+/B[^/]+/)([^/]+)},
       %r{(/webhookb2/[^/]+/IncomingWebhook/)(.+)}
     ]
 

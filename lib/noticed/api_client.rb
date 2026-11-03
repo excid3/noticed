@@ -62,16 +62,15 @@ module Noticed
     def self.filtered_url(url)
       path, query = url.to_s.split("?", 2)
       CREDENTIAL_PATHS.each { |pattern| path = path.sub(pattern) { "#{$1}[FILTERED]" } }
-      query ? "#{path}?#{filtered_query(query)}" : path
-    end
 
-    # Filters the application's `config.filter_parameters` plus `sig`, the secret of Microsoft Teams Workflows URLs:
-    # https://prod-00.westus.logic.azure.com/workflows/{id}/triggers/manual/paths/invoke?api-version=...&sp=...&sv=...&sig={secret}
-    def self.filtered_query(query)
-      parameter_filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters + [:sig])
+      if query
+        # Application's filter_parameters plus sig, the secret of Microsoft Teams Workflows URLs:
+        # https://prod-00.westus.logic.azure.com/workflows/{id}/triggers/manual/paths/invoke?api-version=...&sp=...&sv=...&sig={secret}
+        parameter_filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters + [:sig])
+        query = query.gsub(/([^&=]+)=([^&]*)/) { "#{$1}=#{parameter_filter.filter_param($1, $2)}" }
+      end
 
-      query.gsub(/([^&=]+)=([^&]*)/) { "#{$1}=#{parameter_filter.filter_param($1, $2)}" }
+      query ? "#{path}?#{query}" : path
     end
-    private_class_method :filtered_query
   end
 end

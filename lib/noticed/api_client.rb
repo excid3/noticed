@@ -4,24 +4,17 @@ module Noticed
   module ApiClient
     extend ActiveSupport::Concern
 
-    FILTERED = ActiveSupport::ParameterFilter::FILTERED
-
     # Webhook URLs whose path carries the credential. The first group is kept and the second is
     # replaced with [FILTERED] in logs and error messages.
     #
     #   Discord          https://discord.com/api/webhooks/{id}/{token}[/slack|/github]
     #   Slack            https://hooks.slack.com/services/T000/B000/{token}
     #   Microsoft Teams  https://{tenant}.webhook.office.com/webhookb2/{group}@{tenant}/IncomingWebhook/{id}/{guid}[/V2/{guid}]
-    URL_PATH_SECRETS = [
+    CREDENTIAL_PATHS = [
       %r{(/webhooks/\d+/)([^/]+)},
       %r{(/T[A-Z0-9]+/B[A-Z0-9]+/)([^/]+)},
       %r{(/webhookb2/[^/]+/IncomingWebhook/)(.+)}
-    ].freeze
-
-    # Query parameters filtered in addition to the application's `config.filter_parameters`.
-    #
-    #   Microsoft Teams Workflows  https://prod-00.westus.logic.azure.com/workflows/{id}/triggers/manual/paths/invoke?api-version=...&sp=...&sv=...&sig={secret}
-    URL_QUERY_SECRETS = [:sig].freeze
+    ]
 
     # Helper method for making POST requests from delivery methods
     #
@@ -70,19 +63,16 @@ module Noticed
     #   # => "https://discord.com/api/webhooks/123/[FILTERED]?wait=true"
     def filtered_url(url)
       path, query = url.to_s.split("?", 2)
-
-      if (pattern = URL_PATH_SECRETS.find { |regexp| path.match?(regexp) })
-        path = path.sub(pattern) { "#{$1}#{FILTERED}" }
-      end
-
+      CREDENTIAL_PATHS.each { |pattern| path = path.sub(pattern) { "#{$1}[FILTERED]" } }
       query ? "#{path}?#{filtered_query(query)}" : path
     end
 
     private
 
+    # Filters the application's `config.filter_parameters` plus `sig`, the secret of Microsoft Teams Workflows URLs:
+    # https://prod-00.westus.logic.azure.com/workflows/{id}/triggers/manual/paths/invoke?api-version=...&sp=...&sv=...&sig={secret}
     def filtered_query(query)
-      filters = Rails.application&.config&.filter_parameters.to_a + URL_QUERY_SECRETS
-      parameter_filter = ActiveSupport::ParameterFilter.new(filters)
+      parameter_filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters + [:sig])
 
       query.split(/([&;])/).map do |part|
         key, value = part.split("=", 2)

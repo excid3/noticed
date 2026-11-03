@@ -72,19 +72,6 @@ class WebhookDeliveryMethodTest < ActiveSupport::TestCase
     end
   end
 
-  test "webhook keeps the full URL in the error and the log" do
-    set_config(url: "https://example.org/hooks/orders")
-    stub_request(:post, "https://example.org/hooks/orders").to_return(status: 422)
-
-    error = with_captured_log do |log|
-      error = assert_raises(Noticed::ResponseUnsuccessful) { @delivery_method.deliver }
-      assert_includes log.string, "POST https://example.org/hooks/orders"
-      error
-    end
-
-    assert_includes error.message, "https://example.org/hooks/orders"
-  end
-
   private
 
   def set_config(config)

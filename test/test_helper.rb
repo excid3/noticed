@@ -14,13 +14,12 @@ ActiveSupport::TestCase.file_fixture_path = File.expand_path("fixtures", __dir__
 ActiveSupport::TestCase.fixtures :all
 
 class ActiveSupport::TestCase
-  # Captures what delivery methods log so tests can assert on it
-  def with_captured_log
-    log = StringIO.new
-    original_logger = Noticed::DeliveryMethod.logger
-    Noticed::DeliveryMethod.logger = ActiveSupport::Logger.new(log)
-    yield log
+  # Returns what delivery methods logged while the block ran
+  def capture_log
+    Noticed::DeliveryMethod.logger = ActiveSupport::Logger.new(log = StringIO.new)
+    yield
+    log.string
   ensure
-    Noticed::DeliveryMethod.logger = original_logger
+    Noticed::DeliveryMethod.logger = Rails.logger
   end
 end

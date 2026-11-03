@@ -1,6 +1,6 @@
 ### Unreleased
 
-* [Bugfix] Credentials in URLs are replaced with `[FILTERED]` in logs and `Noticed::ResponseUnsuccessful` messages: the token of Discord and Slack webhook URLs, the ids of Microsoft Teams webhook URLs, the `sig` of Microsoft Teams Workflows URLs, and any query parameter matching the application's `filter_parameters`. Use `filtered_url(url)` in custom delivery methods
+* [Bugfix] Filter credentials out of webhook URLs in logs and `Noticed::ResponseUnsuccessful` messages (Discord, Slack, Microsoft Teams)
 
 ### 3.1.0
 

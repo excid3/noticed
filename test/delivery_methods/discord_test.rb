@@ -34,6 +34,6 @@ class DiscordDeliveryMethodTest < ActiveSupport::TestCase
     end
 
     refute_includes error.message, "SECRET-TOKEN"
-    assert_includes error.message, "POST request to https://discord.example.org returned 429"
+    assert_includes error.message, "POST request to https://discord.example.org/api/webhooks/123/[FILTERED] returned 429"
   end
 end

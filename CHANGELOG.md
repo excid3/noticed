@@ -1,6 +1,6 @@
 ### Unreleased
 
-* [Bugfix] Discord, Slack and Microsoft Teams webhook URLs no longer appear in logs or `Noticed::ResponseUnsuccessful` messages, only their origin. The URL is the credential for these services. Other delivery methods still log the full URL. Custom delivery methods can opt in with `post_request(url, redact_url: true, ...)`
+* [Bugfix] Credentials in URLs are replaced with `[FILTERED]` in logs and `Noticed::ResponseUnsuccessful` messages: the token of Discord and Slack webhook URLs, the ids of Microsoft Teams webhook URLs, the `sig` of Microsoft Teams Workflows URLs, and any query parameter matching the application's `filter_parameters`. Use `filtered_url(url)` in custom delivery methods
 
 ### 3.1.0
 

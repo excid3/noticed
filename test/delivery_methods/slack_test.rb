@@ -83,7 +83,7 @@ class SlackTest < ActiveSupport::TestCase
     end
 
     refute_includes error.message, "SECRET-TOKEN"
-    assert_includes error.message, "https://hooks.slack.com"
+    assert_includes error.message, "https://hooks.slack.com/services/T000/B000/[FILTERED]"
   end
 
   private

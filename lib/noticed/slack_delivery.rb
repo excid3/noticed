@@ -12,10 +12,10 @@ module Noticed
     def deliver
       headers = evaluate_option(:headers)
       json = evaluate_option(:json)
-      response = post_request url, headers: headers, json: json, redact_url: true
+      response = post_request url, headers: headers, json: json
 
       if raise_if_not_ok? && !success?(response)
-        raise ResponseUnsuccessful.new(response, URI(url).origin, {headers: headers, json: json})
+        raise ResponseUnsuccessful.new(response, filtered_url(url), {headers: headers, json: json})
       end
 
       response

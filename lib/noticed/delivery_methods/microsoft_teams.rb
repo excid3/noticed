@@ -4,7 +4,7 @@ module Noticed
       required_options :json
 
       def deliver
-        post_request url, headers: evaluate_option(:headers), json: evaluate_option(:json), redact_url: true
+        post_request url, headers: evaluate_option(:headers), json: evaluate_option(:json)
       end
 
       def url

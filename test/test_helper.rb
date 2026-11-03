@@ -16,10 +16,7 @@ ActiveSupport::TestCase.fixtures :all
 class ActiveSupport::TestCase
   # Returns what delivery methods logged while the block ran
   def capture_log
-    Noticed::DeliveryMethod.logger = ActiveSupport::Logger.new(log = StringIO.new)
-    yield
+    Noticed::DeliveryMethod.stub(:logger, ActiveSupport::Logger.new(log = StringIO.new)) { yield }
     log.string
-  ensure
-    Noticed::DeliveryMethod.logger = Rails.logger
   end
 end

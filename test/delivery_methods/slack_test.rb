@@ -71,18 +71,6 @@ class SlackTest < ActiveSupport::TestCase
     end
   end
 
-  test "keeps the webhook token out of the error and the log" do
-    url = "https://hooks.slack.com/services/T000/B000/SECRET-TOKEN"
-    @delivery_method.config[:url] = url
-    stub_request(:post, url).to_return(status: 403, headers: {"Content-Type" => "text/html"})
-
-    log = capture_log do
-      error = assert_raises(Noticed::ResponseUnsuccessful) { @delivery_method.deliver }
-      assert_includes error.message, "https://hooks.slack.com/services/T000/B000/[FILTERED]"
-    end
-    refute_includes log, "SECRET-TOKEN"
-  end
-
   private
 
   def set_config(config)

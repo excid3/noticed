@@ -45,39 +45,33 @@ module Noticed
         request.body = body
       end
 
-      # Bodies aren't logged since they can contain credentials and access tokens,
-      # and credentials in the URL are filtered
-      logged_url = filtered_url(url)
-      logger.debug("POST #{logged_url}")
+      # Bodies aren't logged since they can contain credentials and access tokens
+      logger.debug("POST #{ApiClient.filtered_url(url)}")
       response = http.request(request)
       logger.debug("Response: #{response.code}")
 
-      raise ResponseUnsuccessful.new(response, logged_url, args) unless response.code.start_with?("20")
+      raise ResponseUnsuccessful.new(response, url, args) unless response.code.start_with?("20")
 
       response
     end
 
     # Returns the URL with credentials replaced by [FILTERED], like Rails does for request parameters
     #
-    #   filtered_url("https://discord.com/api/webhooks/123/abc?wait=true")
+    #   Noticed::ApiClient.filtered_url("https://discord.com/api/webhooks/123/abc?wait=true")
     #   # => "https://discord.com/api/webhooks/123/[FILTERED]?wait=true"
-    def filtered_url(url)
+    def self.filtered_url(url)
       path, query = url.to_s.split("?", 2)
       CREDENTIAL_PATHS.each { |pattern| path = path.sub(pattern) { "#{$1}[FILTERED]" } }
       query ? "#{path}?#{filtered_query(query)}" : path
     end
 
-    private
-
     # Filters the application's `config.filter_parameters` plus `sig`, the secret of Microsoft Teams Workflows URLs:
     # https://prod-00.westus.logic.azure.com/workflows/{id}/triggers/manual/paths/invoke?api-version=...&sp=...&sv=...&sig={secret}
-    def filtered_query(query)
+    def self.filtered_query(query)
       parameter_filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters + [:sig])
 
-      query.split(/([&;])/).map do |part|
-        key, value = part.split("=", 2)
-        value ? "#{key}=#{parameter_filter.filter_param(key, value)}" : part
-      end.join
+      query.gsub(/([^&=]+)=([^&]*)/) { "#{$1}=#{parameter_filter.filter_param($1, $2)}" }
     end
+    private_class_method :filtered_query
   end
 end

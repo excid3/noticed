@@ -31,6 +31,7 @@ class DiscordDeliveryMethodTest < ActiveSupport::TestCase
       error = assert_raises(Noticed::ResponseUnsuccessful) { @delivery_method.deliver }
       assert_includes error.message, "POST request to https://discord.example.org/api/webhooks/123/[FILTERED] returned 429"
     end
+    assert_includes log, "POST https://discord.example.org/api/webhooks/123/[FILTERED]"
     refute_includes log, "SECRET-TOKEN"
   end
 

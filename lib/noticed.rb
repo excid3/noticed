@@ -35,10 +35,10 @@ module Noticed
 
     def initialize(response, url, args)
       @response = response
-      @url = url
+      @url = ApiClient.filtered_url(url)
       @args = args
 
-      super("POST request to #{url} returned #{response.code} response:\n#{response.body.inspect}")
+      super("POST request to #{@url} returned #{response.code} response:\n#{response.body.inspect}")
     end
   end
 end

@@ -15,12 +15,21 @@ module Noticed
 
       def generate_notification
         if options[:bulk]
-          template "application_bulk_delivery_method.rb", "app/notifiers/application_bulk_delivery_method.rb"
+          generate_abstract_class "ApplicationBulkDeliveryMethod"
           template "bulk_delivery_method.rb", "app/notifiers/bulk_delivery_methods/#{singular_name}.rb"
         else
-          template "application_delivery_method.rb", "app/notifiers/application_delivery_method.rb"
+          generate_abstract_class "ApplicationDeliveryMethod"
           template "delivery_method.rb", "app/notifiers/delivery_methods/#{singular_name}.rb"
         end
+      end
+
+      private
+
+      # The abstract class may be defined elsewhere, such as in an engine
+      def generate_abstract_class(name)
+        path = "app/notifiers/#{name.underscore}.rb"
+        return if name.safe_constantize || File.exist?(File.join(destination_root, path))
+        template "#{name.underscore}.rb", path
       end
     end
   end

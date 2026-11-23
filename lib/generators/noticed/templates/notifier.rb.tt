@@ -2,7 +2,7 @@
 #
 # <%= class_name %>Notifier.with(record: @post, message: "New post").deliver(User.all)
 
-class <%= class_name %>Notifier < ApplicationNotifier
+class <%= class_name %>Notifier < <%= parent %>
   # Add your delivery methods
   #
   # deliver_by :email do |config|

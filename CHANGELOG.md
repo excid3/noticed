@@ -1,5 +1,8 @@
 ### Unreleased
 
+* Add `--parent` option to `rails g noticed:notifier`. Set a default with `config.generators { |g| g.notifier parent: "BaseNotifier" }`
+* [Bugfix] Notifier and delivery method generators skip creating `ApplicationNotifier`, `ApplicationDeliveryMethod` and `ApplicationBulkDeliveryMethod` when the class is already defined, such as by an engine
+
 ### 3.1.1
 
 * [Bugfix] Filter credentials out of webhook URLs in logs and `Noticed::ResponseUnsuccessful` messages (Discord, Slack, Microsoft Teams)

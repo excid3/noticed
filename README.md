@@ -76,6 +76,20 @@ To start, generate a Notifier:
 rails generate noticed:notifier NewCommentNotifier
 ```
 
+The generator also creates `app/notifiers/application_notifier.rb`, unless `ApplicationNotifier` is already defined (for example, by an engine). To inherit from another class instead, pass `--parent`:
+
+```bash
+rails generate noticed:notifier NewCommentNotifier --parent BaseNotifier
+```
+
+To change the parent for every generated notifier, set it in `config/application.rb`:
+
+```ruby
+config.generators do |g|
+  g.notifier parent: "BaseNotifier"
+end
+```
+
 ### Usage Contents
 - [Notifier Objects](#notifier-objects)
   - [Delivery Method Configuration](#delivery-method-configuration)
@@ -612,7 +626,7 @@ If you want to build your own delivery method to deliver notifications to a spec
 rails generate noticed:delivery_method Discord
 ```
 
-This will generate a new `ApplicationDeliveryMethod` and `DeliveryMethods::Discord` class inside the `app/notifiers/delivery_methods` folder, which can be used to deliver notifications to Discord.
+This will generate a new `DeliveryMethods::Discord` class inside the `app/notifiers/delivery_methods` folder, which can be used to deliver notifications to Discord, plus an `ApplicationDeliveryMethod` if your app doesn’t already define one.
 
 ```ruby
 class DeliveryMethods::Discord < ApplicationDeliveryMethod

@@ -1,5 +1,7 @@
 ### Unreleased
 
+### 3.2.0
+
 * Add `--parent` option to `rails g noticed:notifier`. Set a default with `config.generators { |g| g.notifier parent: "BaseNotifier" }`
 * [Bugfix] Notifier and delivery method generators skip creating `ApplicationNotifier`, `ApplicationDeliveryMethod` and `ApplicationBulkDeliveryMethod` when the class is already defined, such as by an engine
 

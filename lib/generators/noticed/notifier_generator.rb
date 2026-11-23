@@ -13,9 +13,15 @@ module Noticed
 
       desc "Generates a notification with the given NAME."
 
+      class_option :parent, type: :string, default: "ApplicationNotifier", desc: "The parent class for the generated notifier"
+
+      # ApplicationNotifier may be defined elsewhere, such as in an engine
       def generate_abstract_class
-        return if File.exist?("app/notifiers/application_notifier.rb")
-        template "application_notifier.rb", "app/notifiers/application_notifier.rb"
+        return unless parent == "ApplicationNotifier"
+
+        path = "app/notifiers/application_notifier.rb"
+        return if parent.safe_constantize || File.exist?(File.join(destination_root, path))
+        template "application_notifier.rb", path
       end
 
       def generate_notification
@@ -26,6 +32,10 @@ module Noticed
 
       def file_name # :doc:
         @_file_name ||= super.sub(/_notifier\z/i, "")
+      end
+
+      def parent
+        options[:parent]
       end
     end
   end

@@ -9,6 +9,7 @@ on:
 
 jobs:
   test:
+    if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/ci.yml
 
   push:
@@ -21,24 +22,53 @@ jobs:
 
     steps:
       # Set up
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
           ruby-version: ruby
 
-      - name: Update version
+      - name: Update version and changelog
+        env:
+          VERSION: ${{ inputs.version }}
         run: |
-          sed -i 's/".*"/"${{ inputs.version }}"/' lib/noticed/version.rb
+          sed -i "s/\".*\"/\"$VERSION\"/" lib/noticed/version.rb
+
+          # Promote the Unreleased entries to this version, unless that was already done on main
+          if ! grep -qE "^### $VERSION( |$)" CHANGELOG.md; then
+            grep -q '^### Unreleased$' CHANGELOG.md || { echo "No '### Unreleased' heading in CHANGELOG.md"; exit 1; }
+            sed -i "s/^### Unreleased$/### Unreleased\n\n### $VERSION/" CHANGELOG.md
+            # Keep one blank line before every version heading
+            ruby -i -0777 -pe '$_.gsub!(/\n+(?=### )/, "\n\n")' CHANGELOG.md
+          fi
+
           bundle config set --local deployment 'false'
-          bundle
-          bundle exec appraisal
+          # Only the lockfiles need the new version, so resolve without installing anything
+          bundle lock
+          for gemfile in gemfiles/*.gemfile; do
+            BUNDLE_GEMFILE=$gemfile bundle lock
+          done
           git config user.name 'GitHub Actions'
           git config user.email github-actions@github.com
-          git add Gemfile.lock gemfiles lib
-          git commit -m "Version bump"
-          git push
+          git add CHANGELOG.md Gemfile.lock gemfiles lib
+          # The version may already be bumped on main; only commit when something changed
+          git diff --cached --quiet || { git commit -m "Version bump" && git push; }
 
       # Release
       - uses: rubygems/release-gem@v1
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          # Use this version's CHANGELOG section, with links made absolute so they work on the release page
+          ruby -e '
+            version = Regexp.escape(ENV["VERSION"])
+            section = File.read("CHANGELOG.md").split(/^### #{version}(?=[ (]|$).*\n/, 2)[1].to_s.split(/^### /, 2).first.to_s.strip
+            print section.gsub("](./", "](https://github.com/#{ENV["GITHUB_REPOSITORY"]}/blob/#{ENV["GITHUB_REF_NAME"]}/")
+          ' > release_notes.md
+          notes=(--notes-file release_notes.md)
+          [ -s release_notes.md ] || notes=(--generate-notes)
+          gh release create "v$VERSION" --verify-tag --title "v$VERSION" "${notes[@]}"
